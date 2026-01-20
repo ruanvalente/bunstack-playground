@@ -1,0 +1,7 @@
+{
+  "name": "@bunstack-playground/api",
+  "private": true,
+  "scripts": {
+    "dev": "bun src/server.ts"
+  }
+}
