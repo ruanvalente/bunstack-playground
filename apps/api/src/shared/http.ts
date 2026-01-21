@@ -44,3 +44,63 @@ export const deleteTaskHttpSchema = t.Object({
     example: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   }),
 });
+
+/**
+ * Pagination query params schema
+ */
+export const paginationQuerySchema = t.Object({
+  page: t.Optional(
+    t.Number({
+      minimum: 1,
+      description: "Página atual",
+      example: 1,
+    }),
+  ),
+  pageSize: t.Optional(
+    t.Number({
+      minimum: 1,
+      maximum: 100,
+      description: "Itens por página",
+      example: 10,
+    }),
+  ),
+  sortOrder: t.Optional(
+    t.Enum(
+      { ASC: "ASC", DESC: "DESC" },
+      {
+        description: "Ordem de classificação",
+        example: "DESC",
+      },
+    ),
+  ),
+});
+
+/**
+ * Pagination metadata schema
+ */
+export const paginationMetaSchema = t.Object({
+  sortBy: t.String(),
+  sortOrder: t.String(),
+  timestamp: t.String({ format: "date-time" }),
+});
+
+/**
+ * Pagination info schema
+ */
+export const paginationSchema = t.Object({
+  total: t.Number(),
+  page: t.Number(),
+  pageSize: t.Number(),
+  totalPages: t.Number(),
+  hasNextPage: t.Boolean(),
+  hasPrevPage: t.Boolean(),
+});
+
+/**
+ * Paginated response schema
+ */
+export const paginatedTasksResponseSchema = t.Object({
+  data: t.Array(taskHttpSchema),
+  pagination: paginationSchema,
+  meta: paginationMetaSchema,
+});
