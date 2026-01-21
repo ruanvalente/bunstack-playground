@@ -1,34 +1,10 @@
+import { NotFoundError, ValidationError } from "../../shared/errors";
 import type { Task } from "./task.model";
-
-/**
- *  In-memory task storage
- */
-const tasks: Array<Task> = [
-  {
-    id: "1",
-    title: "Sample Task 1",
-    completed: false,
-    createdAt: new Date(),
-  },
-  {
-    id: "2",
-    title: "Sample Task 2",
-    completed: true,
-    createdAt: new Date(),
-  },
-  {
-    id: "3",
-    title: "Sample Task 3",
-    completed: false,
-    createdAt: new Date(),
-  },
-  {
-    id: "4",
-    title: "Sample Task 4",
-    completed: true,
-    createdAt: new Date(),
-  },
-];
+import {
+  taskRepository,
+  type PaginatedResult,
+  type PaginationParams,
+} from "./task.repository";
 
 /**
  * Task Service
@@ -38,30 +14,30 @@ const tasks: Array<Task> = [
  */
 export const taskService = {
   /**
-   * List all tasks.
+   * List all tasks with pagination.
    *
-   * @returns {Task[]} List of tasks
+   * @param {PaginationParams} params - Pagination parameters
+   * @returns {Promise<PaginatedResult<Task>>} Paginated list of tasks
    */
-  list(): Task[] {
-    return tasks;
+  async list(params: PaginationParams): Promise<PaginatedResult<Task>> {
+    return await taskRepository.findAll(params);
   },
 
   /**
    * Create a new task.
    *
    * @param {string} title - Task title
-   * @returns {Task} Newly created task
+   * @returns {Promise<Task>} Newly created task
+   * @throws {ValidationError} If title is empty
    */
-  create(title: string): Task {
-    const task: Task = {
-      id: crypto.randomUUID(),
-      title,
-      completed: false,
-      createdAt: new Date(),
-    };
+  async create(title: string): Promise<Task> {
+    const newTaskTitle = title.trim();
 
-    tasks.push(task);
-    return task;
+    if (newTaskTitle.length === 0 || !newTaskTitle) {
+      throw new ValidationError("Title cannot be empty");
+    }
+
+    return taskRepository.create(newTaskTitle);
   },
 
   /**
@@ -69,16 +45,22 @@ export const taskService = {
    *
    * @param {string} id - Task identifier
    * @param {string} title - New task title
-   * @returns {Task | null} Updated task or null if not found
+   * @returns {Promise<Task>} Updated task
+   * @throws {ValidationError} If title is empty
+   * @throws {NotFoundError} If task does not exist
    */
-  update(id: string, title: string): Task | null {
-    const task = tasks.find((t) => t.id === id);
+  async update(id: string, title: string): Promise<Task> {
+    const newTaskTitle = title.trim();
+
+    if (newTaskTitle.length === 0 || !newTaskTitle) {
+      throw new ValidationError("Title cannot be empty");
+    }
+    const task = await taskRepository.updateTitle(id, newTaskTitle);
 
     if (!task) {
-      return null;
+      throw new NotFoundError("Task not found");
     }
 
-    task.title = title;
     return task;
   },
 
@@ -86,16 +68,16 @@ export const taskService = {
    * Mark a task as completed.
    *
    * @param {string} id - Task identifier
-   * @returns {Task | null} Updated task or null if not found
+   * @returns {Promise<Task>} Updated task
+   * @throws {NotFoundError} If task does not exist
    */
-  complete(id: string): Task | null {
-    const task = tasks.find((t) => t.id === id);
+  async complete(id: string): Promise<Task> {
+    const task = await taskRepository.complete(id);
 
     if (!task) {
-      return null;
+      throw new NotFoundError("Task not found");
     }
 
-    task.completed = true;
     return task;
   },
 
@@ -103,26 +85,13 @@ export const taskService = {
    * Delete a task.
    *
    * @param {string} id - Task identifier
-   * @returns {boolean} True if task was deleted, false if not found
+   * @throws {NotFoundError} If task does not exist
    */
-  delete(id: string): boolean {
-    const index = tasks.findIndex((t) => t.id === id);
+  async delete(id: string): Promise<void> {
+    const deleted = await taskRepository.delete(id);
 
-    if (index === -1) {
-      return false;
+    if (!deleted) {
+      throw new NotFoundError("Task not found");
     }
-
-    tasks.splice(index, 1);
-    return true;
-  },
-
-  /**
-   * Find a task by ID.
-   *
-   * @param {string} id - Task identifier
-   * @returns {Task | null} Task if found, otherwise null
-   */
-  findById(id: string): Task | null {
-    return tasks.find((t) => t.id === id) ?? null;
   },
 };
