@@ -1,10 +1,14 @@
-import { API_URL } from "../../../config/constants";
+import type { Task } from "@bunstack-playground/shared/domain";
+import type { PaginatedTasksResponseDTO } from "@bunstack-playground/shared/http";
+
 import { httpClient } from "../../../shared/http/http-client";
-import type { Task, TaskAPIResponse } from "../../../shared/types/tasks.type";
+import { API_URL } from "../../../config/constants";
 
 export async function getTasks(): Promise<Array<Task>> {
   try {
-    const response = await httpClient<TaskAPIResponse>(`${API_URL}/tasks`);
+    const response = await httpClient<PaginatedTasksResponseDTO>(
+      `${API_URL}/tasks`,
+    );
     return response.data;
   } catch (err) {
     console.error("getTasks fail:", err);

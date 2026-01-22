@@ -1,15 +1,15 @@
-import openapi from "@elysiajs/openapi";
 import { Elysia, t } from "elysia";
+import openapi from "@elysiajs/openapi";
 
 import { AppError, HttpStatus } from "../../shared/errors";
 import { taskService } from "./task.service";
 
 import {
-  createTaskHttpSchema,
-  taskHttpSchema,
-  paginationQuerySchema,
+  createTaskSchema,
   paginatedTasksResponseSchema,
-} from "../../shared/http";
+  paginationQuerySchema,
+  taskSchema,
+} from "@bunstack-playground/shared/http";
 
 export const taskRoutes = new Elysia({ prefix: "/tasks" })
 
@@ -30,18 +30,21 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
         sortOrder,
       });
 
+      const { pagination } = result;
+
       return {
         data: result.data.map((task) => ({
           ...task,
-          createdAt: task.createdAt.toISOString(),
+          createdAt: task.createdAt,
         })),
+
         pagination: {
-          total: result.total,
-          page: result.page,
-          pageSize: result.pageSize,
-          totalPages: result.totalPages,
-          hasNextPage: result.hasNextPage,
-          hasPrevPage: result.hasPrevPage,
+          total: pagination.total,
+          page: pagination.page,
+          pageSize: pagination.pageSize,
+          totalPages: pagination.totalPages,
+          hasNextPage: pagination.hasNextPage,
+          hasPrevPage: pagination.hasPrevPage,
         },
         meta: {
           sortBy: "createdAt",
@@ -83,9 +86,9 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
       }
     },
     {
-      body: createTaskHttpSchema,
+      body: createTaskSchema,
       response: {
-        201: taskHttpSchema,
+        201: taskSchema,
       },
       detail: {
         tags: ["Tasks"],
@@ -103,7 +106,7 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
     async ({ params, body, set }) => {
       try {
         const task = await taskService.update(params.id, body.title);
-        return { ...task, createdAt: task.createdAt.toISOString() };
+        return { ...task, createdAt: task.createdAt };
       } catch (error) {
         if (error instanceof AppError) {
           set.status = error.statusCode;
@@ -124,7 +127,7 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
         }),
       }),
       response: {
-        200: taskHttpSchema,
+        200: taskSchema,
         404: t.Object({ message: t.String() }),
         400: t.Object({ message: t.String() }),
       },
@@ -144,7 +147,7 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
     async ({ params, set }) => {
       try {
         const task = await taskService.complete(params.id);
-        return { ...task, createdAt: task.createdAt.toISOString() };
+        return { ...task, createdAt: task.createdAt };
       } catch (error) {
         if (error instanceof AppError) {
           set.status = error.statusCode;
@@ -159,7 +162,7 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
         id: t.String({ format: "uuid" }),
       }),
       response: {
-        200: taskHttpSchema,
+        200: taskSchema,
         404: t.Object({ message: t.String() }),
       },
       detail: {

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { Task } from "../../../shared/types/tasks.type";
 import { getTasks, toggleTask } from "../queries/task.querie";
 import { TaskItem } from "../ui/task-item";
+import type { Task } from "@bunstack-playground/shared/domain";
 
 export function TaskListWidget() {
   const queryClient = useQueryClient();

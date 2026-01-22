@@ -1,5 +1,15 @@
 {
   "name": "@bunstack-playground/shared",
   "version": "1.0.0",
-  "private": true
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http/index.ts",
+    "./domain": "./src/domain/index.ts",
+    "./errors": "./src/errors/index.ts"
+  },
+  "dependencies": {
+    "zod-to-json-schema": "^3.25.1"
+  }
 }

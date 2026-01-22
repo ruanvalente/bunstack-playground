@@ -1,27 +1,9 @@
+import type {
+  PaginatedTasksResponseDTO,
+  PaginationQueryDTO,
+} from "@bunstack-playground/shared";
 import { db } from "../../infra/database";
-import type { Task } from "./task.model";
-
-/**
- * Pagination parameters
- */
-export interface PaginationParams {
-  page: number;
-  pageSize: number;
-  sortOrder: "ASC" | "DESC";
-}
-
-/**
- * Paginated result
- */
-export interface PaginatedResult<T> {
-  data: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-}
+import type { Task } from "@bunstack-playground/shared/domain";
 
 export const taskRepository = {
   /**
@@ -29,8 +11,10 @@ export const taskRepository = {
    * @param {PaginationParams} params - Pagination parameters
    * @returns {Promise<PaginatedResult<Task>>} Paginated tasks
    */
-  async findAll(params: PaginationParams): Promise<PaginatedResult<Task>> {
-    const { page, pageSize, sortOrder } = params;
+  async findAll(
+    params: PaginationQueryDTO,
+  ): Promise<PaginatedTasksResponseDTO> {
+    const { page = 1, pageSize = 10, sortOrder = "ASC" } = params;
 
     // Get total count
     const countResult = db
@@ -56,12 +40,19 @@ export const taskRepository = {
 
     return {
       data: rows.map(mapRowToTask),
-      total,
-      page,
-      pageSize,
-      totalPages,
-      hasNextPage: page < totalPages,
-      hasPrevPage: page > 1,
+      pagination: {
+        page,
+        total,
+        pageSize,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+      meta: {
+        sortBy: "createdAt",
+        sortOrder,
+        timestamp: new Date().toISOString(),
+      },
     };
   },
 
@@ -94,7 +85,7 @@ export const taskRepository = {
       id: crypto.randomUUID(),
       title,
       completed: false,
-      createdAt: new Date(),
+      createdAt: new Date().toDateString(),
     };
 
     db.prepare(
@@ -102,12 +93,7 @@ export const taskRepository = {
       INSERT INTO tasks (id, title, completed, created_at)
       VALUES (?, ?, ?, ?)
     `,
-    ).run(
-      task.id,
-      task.title,
-      task.completed ? 1 : 0,
-      task.createdAt.toISOString(),
-    );
+    ).run(task.id, task.title, task.completed ? 1 : 0, task.createdAt);
 
     return task;
   },
@@ -184,6 +170,6 @@ function mapRowToTask(row: any): Task {
     id: row.id,
     title: row.title,
     completed: Boolean(row.completed),
-    createdAt: new Date(row.created_at),
+    createdAt: new Date(row.created_at).toISOString(),
   };
 }
