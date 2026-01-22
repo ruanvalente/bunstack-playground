@@ -5,6 +5,7 @@
     "dev": "bun --watch src/server.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.4.1",
     "@elysiajs/openapi": "^1.4.13",
     "elysia": "^1.4.22",
     "zod": "^4.3.5"
