@@ -1,10 +1,12 @@
+import type {
+  PaginatedTasksResponseDTO,
+  PaginationQueryDTO,
+  Task,
+} from "@bunstack-playground/shared";
+
 import { NotFoundError, ValidationError } from "../../shared/errors";
-import type { Task } from "./task.model";
-import {
-  taskRepository,
-  type PaginatedResult,
-  type PaginationParams,
-} from "./task.repository";
+
+import { taskRepository } from "./task.repository";
 
 /**
  * Task Service
@@ -16,10 +18,10 @@ export const taskService = {
   /**
    * List all tasks with pagination.
    *
-   * @param {PaginationParams} params - Pagination parameters
-   * @returns {Promise<PaginatedResult<Task>>} Paginated list of tasks
+   * @param {PaginationQueryDTO} params - Pagination parameters
+   * @returns {Promise<PaginatedTasksResponseDTO>} Paginated list of tasks
    */
-  async list(params: PaginationParams): Promise<PaginatedResult<Task>> {
+  async list(params: PaginationQueryDTO): Promise<PaginatedTasksResponseDTO> {
     return await taskRepository.findAll(params);
   },
 
