@@ -5,6 +5,7 @@ type TaskItemProps = {
 };
 
 export function TaskItem({ title, completed, onToggle }: TaskItemProps) {
+  console.log("Rendering TaskItem:", { title, completed });
   return (
     <div
       className={`

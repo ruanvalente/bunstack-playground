@@ -16,12 +16,13 @@ export async function getTasks(): Promise<Array<Task>> {
   }
 }
 
-export async function toggleTask(taskId: string): Promise<Task> {
+export async function toggleTask(taskId: string, completed: boolean): Promise<Task> {
   try {
     const response = await httpClient<Task>(
       `${API_URL}/tasks/${taskId}/complete`,
       {
         method: "PATCH",
+        body: JSON.stringify({ id: taskId, completed }),
       },
     );
 

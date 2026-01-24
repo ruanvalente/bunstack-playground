@@ -16,7 +16,11 @@ export function TaskListWidget() {
   });
 
   const toggleMutation = useMutation({
-    mutationFn: toggleTask,
+    mutationFn: async (taskId: string) => {
+      const currentTasks = queryClient.getQueryData<Array<Task>>(["tasks"]);
+      const task = currentTasks?.find((t) => t.id === taskId);
+      return toggleTask(taskId, task?.completed ?? false);
+    },
 
     onMutate: async (taskId: string) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });
