@@ -144,9 +144,9 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
    */
   .patch(
     "/:id/complete",
-    async ({ params, set }) => {
+    async ({ body, set }) => {
       try {
-        const task = await taskService.complete(params.id);
+        const task = await taskService.complete(body.id, body.completed);
         return { ...task, createdAt: task.createdAt };
       } catch (error) {
         if (error instanceof AppError) {
@@ -158,8 +158,10 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
       }
     },
     {
-      params: t.Object({
+      
+      body: t.Object({
         id: t.String({ format: "uuid" }),
+        completed: t.Boolean({ description: "New completion status" }),
       }),
       response: {
         200: taskSchema,

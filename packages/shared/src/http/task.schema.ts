@@ -37,6 +37,7 @@ export const updateTaskSchema = z.object({
  */
 export const completeTaskSchema = z.object({
   id: z.string().uuid(),
+  completed: z.boolean(),
   description: "Task ID to be completed",
   example: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 });

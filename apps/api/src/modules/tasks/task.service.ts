@@ -70,11 +70,12 @@ export const taskService = {
    * Mark a task as completed.
    *
    * @param {string} id - Task identifier
+   * @param {boolean} completed - Completion status
    * @returns {Promise<Task>} Updated task
    * @throws {NotFoundError} If task does not exist
    */
-  async complete(id: string): Promise<Task> {
-    const task = await taskRepository.complete(id);
+  async complete(id: string, completed: boolean): Promise<Task> {
+    const task = await taskRepository.complete(id, completed);
 
     if (!task) {
       throw new NotFoundError("Task not found");

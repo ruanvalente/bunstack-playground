@@ -125,16 +125,16 @@ export const taskRepository = {
    * @param {string} id - Task ID
    * @returns {Promise<Task | null>} Chekeada a task as completed or null if not found
    */
-  async complete(id: string): Promise<Task | null> {
+  async complete(id: string, completed: boolean): Promise<Task | null> {
     const result = db
       .prepare(
         `
       UPDATE tasks
-      SET completed = 1
+      SET completed = ?
       WHERE id = ?
     `,
       )
-      .run(id);
+      .run(completed ? 1 : 0, id);
 
     if (result.changes === 0) return null;
 
