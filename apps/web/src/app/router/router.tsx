@@ -1,14 +1,15 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 
+import MainLayout from "../../shared/layouts/main.layout";
+
 import { tasksRoutes } from "../../features/tasks/routes";
 import { settingsRoutes } from "../../features/settings/routes";
-
-import MainLayout from "../../shared/layouts/main.layout";
+import { dashboardRoutes } from "../../features/dashboard/routes";
 
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
-    children: [...tasksRoutes, ...settingsRoutes],
+    children: [...dashboardRoutes, ...tasksRoutes, ...settingsRoutes],
   },
 ]);
 
