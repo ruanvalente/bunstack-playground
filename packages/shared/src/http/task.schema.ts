@@ -4,7 +4,7 @@ import { z } from "zod";
  */
 export const healthSchema = {
   status: "ok",
-  uptime: process.uptime(),
+  uptime: new Date().toISOString(),
 };
 
 /**
