@@ -1,7 +1,7 @@
 // import { API_URL } from "../../../config/constants";
 // import type { Task, TaskAPIResponse } from "../../../shared/types/tasks.type";
 
-import { API_URL } from "../../../config/constants";
+import { API_URL, API_VERSION } from "../../../config/constants";
 
 // export async function getTasksAction(): Promise<TaskAPIResponse> {
 //   try {
@@ -45,9 +45,12 @@ import { API_URL } from "../../../config/constants";
 // }
 
 export async function toggleTaskAction(taskId: string) {
-  const response = await fetch(`${API_URL}/tasks/${taskId}/toggle`, {
-    method: "PATCH",
-  });
+  const response = await fetch(
+    `${API_URL}/api/${API_VERSION}/tasks/${taskId}/toggle`,
+    {
+      method: "PATCH",
+    },
+  );
 
   if (!response.ok) {
     throw new Error("Erro ao atualizar tarefa");

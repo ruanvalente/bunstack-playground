@@ -2,11 +2,14 @@
   "name": "@bunstack-playground/api",
   "private": true,
   "scripts": {
-    "dev": "bun --watch src/server.ts"
+    "dev": "bun --watch src/server.ts",
+    "build": "bun build src/server.ts --outdir dist --target bun --sourcemap",
+    "start": "bun dist/server.js"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",
     "@elysiajs/openapi": "^1.4.13",
+    "@elysiajs/static": "^1.4.7",
     "elysia": "^1.4.22",
     "zod": "^4.3.5"
   }

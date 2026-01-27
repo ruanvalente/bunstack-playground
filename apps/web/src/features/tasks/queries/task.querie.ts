@@ -2,12 +2,12 @@ import type { Task } from "@bunstack-playground/shared/domain";
 import type { PaginatedTasksResponseDTO } from "@bunstack-playground/shared/http";
 
 import { httpClient } from "../../../shared/http/http-client";
-import { API_URL } from "../../../config/constants";
+import { API_URL, API_VERSION } from "../../../config/constants";
 
 export async function getTasks(): Promise<Array<Task>> {
   try {
     const response = await httpClient<PaginatedTasksResponseDTO>(
-      `${API_URL}/tasks`,
+      `${API_URL}/api/${API_VERSION}/tasks`,
     );
     return response.data;
   } catch (err) {
@@ -16,10 +16,13 @@ export async function getTasks(): Promise<Array<Task>> {
   }
 }
 
-export async function toggleTask(taskId: string, completed: boolean): Promise<Task> {
+export async function toggleTask(
+  taskId: string,
+  completed: boolean,
+): Promise<Task> {
   try {
     const response = await httpClient<Task>(
-      `${API_URL}/tasks/${taskId}/complete`,
+      `${API_URL}/api/${API_VERSION}/tasks/${taskId}/complete`,
       {
         method: "PATCH",
         body: JSON.stringify({ id: taskId, completed }),

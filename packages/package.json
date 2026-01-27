@@ -10,6 +10,7 @@
     "./errors": "./src/errors/index.ts"
   },
   "dependencies": {
+    "@types/node": "^25.0.10",
     "zod-to-json-schema": "^3.25.1"
   }
 }

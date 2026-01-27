@@ -27,7 +27,6 @@ async function start() {
       }),
     );
 
-    app.get("/", () => "Welcome to bunstack-playground API!");
 
     app.listen(API_PORT, () => {
       console.log(
