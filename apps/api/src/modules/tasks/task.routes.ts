@@ -10,8 +10,9 @@ import {
   paginationQuerySchema,
   taskSchema,
 } from "@bunstack-playground/shared/http";
+import { API_VERSION } from "@bunstack-playground/shared";
 
-export const taskRoutes = new Elysia({ prefix: "/tasks" })
+export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
 
   /**
    * LIST TASKS
@@ -158,7 +159,6 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
       }
     },
     {
-      
       body: t.Object({
         id: t.String({ format: "uuid" }),
         completed: t.Boolean({ description: "New completion status" }),
