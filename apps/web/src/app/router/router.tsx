@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 
-import MainLayout from "../../shared/layouts/main.layout";
+import MainLayout from "@shared/layouts/main.layout";
 
-import { tasksRoutes } from "../../features/tasks/routes";
-import { settingsRoutes } from "../../features/settings/routes";
-import { dashboardRoutes } from "../../features/dashboard/routes";
+import { tasksRoutes } from "@features/tasks/routes";
+import { settingsRoutes } from "@features/settings/routes";
+import { dashboardRoutes } from "@features/dashboard/routes";
 
 const router = createBrowserRouter([
   {

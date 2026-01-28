@@ -1,5 +1,5 @@
 
-import { useSidebar } from "../../hooks/use-sidebar";
+import { useSidebar } from "@shared/hooks/use-sidebar";
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
   const { isOpen, toggle } = useSidebar();

@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { useHeader } from "../../hooks/use-header";
+import { useHeader } from "@shared/hooks/use-header";
 
 export function Header() {
   const { title, showMenu, user, toggleMenu, closeMenu } = useHeader();

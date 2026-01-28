@@ -2,7 +2,7 @@ import type {
   PaginatedTasksResponseDTO,
   PaginationQueryDTO,
 } from "@bunstack-playground/shared";
-import { db } from "../../infra/database";
+import { db } from "@/api/infra/database";
 import type { Task } from "@bunstack-playground/shared/domain";
 
 export const taskRepository = {

@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { useParams } from "react-router";
-import { useSidebarStore } from "../../store/sidebar.store";
+import { useSidebarStore } from "@shared/store/sidebar.store";
 
 type SidebarItemProps = {
   label: string;

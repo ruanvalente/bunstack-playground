@@ -1,10 +1,10 @@
 import { Outlet } from "react-router";
 
-import { SidebarComponent } from "../ui/sidebar";
-import { Header } from "../ui/header/header";
+import { SidebarComponent } from "@shared/ui/sidebar";
+import { Header } from "@shared/ui/header/header";
 
-import { NAV_ITEMS } from "../../config/constants";
-import "../../index.css";
+import { NAV_ITEMS } from "@/web/config/constants";
+import "@/web/index.css";
 
 export default function MainLayout() {
   return (

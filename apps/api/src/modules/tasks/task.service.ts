@@ -4,7 +4,7 @@ import type {
   Task,
 } from "@bunstack-playground/shared";
 
-import { NotFoundError, ValidationError } from "../../shared/errors";
+import { NotFoundError, ValidationError } from "@/api/shared/errors";
 
 import { taskRepository } from "./task.repository";
 
