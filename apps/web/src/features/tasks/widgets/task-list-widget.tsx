@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTasks, toggleTask } from "../queries/task.querie";
-import { TaskItem } from "../ui/task-item";
+import { getTasks, toggleTask } from "@features/tasks/queries/task.querie";
+import { TaskItem } from "@features/tasks/ui/task-item";
 import type { Task } from "@bunstack-playground/shared/domain";
 
 export function TaskListWidget() {

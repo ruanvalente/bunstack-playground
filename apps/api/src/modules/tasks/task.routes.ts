@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import openapi from "@elysiajs/openapi";
 
-import { AppError, HttpStatus } from "../../shared/errors";
+import { AppError, HttpStatus } from "@/api/shared/errors";
 import { taskService } from "./task.service";
 
 import {

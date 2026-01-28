@@ -1,4 +1,3 @@
-import { db } from ".";
 import { createTasksTableMigration } from "./migrations/tasks/create_tasks_table.migration";
 
 /**

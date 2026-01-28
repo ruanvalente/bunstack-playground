@@ -1,10 +1,10 @@
 import openapi from "@elysiajs/openapi";
-import { API_PORT } from "../../../packages/shared/src";
 import { app } from "./app";
 import { config } from "./config";
 
-import { runMigrations } from "./infra/database/migrations";
-import { runSeeds } from "./infra/database/seeds";
+import { runMigrations } from "@/api/infra/database/migrations";
+import { runSeeds } from "@/api/infra/database/seeds";
+import { API_PORT } from "@bunstack-playground/shared";
 
 async function start() {
   try {
