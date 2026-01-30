@@ -14,8 +14,19 @@ export const taskSchema = z.object({
   id: z.string().uuid(),
   title: z.string().min(3),
   completed: z.boolean(),
-  createdAt: z.string().datetime(),
+  createdAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3,6})?Z?$/),
+  updatedAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3,6})?Z?$/),
 });
+
+export const taskSchemaWithDate = taskSchema.transform((data) => ({
+  ...data,
+  createdAt: new Date(data.createdAt).toISOString(),
+  updatedAt: new Date(data.updatedAt).toISOString(),
+}));
 
 /**
  * Payload to create a task
@@ -74,7 +85,7 @@ export const paginationQuerySchema = z.object({
 export const paginationMetaSchema = z.object({
   sortBy: z.string(),
   sortOrder: z.string(),
-  timestamp: z.string().datetime(),
+  timestamp: z.iso.datetime(),
 });
 
 /**
@@ -102,6 +113,7 @@ export const paginatedTasksResponseSchema = z.object({
  * Types inferred from schemas
  */
 export type TaskDTO = z.infer<typeof taskSchema>;
+export type TaskDTOWithDate = z.infer<typeof taskSchemaWithDate>;
 export type CreateTaskDTO = z.infer<typeof createTaskSchema>;
 export type UpdateTaskDTO = z.infer<typeof updateTaskSchema>;
 export type CompleteTaskDTO = z.infer<typeof completeTaskSchema>;

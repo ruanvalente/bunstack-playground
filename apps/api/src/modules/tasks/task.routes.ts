@@ -1,8 +1,6 @@
 import { Elysia, t } from "elysia";
 import openapi from "@elysiajs/openapi";
-
 import { AppError, HttpStatus } from "@/api/shared/errors";
-import { taskService } from "./task.service";
 
 import {
   createTaskSchema,
@@ -11,6 +9,11 @@ import {
   taskSchema,
 } from "@bunstack-playground/shared/http";
 import { API_VERSION } from "@bunstack-playground/shared";
+import { TaskSqliteRepository } from "./task.sqlite.repository";
+import { TaskSupabaseRepository } from "./task.supabase.repository";
+
+// const taskService = new TaskSqliteRepository();
+const taskService = new TaskSupabaseRepository();
 
 export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
 
@@ -20,12 +23,11 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
   .get(
     "/",
     async ({ query }) => {
-      // Set default values
       const page = query.page ?? 1;
       const pageSize = query.pageSize ?? 10;
       const sortOrder = (query.sortOrder ?? "DESC") as "ASC" | "DESC";
 
-      const result = await taskService.list({
+      const result = await taskService.findAll({
         page,
         pageSize,
         sortOrder,
@@ -106,7 +108,12 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
     "/:id",
     async ({ params, body, set }) => {
       try {
-        const task = await taskService.update(params.id, body.title);
+        const task = await taskService.updateTitle(params.id, body.title);
+
+        if (!task) {
+          set.status = HttpStatus.NOT_FOUND;
+          return { message: "Task not found" };
+        }
         return { ...task, createdAt: task.createdAt };
       } catch (error) {
         if (error instanceof AppError) {
@@ -148,6 +155,10 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
     async ({ body, set }) => {
       try {
         const task = await taskService.complete(body.id, body.completed);
+        if (!task) {
+          set.status = HttpStatus.NOT_FOUND;
+          return { message: "Task not found" };
+        }
         return { ...task, createdAt: task.createdAt };
       } catch (error) {
         if (error instanceof AppError) {
