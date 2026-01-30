@@ -9,10 +9,8 @@ import {
   taskSchema,
 } from "@bunstack-playground/shared/http";
 import { API_VERSION } from "@bunstack-playground/shared";
-import { TaskSqliteRepository } from "./task.sqlite.repository";
 import { TaskSupabaseRepository } from "./task.supabase.repository";
 
-// const taskService = new TaskSqliteRepository();
 const taskService = new TaskSupabaseRepository();
 
 export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })

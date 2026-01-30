@@ -1,5 +1,5 @@
 import type {
-  PaginatedTasksResponseDTO,
+  PaginatedTasksDomain,
   PaginationQueryDTO,
   Task,
   TaskDTOWithDate,
@@ -8,9 +8,7 @@ import { db } from "@/api/infra/database";
 import type { TaskRepositoryImpl } from "./task.repository";
 
 export class TaskSqliteRepository implements TaskRepositoryImpl {
-  async findAll(
-    params: PaginationQueryDTO,
-  ): Promise<PaginatedTasksResponseDTO> {
+  async findAll(params: PaginationQueryDTO): Promise<PaginatedTasksDomain> {
     const { page = 1, pageSize = 10, sortOrder = "ASC" } = params;
 
     const countResult = db
@@ -66,21 +64,21 @@ export class TaskSqliteRepository implements TaskRepositoryImpl {
 
   async create(title: string): Promise<Task> {
     const taskId = crypto.randomUUID();
-    const now = new Date();
+    const now = new Date().toISOString();
 
     db.prepare(
       `
     INSERT INTO tasks (id, title, completed, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?)
   `,
-    ).run(taskId, title, 0, now.toISOString(), now.toISOString());
+    ).run(taskId, title, 0, now, now);
 
     return {
       id: taskId,
       title,
       completed: false,
-      createdAt: now.toISOString(),
-      updatedAt: now.toString(),
+      createdAt: now,
+      updatedAt: now,
     };
   }
 
@@ -140,7 +138,7 @@ function mapRowToTask(row: any): TaskDTOWithDate {
     id: row.id,
     title: row.title,
     completed: Boolean(row.completed),
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    createdAt: new Date(row.created_at).toISOString(),
+    updatedAt: new Date(row.updated_at).toISOString(),
   };
 }

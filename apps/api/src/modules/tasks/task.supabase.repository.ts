@@ -1,5 +1,5 @@
 import type {
-  PaginatedTasksResponseDTO,
+  PaginatedTasksDomain,
   PaginationQueryDTO,
   TaskDTOWithDate,
 } from "@bunstack-playground/shared";
@@ -8,9 +8,7 @@ import type { TaskRepositoryImpl } from "./task.repository";
 import { supabase } from "@/api/infra/database/supabase";
 
 export class TaskSupabaseRepository implements TaskRepositoryImpl {
-  async findAll(
-    params: PaginationQueryDTO,
-  ): Promise<PaginatedTasksResponseDTO> {
+  async findAll(params: PaginationQueryDTO): Promise<PaginatedTasksDomain> {
     const { page = 1, pageSize = 10, sortOrder = "ASC" } = params;
 
     const { count, error: countError } = await supabase
@@ -141,7 +139,7 @@ function mapRowToTask(row: any): TaskDTOWithDate {
     id: row.id,
     title: row.title,
     completed: Boolean(row.completed),
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    createdAt: new Date(row.created_at).toISOString(),
+    updatedAt: new Date(row.updated_at).toISOString(),
   };
 }

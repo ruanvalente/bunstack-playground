@@ -1,12 +1,16 @@
-import type { PaginatedTasksResponseDTO, PaginationQueryDTO, Task } from "@bunstack-playground/shared";
+import type {
+  PaginatedTasksDomain,
+  PaginationQueryDTO,
+  Task,
+} from "@bunstack-playground/shared";
 
 export abstract class TaskRepositoryImpl {
- /**
+  /**
    * Return all tasks with pagination
    * @param {PaginationQueryDTO} params - Pagination parameters
-   * @returns {Promise<PaginatedTasksResponseDTO>} Paginated tasks
+   * @returns {Promise<PaginatedTasksDomain>} Paginated tasks
    */
-  abstract findAll(params: PaginationQueryDTO): Promise<PaginatedTasksResponseDTO>;
+  abstract findAll(params: PaginationQueryDTO): Promise<PaginatedTasksDomain>;
 
   /**
    * Find task by ID
