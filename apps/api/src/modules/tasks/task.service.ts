@@ -5,8 +5,7 @@ import type {
 } from "@bunstack-playground/shared";
 
 import { NotFoundError, ValidationError } from "@/api/shared/errors";
-
-import { taskRepository } from "./task.repository";
+import type { TaskSqliteRepository } from "./task.sqlite.repository";
 
 /**
  * Task Service
@@ -14,7 +13,10 @@ import { taskRepository } from "./task.repository";
  * Responsible for handling business logic related to tasks.
  * Does not handle HTTP concerns (status codes, request/response).
  */
-export const taskService = {
+
+export class TaskService {
+  constructor(private readonly taskSqliteRepository: TaskSqliteRepository) {}
+
   /**
    * List all tasks with pagination.
    *
@@ -22,8 +24,8 @@ export const taskService = {
    * @returns {Promise<PaginatedTasksResponseDTO>} Paginated list of tasks
    */
   async list(params: PaginationQueryDTO): Promise<PaginatedTasksResponseDTO> {
-    return await taskRepository.findAll(params);
-  },
+    return await this.taskSqliteRepository.findAll(params);
+  }
 
   /**
    * Create a new task.
@@ -39,8 +41,8 @@ export const taskService = {
       throw new ValidationError("Title cannot be empty");
     }
 
-    return taskRepository.create(newTaskTitle);
-  },
+    return this.taskSqliteRepository.create(newTaskTitle);
+  }
 
   /**
    * Update a task title.
@@ -57,14 +59,14 @@ export const taskService = {
     if (newTaskTitle.length === 0 || !newTaskTitle) {
       throw new ValidationError("Title cannot be empty");
     }
-    const task = await taskRepository.updateTitle(id, newTaskTitle);
+    const task = await this.taskSqliteRepository.updateTitle(id, newTaskTitle);
 
     if (!task) {
       throw new NotFoundError("Task not found");
     }
 
     return task;
-  },
+  }
 
   /**
    * Mark a task as completed.
@@ -75,14 +77,14 @@ export const taskService = {
    * @throws {NotFoundError} If task does not exist
    */
   async complete(id: string, completed: boolean): Promise<Task> {
-    const task = await taskRepository.complete(id, completed);
+    const task = await this.taskSqliteRepository.complete(id, completed);
 
     if (!task) {
       throw new NotFoundError("Task not found");
     }
 
     return task;
-  },
+  }
 
   /**
    * Delete a task.
@@ -91,10 +93,10 @@ export const taskService = {
    * @throws {NotFoundError} If task does not exist
    */
   async delete(id: string): Promise<void> {
-    const deleted = await taskRepository.delete(id);
+    const deleted = await this.taskSqliteRepository.delete(id);
 
     if (!deleted) {
       throw new NotFoundError("Task not found");
     }
-  },
-};
+  }
+}
