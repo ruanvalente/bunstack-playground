@@ -62,9 +62,11 @@ export const deleteTaskSchema = z.object({
  * Pagination query params schema
  */
 export const paginationQuerySchema = z.object({
-  page: z.optional(z.number().min(1, "Page must be at least 1").default(1)),
+  page: z.optional(
+    z.coerce.number().min(1, "Page must be at least 1").default(1),
+  ),
   pageSize: z.optional(
-    z
+    z.coerce
       .number()
       .min(1, "Page size must be at least 1")
       .max(100, "The page size should be a maximum of 100.")
@@ -88,10 +90,10 @@ export const paginationMetaSchema = z.object({
  * Pagination info schema
  */
 export const paginationSchema = z.object({
-  total: z.number(),
-  page: z.number(),
-  pageSize: z.number(),
-  totalPages: z.number(),
+  total: z.coerce.number().min(0),
+  page: z.coerce.number().int().min(1),
+  pageSize: z.coerce.number().int().min(1),
+  totalPages: z.coerce.number().int().min(1),
   hasNextPage: z.boolean(),
   hasPrevPage: z.boolean(),
 });
