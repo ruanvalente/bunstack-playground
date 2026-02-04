@@ -1,4 +1,9 @@
-import { useSearchParams } from "react-router";
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useNavigation,
+} from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import type { PaginatedTasksResponseDTO } from "@bunstack-playground/shared/http";
@@ -9,27 +14,28 @@ import { TaskItem } from "../ui/task-item";
 
 export function TaskListWidget() {
   const queryClient = useQueryClient();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const initialData = useLoaderData() as PaginatedTasksResponseDTO;
+  const navigation = useNavigation();
 
-  const page = Number(searchParams.get("page") ?? 1);
-  const perPage = Number(searchParams.get("perPage") ?? 10);
-
+  const page = Number(new URLSearchParams(location.search).get("page") ?? 1);
+  const perPage = Number(new URLSearchParams(location.search).get("perPage") ?? 10);
   const queryKey = ["tasks", page, perPage];
 
-  const {
-    data: tasks,
-    isLoading,
-    isError,
-  } = useQuery<PaginatedTasksResponseDTO>({
-    queryKey: queryKey,
+  const { data: tasks } = useQuery<PaginatedTasksResponseDTO>({
+    queryKey,
     queryFn: () => getTasks(page, perPage),
+    initialData,
   });
 
+  const isLoading = navigation.state === "loading";
+
   function handlePageChange(newPage: number) {
-    setSearchParams({
-      page: String(newPage),
-      perPage: String(perPage),
-    });
+    const params = new URLSearchParams(location.search);
+    params.set("page", String(newPage));
+    params.set("perPage", String(perPage));
+    navigate(`${location.pathname}?${params.toString()}`);
   }
 
   const toggleMutation = useMutation({
@@ -72,14 +78,6 @@ export function TaskListWidget() {
     return (
       <div className="flex items-center justify-center py-8 text-gray-500">
         Carregando tarefas...
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="flex items-center justify-center py-8 text-red-500">
-        Erro ao carregar as tarefas.
       </div>
     );
   }
