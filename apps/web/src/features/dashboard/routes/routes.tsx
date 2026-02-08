@@ -1,15 +1,20 @@
-import { lazy } from "react";
-import type { RouteObject } from "react-router";
+import { Skeleton } from "@/web/shared/ui/skeleton";
+import { lazy, Suspense } from "react";
+import type { RouteObject } from "react-router-dom";
 
 const DashboardPage = lazy(() =>
   import("@screens/dashboard/dashboard.page").then((module) => ({
-    default: module.DashboardPage,
+    default: module.default,
   })),
 );
 
 export const dashboardRoutes: RouteObject[] = [
   {
-    path: "/",
-    element: <DashboardPage />,
+    path: "/dashboard",
+    element: (
+      <Suspense fallback={<Skeleton />}>
+        <DashboardPage />
+      </Suspense>
+    ),
   },
 ];

@@ -1,5 +1,4 @@
-import { Link } from "react-router";
-import { useParams } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import { useSidebarStore } from "@shared/store/sidebar.store";
 
 type SidebarItemProps = {
@@ -9,10 +8,10 @@ type SidebarItemProps = {
 };
 
 export function SidebarItem({ label, icon, route }: SidebarItemProps) {
-  const params = useParams();
+  const location = useLocation();
   const isOpen = useSidebarStore((s) => s.isOpen);
 
-  const isActive = params.pathname === route;
+  const isActive = location.pathname === route;
 
   if (!isOpen) {
     return (

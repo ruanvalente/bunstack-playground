@@ -1,18 +1,31 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
-
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import MainLayout from "@shared/layouts/main.layout";
+import { QueryClient } from "@tanstack/react-query";
 
+import { dashboardRoutes } from "@features/dashboard/routes";
 import { tasksRoutes } from "@features/tasks/routes";
 import { settingsRoutes } from "@features/settings/routes";
-import { dashboardRoutes } from "@features/dashboard/routes";
 
-const router = createBrowserRouter([
-  {
-    element: <MainLayout />,
-    children: [...dashboardRoutes, ...tasksRoutes, ...settingsRoutes],
-  },
-]);
+const router = (queryClient: QueryClient) =>
+  createBrowserRouter([
+    {
+      element: <MainLayout />,
+      children: [
+        {
+          path: "/",
+          element: <Navigate to={"/dashboard"} replace />,
+        },
+        ...dashboardRoutes,
+        ...tasksRoutes(queryClient),
+        ...settingsRoutes,
+      ],
+    },
+  ]);
 
-export function AppRouter() {
-  return <RouterProvider router={router} />;
+export function AppRouter({ queryClient }: { queryClient: QueryClient }) {
+  return <RouterProvider router={router(queryClient)} />;
 }
