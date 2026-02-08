@@ -1,4 +1,13 @@
+import { useUserSettings } from "@shared/hooks/use-user-settings";
+
 export function NotificationsSection() {
+  const { notifications, updateNotifications } = useUserSettings();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Estado já está atualizado pelos checkboxes; persistência feita pelo store
+  };
+
   return (
     <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <header className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
@@ -7,7 +16,7 @@ export function NotificationsSection() {
         </h2>
       </header>
 
-      <form className="p-6 space-y-6">
+      <form className="p-6 space-y-6" onSubmit={handleSubmit}>
         <div className="space-y-4">
           <label className="flex items-center justify-between group">
             <span className="text-gray-700 dark:text-gray-300">
@@ -16,7 +25,10 @@ export function NotificationsSection() {
             <input
               name="emailNotifications"
               type="checkbox"
-              defaultChecked
+              checked={notifications.emailNotifications}
+              onChange={(e) =>
+                updateNotifications({ emailNotifications: e.target.checked })
+              }
               className="w-5 h-5 accent-blue-600 cursor-pointer rounded border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
             />
@@ -29,6 +41,10 @@ export function NotificationsSection() {
             <input
               name="taskReminders"
               type="checkbox"
+              checked={notifications.taskReminders}
+              onChange={(e) =>
+                updateNotifications({ taskReminders: e.target.checked })
+              }
               className="w-5 h-5 accent-blue-600 cursor-pointer rounded border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
             />

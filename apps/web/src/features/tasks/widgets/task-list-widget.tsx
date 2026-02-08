@@ -20,22 +20,30 @@ export function TaskListWidget() {
   const navigation = useNavigation();
 
   const page = Number(new URLSearchParams(location.search).get("page") ?? 1);
-  const perPage = Number(new URLSearchParams(location.search).get("perPage") ?? 10);
+  const perPage = Number(
+    new URLSearchParams(location.search).get("perPage") ?? 10,
+  );
   const queryKey = ["tasks", page, perPage];
 
   const { data: tasks } = useQuery<PaginatedTasksResponseDTO>({
     queryKey,
     queryFn: () => getTasks(page, perPage),
-    initialData,
+    initialData: initialData || undefined,
   });
 
   const isLoading = navigation.state === "loading";
 
   function handlePageChange(newPage: number) {
+    if (newPage < 1 || newPage > tasks.pagination.totalPages) return;
+
     const params = new URLSearchParams(location.search);
     params.set("page", String(newPage));
     params.set("perPage", String(perPage));
-    navigate(`${location.pathname}?${params.toString()}`);
+
+    const newUrl = `${location.pathname}?${params.toString()}`;
+    if (location.search !== `?${params.toString()}`) {
+      navigate(newUrl);
+    }
   }
 
   const toggleMutation = useMutation({
@@ -67,10 +75,6 @@ export function TaskListWidget() {
       if (context?.previousTasks) {
         queryClient.setQueryData(queryKey, context.previousTasks);
       }
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey });
     },
   });
 

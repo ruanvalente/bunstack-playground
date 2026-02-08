@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import MainLayout from "@shared/layouts/main.layout";
 import { QueryClient } from "@tanstack/react-query";
 
@@ -11,6 +15,10 @@ const router = (queryClient: QueryClient) =>
     {
       element: <MainLayout />,
       children: [
+        {
+          path: "/",
+          element: <Navigate to={"/dashboard"} replace />,
+        },
         ...dashboardRoutes,
         ...tasksRoutes(queryClient),
         ...settingsRoutes,

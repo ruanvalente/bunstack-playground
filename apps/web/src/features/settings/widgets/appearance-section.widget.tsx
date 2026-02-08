@@ -1,4 +1,13 @@
+import { useUserSettings } from "@shared/hooks/use-user-settings";
+
 export function AppearanceSection() {
+  const { theme, setTheme } = useUserSettings();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Tema já aplicado ao selecionar o radio (store + persist)
+  };
+
   return (
     <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <header className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
@@ -7,16 +16,17 @@ export function AppearanceSection() {
         </h2>
       </header>
 
-      <form className="p-6 space-y-6">
+      <form className="p-6 space-y-6" onSubmit={handleSubmit}>
         <div className="space-y-3">
           <label className="flex items-center gap-3 cursor-pointer group">
             <input
               type="radio"
               name="theme"
               value="light"
+              checked={theme === "light"}
+              onChange={() => setTheme("light")}
               className="w-5 h-5 accent-blue-600 border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
-              defaultChecked
             />
             <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
               Tema Claro
@@ -28,6 +38,8 @@ export function AppearanceSection() {
               type="radio"
               name="theme"
               value="dark"
+              checked={theme === "dark"}
+              onChange={() => setTheme("dark")}
               className="w-5 h-5 accent-blue-600 border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
             />

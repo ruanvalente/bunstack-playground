@@ -17,9 +17,9 @@ const queryClient = new QueryClient({
     },
     mutations: {
       retry: 2,
-      networkMode: "offlineFirst"
-    }
-  }
+      networkMode: "offlineFirst",
+    },
+  },
 });
 
 createRoot(document.getElementById("root")!).render(
@@ -29,4 +29,3 @@ createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
   </StrictMode>,
 );
-

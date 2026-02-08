@@ -1,4 +1,15 @@
+import { useUserSettings } from "@shared/hooks/use-user-settings";
+
 export function DangerZoneSection() {
+  const { deleteAccount } = useUserSettings();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (window.confirm("Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita.")) {
+      void deleteAccount();
+    }
+  };
+
   return (
     <section className="rounded-xl border border-red-200 dark:border-red-800/50 overflow-hidden">
       <header className="px-6 py-5 bg-red-50 dark:bg-red-950/30 border-b border-red-200 dark:border-red-800/40">
@@ -13,7 +24,7 @@ export function DangerZoneSection() {
           removidos. Essa ação não pode ser desfeita.
         </p>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="flex justify-end">
             <button
               type="submit"
