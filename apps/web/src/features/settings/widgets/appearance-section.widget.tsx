@@ -1,11 +1,11 @@
-import { useUserSettings } from "@shared/hooks/use-user-settings";
+import { useUserSettings } from "@features/settings/hooks/use-user-settings";
+import type { FormEvent } from "react";
 
 export function AppearanceSection() {
   const { theme, setTheme } = useUserSettings();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Tema já aplicado ao selecionar o radio (store + persist)
   };
 
   return (

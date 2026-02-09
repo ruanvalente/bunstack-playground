@@ -1,16 +1,16 @@
-import { useUserSettings } from "@shared/hooks/use-user-settings";
+import { useUserSettings } from "@features/settings/hooks/use-user-settings";
+import type { FormEvent } from "react";
 
 export function ProfileSection() {
   const { profile, updateProfile } = useUserSettings();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const nameEl = form.elements.namedItem("name");
-    const emailEl = form.elements.namedItem("email");
-    if (nameEl && "value" in nameEl && emailEl && "value" in emailEl) {
-      updateProfile({ username: nameEl.value, email: emailEl.value });
-    }
+    const formData = new FormData(e.currentTarget);
+    updateProfile({
+      username: formData.get("name") as string,
+      email: formData.get("email") as string,
+    });
   };
 
   return (
