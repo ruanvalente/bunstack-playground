@@ -1,11 +1,16 @@
-import { useUserSettings } from "@shared/hooks/use-user-settings";
+import { useUserSettings } from "@features/settings/hooks/use-user-settings";
 
 export function DangerZoneSection() {
   const { deleteAccount } = useUserSettings();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (window.confirm("Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita.")) {
+    // TODO: refactor to toast component
+    if (
+      window.confirm(
+        "Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita.",
+      )
+    ) {
       void deleteAccount();
     }
   };

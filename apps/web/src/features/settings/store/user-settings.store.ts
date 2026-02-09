@@ -1,29 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { USER_SETTINGS_KEY } from "../../../shared/config/constants/storage.config";
-
-export type ThemeMode = "light" | "dark";
-
-export type ProfileSettings = {
-  username: string;
-  email: string;
-};
-
-export type NotificationSettings = {
-  emailNotifications: boolean;
-  taskReminders: boolean;
-};
-
-export type UserSettingsState = {
-  profile: ProfileSettings;
-  notifications: NotificationSettings;
-  theme: ThemeMode;
-
-  updateProfile: (profile: Partial<ProfileSettings>) => void;
-  updateNotifications: (settings: Partial<NotificationSettings>) => void;
-  setTheme: (theme: ThemeMode) => void;
-  deleteAccount: () => Promise<void>;
-};
+import { USER_SETTINGS_KEY } from "@shared/config/constants/storage.config";
+import type {
+  NotificationSettings,
+  ProfileSettings,
+  UserSettingsState,
+} from "../types/user-settings.types";
 
 const defaultProfile: ProfileSettings = {
   username: "",
