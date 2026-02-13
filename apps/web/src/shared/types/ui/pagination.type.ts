@@ -6,3 +6,13 @@ export type PaginationProps = {
   onPageChange: (page: number) => void;
   position?: PaginationPosition;
 };
+
+export type PaginatedResult<T> = {
+  data: T[];
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+    totalPages: number;
+  };
+};
