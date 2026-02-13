@@ -1,5 +1,5 @@
-
 import { useSidebar } from "@shared/hooks/use-sidebar";
+import { HomeIcon } from "lucide-react";
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
   const { isOpen, toggle } = useSidebar();
@@ -8,11 +8,16 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
     <>
       <div className="p-6 border-b border-gray-700 flex items-center justify-between">
         {isOpen ? (
-          <h2 className="text-2xl font-bold text-white flex gap-2">
-            <span className="text-blue-400">📋</span> My System
+          <h2 className="text-2xl font-bold text-white flex gap-2 items-center ">
+            <span className="text-white">
+              <HomeIcon fontSize={18} />
+            </span>
+            My System
           </h2>
         ) : (
-          <div className="w-full text-center text-3xl">📋</div>
+          <div className="w-full text-center text-white text-3xl">
+            <HomeIcon fontSize={18} />
+          </div>
         )}
       </div>
 
