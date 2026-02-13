@@ -1,13 +1,14 @@
-import { Link, useLocation } from "react-router-dom";
 import { useSidebarStore } from "@shared/store/sidebar.store";
+import type { ComponentType, SVGProps } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 type SidebarItemProps = {
   label: string;
-  icon: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   route: string;
 };
 
-export function SidebarItem({ label, icon, route }: SidebarItemProps) {
+export function SidebarItem({ label, icon: Icon, route }: SidebarItemProps) {
   const location = useLocation();
   const isOpen = useSidebarStore((s) => s.isOpen);
 
@@ -26,7 +27,7 @@ export function SidebarItem({ label, icon, route }: SidebarItemProps) {
           }
         `}
       >
-        <span className="text-xl">{icon}</span>
+        <span className="text-xl">{<Icon fontSize={18} />}</span>
       </Link>
     );
   }
@@ -42,7 +43,7 @@ export function SidebarItem({ label, icon, route }: SidebarItemProps) {
         }
       `}
     >
-      <span className="text-xl">{icon}</span>
+      <span className="text-xl">{<Icon fontSize={18} />}</span>
       <span className="font-medium">{label}</span>
     </Link>
   );

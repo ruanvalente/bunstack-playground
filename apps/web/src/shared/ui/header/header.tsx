@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useHeader } from "@shared/hooks/use-header";
 
 export function Header() {
