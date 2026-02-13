@@ -9,6 +9,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { dashboardRoutes } from "@features/dashboard/routes";
 import { tasksRoutes } from "@features/tasks/routes";
 import { settingsRoutes } from "@features/settings/routes";
+import { usersRoutes } from "@/web/features/users/routes";
 
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
@@ -22,6 +23,7 @@ const router = (queryClient: QueryClient) =>
         ...dashboardRoutes,
         ...tasksRoutes(queryClient),
         ...settingsRoutes,
+        ...usersRoutes,
       ],
     },
   ]);
