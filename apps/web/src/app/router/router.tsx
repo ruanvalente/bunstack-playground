@@ -20,7 +20,7 @@ const router = (queryClient: QueryClient) =>
           path: "/",
           element: <Navigate to={"/dashboard"} replace />,
         },
-        ...dashboardRoutes,
+        ...dashboardRoutes(queryClient),
         ...tasksRoutes(queryClient),
         ...settingsRoutes,
         ...usersRoutes,
