@@ -1,4 +1,5 @@
 import { createTasksTableMigration } from "./migrations/tasks/create_tasks_table.migration";
+import { addUpdatedAtToTasksMigration } from "./migrations/tasks/add_updated_at_to_tasks.migration";
 
 /**
  * Run database migrations.
@@ -11,4 +12,5 @@ export function runMigrations() {
 
   // Task-related migrations
   createTasksTableMigration();
+  addUpdatedAtToTasksMigration();
 }
