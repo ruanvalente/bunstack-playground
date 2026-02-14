@@ -76,6 +76,10 @@ export function TaskListWidget() {
         queryClient.setQueryData(queryKey, context.previousTasks);
       }
     },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["dashboard", 30] });
+    },
   });
 
   if (isLoading) {
