@@ -84,7 +84,7 @@ export function TaskListWidget() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-8 text-gray-500">
+      <div className="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
         Carregando tarefas...
       </div>
     );
@@ -92,7 +92,7 @@ export function TaskListWidget() {
 
   if (!tasks || tasks.data.length === 0) {
     return (
-      <div className="flex items-center justify-center py-8 text-gray-500">
+      <div className="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
         Nenhuma tarefa encontrada.
       </div>
     );

@@ -1,11 +1,14 @@
 import { useUserSettings } from "@features/settings/hooks/use-user-settings";
-import type { FormEvent } from "react";
+import { useState } from "react";
+import type { ThemeMode } from "../types/user-settings.types";
 
 export function AppearanceSection() {
-  const { theme, setTheme } = useUserSettings();
+  const { theme: currentTheme, setTheme } = useUserSettings();
+  const [selectedTheme, setSelectedTheme] = useState<ThemeMode>(currentTheme);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setTheme(selectedTheme);
   };
 
   return (
@@ -23,8 +26,8 @@ export function AppearanceSection() {
               type="radio"
               name="theme"
               value="light"
-              checked={theme === "light"}
-              onChange={() => setTheme("light")}
+              checked={selectedTheme === "light"}
+              onChange={() => setSelectedTheme("light")}
               className="w-5 h-5 accent-blue-600 border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
             />
@@ -38,13 +41,28 @@ export function AppearanceSection() {
               type="radio"
               name="theme"
               value="dark"
-              checked={theme === "dark"}
-              onChange={() => setTheme("dark")}
+              checked={selectedTheme === "dark"}
+              onChange={() => setSelectedTheme("dark")}
               className="w-5 h-5 accent-blue-600 border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
             />
             <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
               Tema Escuro
+            </span>
+          </label>
+
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="radio"
+              name="theme"
+              value="system"
+              checked={selectedTheme === "system"}
+              onChange={() => setSelectedTheme("system")}
+              className="w-5 h-5 accent-blue-600 border-gray-300 dark:border-gray-600
+                         focus:ring-blue-500/30"
+            />
+            <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              Tema do Sistema
             </span>
           </label>
         </div>

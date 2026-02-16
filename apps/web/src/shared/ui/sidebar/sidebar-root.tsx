@@ -8,6 +8,7 @@ export function SidebarRoot({ children }: { children: React.ReactNode }) {
     <aside
       className={`
         bg-gray-800 h-min-full flex flex-col transition-all duration-300 ease-in-out
+        border-r border-gray-700
         ${isOpen ? "w-64" : "w-20"}
       `}
     >

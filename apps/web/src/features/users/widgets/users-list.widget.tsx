@@ -20,29 +20,31 @@ export function UsersListWidget() {
   };
 
   return (
-    <DataTableComponent.Root>
-      <DataTableComponent.Table>
-        <DataTableComponent.Header>
-          <DataTableComponent.Head>Nome</DataTableComponent.Head>
-          <DataTableComponent.Head>Email</DataTableComponent.Head>
-          <DataTableComponent.Head>Ações</DataTableComponent.Head>
-        </DataTableComponent.Header>
+    <div className="flex flex-col">
+      <DataTableComponent.Root>
+        <DataTableComponent.Table>
+          <DataTableComponent.Header>
+            <DataTableComponent.Head>Nome</DataTableComponent.Head>
+            <DataTableComponent.Head>Email</DataTableComponent.Head>
+            <DataTableComponent.Head>Ações</DataTableComponent.Head>
+          </DataTableComponent.Header>
 
-        <DataTableComponent.Body>
-          {users.data.map((user) => (
-            <DataTableComponent.Row key={user.id}>
-              <DataTableComponent.Cell>{user.name}</DataTableComponent.Cell>
-              <DataTableComponent.Cell>{user.email}</DataTableComponent.Cell>
-              <DataTableComponent.Cell>
-                <DataTableComponent.Actions
-                  onEdit={() => editUser(user.id)}
-                  onDelete={() => deleteUser(user.id)}
-                />
-              </DataTableComponent.Cell>
-            </DataTableComponent.Row>
-          ))}
-        </DataTableComponent.Body>
-      </DataTableComponent.Table>
+          <DataTableComponent.Body>
+            {users.data.map((user) => (
+              <DataTableComponent.Row key={user.id}>
+                <DataTableComponent.Cell>{user.name}</DataTableComponent.Cell>
+                <DataTableComponent.Cell>{user.email}</DataTableComponent.Cell>
+                <DataTableComponent.Cell>
+                  <DataTableComponent.Actions
+                    onEdit={() => editUser(user.id)}
+                    onDelete={() => deleteUser(user.id)}
+                  />
+                </DataTableComponent.Cell>
+              </DataTableComponent.Row>
+            ))}
+          </DataTableComponent.Body>
+        </DataTableComponent.Table>
+      </DataTableComponent.Root>
 
       <div className="p-4 border-t border-gray-200 dark:border-gray-700">
         <Pagination
@@ -52,6 +54,6 @@ export function UsersListWidget() {
           position="center"
         />
       </div>
-    </DataTableComponent.Root>
+    </div>
   );
 }

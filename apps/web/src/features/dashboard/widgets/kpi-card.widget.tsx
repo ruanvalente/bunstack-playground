@@ -11,13 +11,13 @@ function formatChange(change: number): string {
 }
 
 function getChangeClass(change: number): string {
-  return change >= 0 ? "text-green-600" : "text-red-600";
+  return change >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400";
 }
 
 const icons = {
   tasks: (
     <svg
-      className="w-6 h-6 text-green-600"
+      className="w-6 h-6 text-green-600 dark:text-green-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -32,7 +32,7 @@ const icons = {
   ),
   completed: (
     <svg
-      className="w-6 h-6 text-blue-600"
+      className="w-6 h-6 text-blue-600 dark:text-blue-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -47,7 +47,7 @@ const icons = {
   ),
   pending: (
     <svg
-      className="w-6 h-6 text-purple-600"
+      className="w-6 h-6 text-purple-600 dark:text-purple-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -62,7 +62,7 @@ const icons = {
   ),
   rate: (
     <svg
-      className="w-6 h-6 text-orange-600"
+      className="w-6 h-6 text-orange-600 dark:text-orange-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -78,19 +78,19 @@ const icons = {
 };
 
 const bgColors = {
-  tasks: "bg-green-100",
-  completed: "bg-blue-100",
-  pending: "bg-purple-100",
-  rate: "bg-orange-100",
+  tasks: "bg-green-100 dark:bg-green-900/30",
+  completed: "bg-blue-100 dark:bg-blue-900/30",
+  pending: "bg-purple-100 dark:bg-purple-900/30",
+  rate: "bg-orange-100 dark:bg-orange-900/30",
 };
 
 export function KPICard({ title, value, change, icon }: KPICardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 transition duration-300 ease-in-out hover:scale-105 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition duration-300 ease-in-out hover:scale-105 hover:-translate-y-1 hover:shadow-xl cursor-pointer">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{value}</p>
           <p className={`text-sm mt-2 ${getChangeClass(change)}`}>
             {formatChange(change)} from last period
           </p>
