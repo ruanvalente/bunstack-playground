@@ -10,13 +10,14 @@ const positionClasses: Record<PaginationPosition, string> = {
   right: "justify-end",
 };
 
-const navButtonBase = "px-3 py-2 border rounded-lg transition-all duration-200";
+const navButtonBase =
+  "px-3 py-2 dark:border-gray-800 rounded-lg transition-all duration-200 text-gray-700 dark:text-gray-300 hover:curso-pointer";
 
 const navButtonEnabled =
-  "hover:bg-gray-100 hover:cursor-pointer active:scale-95";
+  "hover:bg-gray-800 dark:hover:bg-gray-700 hover:cursor-pointer active:scale-95 hover:curso-pointer";
 
 const navButtonDisabled =
-  "opacity-40 cursor-not-allowed bg-gray-50 text-gray-400";
+  "opacity-40 hover:cursor-not-allowed bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500";
 
 export function Pagination({
   currentPage,
@@ -47,7 +48,10 @@ export function Pagination({
       <div className="flex gap-1">
         {pages.map((page, index) =>
           page === -1 ? (
-            <span key={index} className="px-3 py-2 text-gray-400">
+            <span
+              key={index}
+              className="px-3 py-2 text-gray-400 dark:text-gray-500"
+            >
               …
             </span>
           ) : (
@@ -56,8 +60,8 @@ export function Pagination({
               onClick={() => onPageChange(page)}
               className={`w-10 h-10 rounded-lg border transition-all ${
                 page === currentPage
-                  ? "bg-blue-500 text-white cursor-default"
-                  : "hover:bg-gray-100 active:scale-95"
+                  ? "bg-blue-500 text-white border-blue-500"
+                  : "border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-200 hover:cursor-pointer"
               }`}
             >
               {page}
