@@ -5,6 +5,7 @@ import { getDashboardData } from "@/web/features/dashboard/queries/dashboard.que
 import { KPIWidget } from "@/web/features/dashboard/widgets/kpi-widget";
 import { ChartsWidget } from "@/web/features/dashboard/widgets/charts-widget";
 import { SummaryWidget } from "@/web/features/dashboard/widgets/summary-widget";
+import { DashboardSkeleton } from "@/web/shared/ui/skeleton";
 
 export default function DashboardPage() {
   const initialData = useLoaderData() as DashboardResponseDTO;
@@ -18,19 +19,16 @@ export default function DashboardPage() {
   });
 
   if (!dashboard) {
-    return (
-      <section className="p-6">
-        <h1 className="text-xl font-bold mb-4">Dashboard</h1>
-        <p className="text-gray-500">Carregando dados...</p>
-      </section>
-    );
+    return <DashboardSkeleton />;
   }
 
   const { kpis, charts, totals } = dashboard;
 
   return (
     <section className="p-6">
-      <h1 className="text-xl font-bold mb-4">Dashboard</h1>
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-950 mb-2">
+        Dashboard
+      </h1>
 
       <div className="mb-6">
         <KPIWidget kpis={kpis} />
