@@ -22,7 +22,7 @@ export const useUserSettingsStore = create<UserSettingsState>()(
     (set) => ({
       profile: defaultProfile,
       notifications: defaultNotifications,
-      theme: "light",
+      theme: "system",
 
       // TODO: integração Supabase – atualização de profile do usuário
 
@@ -44,7 +44,7 @@ export const useUserSettingsStore = create<UserSettingsState>()(
         set({
           profile: defaultProfile,
           notifications: defaultNotifications,
-          theme: "light",
+          theme: "system",
         });
       },
     }),
