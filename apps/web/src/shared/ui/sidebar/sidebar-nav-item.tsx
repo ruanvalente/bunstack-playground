@@ -44,7 +44,7 @@ export function SidebarItem({ label, icon: Icon, route }: SidebarItemProps) {
       `}
     >
       <span className="text-xl">{<Icon fontSize={18} />}</span>
-      <span className="font-medium">{label}</span>
+      <span className="font-medium text-white">{label}</span>
     </Link>
   );
 }

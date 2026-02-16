@@ -16,9 +16,9 @@ export function DangerZoneSection() {
   };
 
   return (
-    <section className="rounded-xl border border-red-200 dark:border-red-800/50 overflow-hidden">
-      <header className="px-6 py-5 bg-red-50 dark:bg-red-950/30 border-b border-red-200 dark:border-red-800/40">
-        <h2 className="text-xl font-semibold text-red-800 dark:text-red-300 flex items-center gap-3">
+    <section className="rounded-xl border border-red-600 dark:border-red-800/50 overflow-hidden">
+      <header className="px-6 py-5 bg-red-100 dark:bg-red-800/30 border-b border-red-600 dark:border-red-800/70">
+        <h2 className="text-xl font-semibold text-red-800 dark:text-red-600 flex items-center gap-3">
           ⚠️ Zona de Perigo
         </h2>
       </header>
