@@ -5,5 +5,9 @@ type DataTableProps = {
 };
 
 export function DataTable({ children }: DataTableProps) {
-  return <table className="w-full border-collapse min-w-160">{children}</table>;
+  return (
+    <table className="w-full text-sm text-left">
+      {children}
+    </table>
+  );
 }
