@@ -1,8 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useHeader } from "@shared/hooks/use-header";
+import { useAuthStore } from "@features/auth/store/auth.store";
 
 export function Header() {
   const { title, showMenu, user, toggleMenu, closeMenu } = useHeader();
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    closeMenu();
+    navigate('/auth');
+  };
 
   return (
     <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
@@ -50,7 +59,7 @@ export function Header() {
                   {user.name}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  user@example.com
+                  {user.email}
                 </p>
               </div>
 
@@ -64,7 +73,7 @@ export function Header() {
                 </Link>
 
                 <button
-                  onClick={closeMenu}
+                  onClick={handleLogout}
                   className="w-full text-left flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 hover:cursor-pointer rounded-lg transition-colors duration-200"
                 >
                   Sair

@@ -5,7 +5,6 @@ import type { ThemeMode } from "../types/user-settings.types";
 export function AppearanceSection() {
   const { theme: currentTheme, setTheme } = useUserSettings();
   const [selectedTheme, setSelectedTheme] = useState<ThemeMode>(currentTheme);
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setTheme(selectedTheme);

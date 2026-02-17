@@ -2,7 +2,7 @@ import type { DashboardData, ChartDataPoint } from "@bunstack-playground/shared"
 import type { DashboardRepository } from "./dashboard.repository";
 import { supabase } from "@/api/infra/database/supabase";
 
-interface PeriodStats {
+type PeriodStats = {
   total: number;
   completed: number;
   pending: number;
