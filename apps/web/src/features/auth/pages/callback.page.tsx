@@ -1,72 +1,104 @@
-import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
-import { supabase } from '@shared/config/supabase';
-import { useAuthStore } from '../store/auth.store';
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router";
+import { supabase } from "@shared/config/supabase";
+import { useAuthStore } from "../store/auth.store";
 
 export function CallbackPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { setUser, setSession } = useAuthStore();
+  const { setUserId, setUser, setSession } = useAuthStore();
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = searchParams.get('access_token') || hashParams.get('access_token');
-        const refreshToken = searchParams.get('refresh_token') || hashParams.get('refresh_token');
+        const hashParams = new URLSearchParams(
+          window.location.hash.substring(1),
+        );
+        const accessToken =
+          searchParams.get("access_token") || hashParams.get("access_token");
+        const refreshToken =
+          searchParams.get("refresh_token") || hashParams.get("refresh_token");
 
         if (accessToken) {
           const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
-            refresh_token: refreshToken || '',
+            refresh_token: refreshToken || "",
           });
 
           if (error) {
-            console.error('Set session error:', error);
-            navigate('/auth');
+            console.error("Set session error:", error);
+            navigate("/auth");
             return;
           }
 
           if (data.session) {
+            const userMetadata = data.session.user?.user_metadata;
             setSession({
               access_token: data.session.access_token,
               refresh_token: data.session.refresh_token || undefined,
               expires_at: data.session.expires_at ?? Date.now() + 3600000,
             });
-            setUser(data.session.user);
-            navigate('/dashboard');
+            setUserId(data.session.user?.id || null);
+            setUser(
+              userMetadata
+                ? {
+                    name: userMetadata.name as string,
+                    full_name: userMetadata.full_name as string,
+                    avatar_url: userMetadata.avatar_url as string,
+                    email: userMetadata.email as string,
+                    preferred_username:
+                      userMetadata.preferred_username as string,
+                  }
+                : null,
+            );
+            navigate("/dashboard");
             return;
           }
         }
 
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
 
         if (sessionError) {
-          console.error('Session error:', sessionError);
-          navigate('/auth');
+          console.error("Session error:", sessionError);
+          navigate("/auth");
           return;
         }
 
         if (session) {
+          const userMetadata = session.user?.user_metadata;
           setSession({
             access_token: session.access_token,
             refresh_token: session.refresh_token || undefined,
             expires_at: session.expires_at ?? Date.now() + 3600000,
           });
-          setUser(session.user);
-          navigate('/dashboard');
+          setUserId(session.user?.id || null);
+          setUser(
+            userMetadata
+              ? {
+                  name: userMetadata.name as string,
+                  full_name: userMetadata.full_name as string,
+                  avatar_url: userMetadata.avatar_url as string,
+                  email: userMetadata.email as string,
+                  preferred_username: userMetadata.preferred_username as string,
+                }
+              : null,
+          );
+          navigate("/dashboard");
           return;
         }
 
-        navigate('/auth');
+        navigate("/auth");
       } catch (err) {
-        console.error('Callback error:', err);
-        navigate('/auth');
+        console.error("Callback error:", err);
+        navigate("/auth");
       }
     };
 
     handleCallback();
-  }, [navigate, searchParams, setUser, setSession]);
+  }, [navigate, searchParams, setUserId, setUser, setSession]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

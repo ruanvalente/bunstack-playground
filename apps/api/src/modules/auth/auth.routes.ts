@@ -8,8 +8,9 @@ import {
   githubAuthUrlSchema,
   API_VERSION,
 } from "@bunstack-playground/shared/http";
+import { config } from "@/api/config";
 
-const GITHUB_REDIRECT_URL = `http://localhost:5173/auth/callback`;
+const GITHUB_REDIRECT_URL = `${config.frontendUrl}/auth/callback`;
 
 export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
 
@@ -184,53 +185,6 @@ export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         tags: ["Auth"],
         summary: "GitHub OAuth login",
         description: "Initiate GitHub OAuth login flow",
-      },
-    },
-  )
-
-  .get(
-    "/github/callback",
-    async ({ query, set }) => {
-      const { code, error: queryError } = query;
-
-      if (queryError) {
-        set.headers["Location"] = "http://localhost:5173/auth?error=oauth_error";
-        set.status = 302;
-        return null;
-      }
-
-      if (!code) {
-        set.headers["Location"] = "http://localhost:5173/auth?error=no_code";
-        set.status = 302;
-        return null;
-      }
-
-      const { data, error } = await supabaseAuth.auth.exchangeCodeForSession(code as string);
-
-      if (error || !data.session) {
-        console.error("OAuth exchange error:", error);
-        set.headers["Location"] = "http://localhost:5173/auth?error=invalid_code";
-        set.status = 302;
-        return null;
-      }
-
-      const accessToken = data.session.access_token;
-      const refreshToken = data.session.refresh_token;
-
-      set.headers["Location"] = `http://localhost:5173/auth/callback?access_token=${accessToken}&refresh_token=${refreshToken || ''}`;
-      set.status = 302;
-      return null;
-    },
-    {
-      query: t.Object({
-        code: t.Optional(t.String()),
-        error: t.Optional(t.String()),
-        error_description: t.Optional(t.String()),
-      }),
-      detail: {
-        tags: ["Auth"],
-        summary: "GitHub OAuth callback",
-        description: "Handle GitHub OAuth callback",
       },
     },
   )

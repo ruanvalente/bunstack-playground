@@ -8,6 +8,7 @@ import type {
 } from "../types/user-settings.types";
 
 const defaultProfile: ProfileSettings = {
+  fullName: "",
   username: "",
   email: "",
 };

@@ -27,7 +27,6 @@ async function start() {
       }),
     );
 
-
     app.listen(API_PORT, () => {
       console.log(
         `🚀 bunstack-playground API is running in http://localhost:${API_PORT}`,

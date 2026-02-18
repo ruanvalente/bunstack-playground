@@ -12,7 +12,7 @@ import { tasksRoutes } from "@features/tasks/routes";
 import { settingsRoutes } from "@features/settings/routes";
 import { usersRoutes } from "@/web/features/users/routes";
 import { authRoutes } from "@features/auth/routes";
-import { ProtectedRoute } from "@features/auth/components/protected-route.component";
+import { ProtectedRoute } from "@/web/features/auth/ui/protected-route.component";
 
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
@@ -25,7 +25,11 @@ const router = (queryClient: QueryClient) =>
       })),
     },
     {
-      element: <ProtectedRoute><MainLayout /></ProtectedRoute>,
+      element: (
+        <ProtectedRoute>
+          <MainLayout />
+        </ProtectedRoute>
+      ),
       children: [
         {
           path: "/",

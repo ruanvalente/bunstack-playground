@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "bun --watch src/server.ts",
-    "build": "bun build src/server.ts --outdir dist --target bun --sourcemap",
-    "start": "bun dist/server.js"
+    "build": "echo 'No build needed for API'",
+    "start": "bun src/server.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",

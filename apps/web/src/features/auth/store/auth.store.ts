@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import type { StateStorage } from "zustand/middleware";
 import { AUTH_API_URL } from "@shared/config/supabase";
-
-type User = unknown;
+import { encrypt, decrypt } from "@shared/utils/helpers/crypto.helper";
 
 type Session = {
   access_token: string;
@@ -10,25 +10,65 @@ type Session = {
   expires_at: number;
 }
 
+type UserMetadata = {
+  name?: string;
+  full_name?: string;
+  avatar_url?: string;
+  email?: string;
+  preferred_username?: string;
+};
+
 type AuthState = {
-  user: User;
+  userId: string | null;
+  user: UserMetadata | null;
   session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  setUser: (user: User) => void;
+  setUserId: (userId: string | null) => void;
+  setUser: (user: UserMetadata | null) => void;
   setSession: (session: Session | null) => void;
   setLoading: (loading: boolean) => void;
   logout: () => Promise<void>;
 }
 
+const encryptedStorage: StateStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    const encryptedData = localStorage.getItem(name);
+    if (!encryptedData) return null;
+    
+    try {
+      const decrypted = await decrypt(encryptedData);
+      return decrypted;
+    } catch {
+      localStorage.removeItem(name);
+      return null;
+    }
+  },
+
+  setItem: async (name: string, value: string): Promise<void> => {
+    try {
+      const encrypted = await encrypt(value);
+      localStorage.setItem(name, encrypted);
+    } catch (error) {
+      console.error('Failed to encrypt data:', error);
+    }
+  },
+
+  removeItem: (name: string): void => {
+    localStorage.removeItem(name);
+  },
+};
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
+      userId: null,
       user: null,
       session: null,
       isAuthenticated: false,
       isLoading: true,
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      setUserId: (userId) => set({ userId, isAuthenticated: !!userId }),
+      setUser: (user) => set({ user }),
       setSession: (session) => set({ session }),
       setLoading: (isLoading) => set({ isLoading }),
       logout: async () => {
@@ -46,6 +86,7 @@ export const useAuthStore = create<AuthState>()(
           console.error("Logout error:", error);
         } finally {
           set({
+            userId: null,
             user: null,
             session: null,
             isAuthenticated: false,
@@ -55,8 +96,9 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
+      storage: createJSONStorage(() => encryptedStorage),
       partialize: (state) => ({
-        user: state.user,
+        userId: state.userId,
         session: state.session,
         isAuthenticated: state.isAuthenticated,
       }),

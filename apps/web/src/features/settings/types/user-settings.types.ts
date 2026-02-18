@@ -1,6 +1,7 @@
 export type ThemeMode = "light" | "dark" | "system";
 
 export type ProfileSettings = {
+  fullName: string;
   username: string;
   email: string;
 };
