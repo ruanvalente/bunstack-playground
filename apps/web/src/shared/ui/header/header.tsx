@@ -10,7 +10,7 @@ export function Header() {
   const handleLogout = async () => {
     await logout();
     closeMenu();
-    navigate('/auth');
+    navigate("/auth");
   };
 
   return (
@@ -23,7 +23,7 @@ export function Header() {
         <div className="relative">
           <button
             onClick={toggleMenu}
-            className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200"
+            className="flex items-center gap-3 px-4 py-2 hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200"
           >
             <img
               className="rounded-full"
@@ -33,7 +33,7 @@ export function Header() {
               height={40}
             />
             <span className="text-gray-700 dark:text-gray-200 font-medium">
-              {user.name}
+              {user.fullName}
             </span>
             <svg
               className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${
