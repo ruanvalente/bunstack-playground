@@ -46,4 +46,10 @@ export const config = {
   shouldEnableAnalytics(): boolean {
     return this.isProduction();
   },
+
+  /**
+   * Application URL for redirects
+   */
+  appUrl: process.env.APP_URL || "http://localhost:4000",
+  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
 };

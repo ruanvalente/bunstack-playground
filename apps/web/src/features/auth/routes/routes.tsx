@@ -1,13 +1,33 @@
-import { AuthPage } from '../pages/auth.page';
-import { CallbackPage } from '../pages/callback.page';
+import { lazy, Suspense } from "react";
+import { Skeleton } from "@/web/shared/ui/skeleton";
+
+const AuthPage = lazy(() =>
+  import('../pages/auth.page').then((module) => ({
+    default: module.AuthPage,
+  }))
+);
+
+const CallbackPage = lazy(() =>
+  import('../pages/callback.page').then((module) => ({
+    default: module.CallbackPage,
+  }))
+);
 
 export const authRoutes = [
   {
     path: '/auth',
-    element: <AuthPage />,
+    element: (
+      <Suspense fallback={<Skeleton className="min-h-screen" />}>
+        <AuthPage />
+      </Suspense>
+    ),
   },
   {
     path: '/auth/callback',
-    element: <CallbackPage />,
+    element: (
+      <Suspense fallback={<Skeleton className="min-h-screen" />}>
+        <CallbackPage />
+      </Suspense>
+    ),
   },
 ];

@@ -2,7 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["bun"],
-    "noEmit": true
+    "outDir": "./dist",
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "moduleResolution": "node"
   },
   "include": ["src"]
 }

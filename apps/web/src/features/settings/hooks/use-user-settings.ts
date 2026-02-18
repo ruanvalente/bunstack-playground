@@ -4,23 +4,23 @@ import { useMemo } from "react";
 
 export function useUserSettings() {
   const store = useUserSettingsStore();
-  const authUser = useAuthStore((state) => state.user) as Record<string, unknown> | null;
+  const user = useAuthStore((state) => state.user);
 
   const profile = useMemo(() => {
-    if (authUser) {
-      const userMetadata = authUser.user_metadata as Record<string, unknown> | undefined;
-      const email = (authUser.email as string) || (userMetadata?.email as string) || "";
-      const name = (userMetadata?.full_name as string) || (userMetadata?.preferred_username as string) || email.split('@')[0] || "";
+    if (user) {
       return {
-        username: name,
-        email: email,
+        fullName: user.full_name || "",
+        username: user.preferred_username || user.name || "",
+        email: user.email || "",
       };
     }
     return store.profile;
-  }, [authUser, store.profile]);
+  }, [user, store.profile]);
 
-  const updateProfile = (data: Partial<{ username: string; email: string }>) => {
-    if (!authUser) {
+  const updateProfile = (
+    data: Partial<{ username: string; email: string; fullName: string }>,
+  ) => {
+    if (!user) {
       store.updateProfile(data);
     }
   };

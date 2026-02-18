@@ -27,12 +27,12 @@ export function ProfileSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Nome
+              Nome Completo
             </label>
             <input
               name="name"
-              value={profile.username}
-              onChange={(e) => updateProfile({ username: e.target.value })}
+              value={profile.fullName}
+              onChange={(e) => updateProfile({ fullName: e.target.value })}
               disabled={isAuthenticated}
               className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white

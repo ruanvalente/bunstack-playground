@@ -3,10 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "/dashboard",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "vite --host",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

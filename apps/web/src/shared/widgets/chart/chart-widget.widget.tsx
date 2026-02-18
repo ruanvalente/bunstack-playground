@@ -1,32 +1,15 @@
-import { useMemo } from "react";
+import { lazy, Suspense, useMemo } from "react";
+import { Skeleton } from "@/web/shared/ui/skeleton";
+import type { ChartData, ChartOptions, ChartType } from "chart.js";
 
-import {
-  ArcElement,
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Tooltip,
-  Filler,
-  type ChartData,
-  type ChartOptions,
-  type ChartType,
-} from "chart.js";
-import { Chart } from "react-chartjs-2";
+const ChartLazy = lazy(() =>
+  import("react-chartjs-2").then((module) => ({
+    default: module.Chart,
+  }))
+);
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  ArcElement,
-  Filler,
-  Tooltip,
-  Legend,
+const ChartComponents = lazy(() =>
+  import("./chart-registration").then((module) => ({ default: module.ChartComponents }))
 );
 
 type ChartWidgetProps = {
@@ -78,12 +61,16 @@ export function ChartWidget({
 
   return (
     <div className="w-full h-60 flex flex-col" style={{ height }}>
-      <Chart
-        type={type}
-        data={data}
-        options={chartOptions}
-        className="block max-w-full"
-      />
+      <Suspense fallback={<Skeleton className="w-full h-full" />}>
+        <ChartComponents>
+          <ChartLazy
+            type={type}
+            data={data}
+            options={chartOptions}
+            className="block max-w-full"
+          />
+        </ChartComponents>
+      </Suspense>
     </div>
   );
 }

@@ -1,0 +1,18 @@
+FROM oven/bun:1-alpine
+WORKDIR /app
+
+COPY package.json bun.lock ./
+COPY packages ./packages
+COPY apps ./apps
+
+RUN bun install
+
+COPY . .
+
+ENV NODE_ENV=development
+ENV APP_URL=http://localhost:4000
+ENV FRONTEND_URL=http://localhost:5173
+
+EXPOSE 4000 5173
+
+CMD ["bun", "run", "dev"]

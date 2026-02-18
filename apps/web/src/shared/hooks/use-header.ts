@@ -7,26 +7,19 @@ const DEFAULT_NAME = "Usuário";
 
 export function useHeader() {
   const { title, showMenu, toggleMenu, closeMenu } = useHeaderStore();
-  const authUser = useAuthStore((state) => state.user) as Record<
-    string,
-    unknown
-  > | null;
+  const user = useAuthStore((state) => state.user);
 
-  const userMetadata = authUser?.user_metadata as
-    | Record<string, unknown>
-    | undefined;
-
-  const user = {
-    name: (userMetadata?.preferred_username as string) || DEFAULT_NAME,
-    avatar: (userMetadata?.avatar_url as string) || DEFAULT_AVATAR,
-    email: (authUser?.email as string) || "",
-    fullName: (userMetadata?.full_name as string) || DEFAULT_NAME,
+  const headerUser = {
+    name: user?.preferred_username || user?.name || DEFAULT_NAME,
+    avatar: user?.avatar_url || DEFAULT_AVATAR,
+    email: user?.email || "",
+    fullName: user?.full_name || user?.name || DEFAULT_NAME,
   };
 
   return {
     title,
     showMenu,
-    user,
+    user: headerUser,
     toggleMenu,
     closeMenu,
   };
