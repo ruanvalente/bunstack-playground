@@ -10,7 +10,7 @@ export default {
     }
 
     if (tsFiles.length > 0) {
-      commands.push(`tsc --noEmit --project tsconfig.base.json`);
+      commands.push(`tsc --noEmit --project apps/web/tsconfig.app.json`);
     }
 
     return commands;
