@@ -24,12 +24,12 @@ Marque o tipo da alteração:
 🔄 What Changed
 <!-- Liste as principais alterações realizadas -->
 
--
+- [ ]
 
 🧪 How to Test
 <!-- Explique passo a passo como testar -->
 
--
+- [ ]
 
 📸 Screenshots (if applicable)
 <!-- Adicione prints ou gifs, se necessário -->
