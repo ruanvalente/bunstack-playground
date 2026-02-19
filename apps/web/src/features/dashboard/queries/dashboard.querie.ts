@@ -12,9 +12,9 @@ export async function getDashboardData(
     );
     return response;
   } catch (err) {
-    console.error("getDashboardData fail:", err);
     throw new Error(
       "Not is possible to fetch dashboard data. Please try again later.",
+      { cause: err },
     );
   }
 }
