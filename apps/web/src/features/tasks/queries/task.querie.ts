@@ -14,8 +14,9 @@ export async function getTasks(
     );
     return response;
   } catch (err) {
-    console.error("getTasks fail:", err);
-    throw new Error("Not is possible to fetch tasks. Please try again later.");
+    throw new Error("Not is possible to fetch tasks. Please try again later.", {
+      cause: err,
+    });
   }
 }
 
@@ -34,7 +35,8 @@ export async function toggleTask(
 
     return response;
   } catch (err) {
-    console.error(`toggleTask(${taskId}) fail:`, err);
-    throw new Error("Not is possible to update the task. Please try again.");
+    throw new Error("Not is possible to update the task. Please try again.", {
+      cause: err,
+    });
   }
 }
