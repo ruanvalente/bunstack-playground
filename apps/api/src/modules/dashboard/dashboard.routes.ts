@@ -1,12 +1,12 @@
-import openapi from "@elysiajs/openapi";
+import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
 import { z } from "zod";
 
 import { API_VERSION } from "@bunstack-playground/shared";
 import { dashboardResponseSchema } from "@bunstack-playground/shared/http";
-import { DashboardSupabaseRepository } from "./dashboard.supabase.repository";
+import { getDashboardRepository } from "./dashboard.repository.factory";
 
-const dashboardRepository = new DashboardSupabaseRepository();
+const dashboardRepository = getDashboardRepository();
 
 const dashboardQuerySchema = z.object({
   days: z.optional(z.coerce.number().min(1).max(365).default(30)),
@@ -18,7 +18,7 @@ export const dashboardRoutes = new Elysia({
   .get(
     "/",
     async ({ query }) => {
-      const days = query.days ?? 30;
+      const days = Number(query.days ?? 30);
       const result = await dashboardRepository.getDashboardData(days);
 
       return {
