@@ -2,10 +2,13 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["bun"],
-    "outDir": "./dist",
-    "noEmit": false,
-    "allowImportingTsExtensions": false,
-    "moduleResolution": "node"
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@bunstack-playground/shared": ["../../packages/shared/src/index.ts"],
+      "@bunstack-playground/shared/*": ["../../packages/shared/src/*"],
+      "@/api/*": ["src/*"]
+    }
   },
   "include": ["src"]
 }
