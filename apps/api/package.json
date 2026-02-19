@@ -1,12 +1,14 @@
 {
   "name": "@bunstack-playground/api",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "bun --watch src/server.ts",
     "build": "echo 'No build needed for API'",
     "start": "bun src/server.ts"
   },
   "dependencies": {
+    "@bunstack-playground/shared": "workspace:*",
     "@elysiajs/cors": "^1.4.1",
     "@elysiajs/openapi": "^1.4.13",
     "@elysiajs/static": "^1.4.7",

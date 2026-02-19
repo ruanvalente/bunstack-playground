@@ -9,17 +9,33 @@ import { authRoutes } from "./modules/auth/auth.routes";
 
 import { healthSchema } from "@bunstack-playground/shared/http";
 
-export const app = new Elysia({ name: "bunstack-api" })
+const isProduction = process.env.NODE_ENV === "production";
+const isRailway = process.env.RAILWAY_STATIC_URL !== undefined;
+const serveStatic = isProduction || isRailway;
+
+const app = new Elysia({ name: "bunstack-api" });
+
+if (serveStatic) {
+  app.use(
+    staticPlugin({
+      assets: "apps/web/dist",
+      prefix: "/",
+    }),
+  );
+}
+
+app
   .use(cors())
   .use(taskRoutes)
   .use(dashboardRoutes)
   .use(authRoutes)
-  .get("/health", () => healthSchema)
-  .use(
-    staticPlugin({
-      assets: "../../apps/web/dist",
-      prefix: "/",
-    }),
-  )
-  .get("/", () => file('../../apps/web/dist/index.html'))
-  .get("/*", () => file('../../apps/web/dist/index.html'));
+  .get("/health", () => healthSchema);
+
+if (serveStatic) {
+  app.get("/", () => file('apps/web/dist/index.html'));
+  app.get("/*", () => file('apps/web/dist/index.html'));
+} else {
+  app.get("/", () => "OK");
+}
+
+export { app };

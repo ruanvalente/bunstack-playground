@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import openapi from "@elysiajs/openapi";
+import { openapi } from "@elysiajs/openapi";
 import { AppError, HttpStatus } from "@/api/shared/errors";
 
 import {
@@ -9,9 +9,9 @@ import {
   taskSchema,
 } from "@bunstack-playground/shared/http";
 import { API_VERSION } from "@bunstack-playground/shared";
-import { TaskSupabaseRepository } from "./task.supabase.repository";
+import { getTaskRepository } from "./task.repository.factory";
 
-const taskService = new TaskSupabaseRepository();
+const taskService = getTaskRepository();
 
 export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
 
@@ -106,7 +106,8 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
     "/:id",
     async ({ params, body, set }) => {
       try {
-        const task = await taskService.updateTitle(params.id, body.title);
+        const bodyTyped = body as { title: string };
+        const task = await taskService.updateTitle(params.id, bodyTyped.title);
 
         if (!task) {
           set.status = HttpStatus.NOT_FOUND;
@@ -152,7 +153,8 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
     "/:id/complete",
     async ({ body, set }) => {
       try {
-        const task = await taskService.complete(body.id, body.completed);
+        const bodyTyped = body as { id: string; completed: boolean };
+        const task = await taskService.complete(bodyTyped.id, bodyTyped.completed);
         if (!task) {
           set.status = HttpStatus.NOT_FOUND;
           return { message: "Task not found" };

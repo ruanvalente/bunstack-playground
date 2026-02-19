@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import openapi from "@elysiajs/openapi";
+import { openapi } from "@elysiajs/openapi";
 import { supabaseAuth } from "@/api/infra/database/supabase/supabase.auth.client";
 import {
   loginRequestSchema,
