@@ -37,6 +37,12 @@ export const config = {
    * Features that should run in development only
    */
   shouldRunSeeds(): boolean {
+    if (process.env.RAILWAY_STATIC_URL) return false;
+    return this.isDevelopment();
+  },
+
+  shouldRunMigrations(): boolean {
+    if (process.env.RAILWAY_STATIC_URL) return false;
     return this.isDevelopment();
   },
 
@@ -50,6 +56,5 @@ export const config = {
   /**
    * Application URL for redirects
    */
-  appUrl: process.env.APP_URL || "http://localhost:4000",
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
 };

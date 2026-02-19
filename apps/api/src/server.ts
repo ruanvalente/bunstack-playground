@@ -1,4 +1,4 @@
-import openapi from "@elysiajs/openapi";
+import { openapi } from "@elysiajs/openapi";
 import { app } from "./app";
 import { config } from "./config";
 
@@ -6,12 +6,16 @@ import { runMigrations } from "@/api/infra/database/migrations";
 import { runSeeds } from "@/api/infra/database/seeds";
 import { API_PORT } from "@bunstack-playground/shared";
 
+const PORT = Number(process.env.PORT) || API_PORT;
+
 async function start() {
   try {
     if (config.shouldRunSeeds()) {
       runSeeds();
     }
-    runMigrations();
+    if (config.shouldRunMigrations()) {
+      runMigrations();
+    }
 
     app.use(
       openapi({
@@ -27,15 +31,15 @@ async function start() {
       }),
     );
 
-    app.listen(API_PORT, () => {
-      console.log(
-        `🚀 bunstack-playground API is running in http://localhost:${API_PORT}`,
-      );
+    Bun.serve({
+      port: PORT,
+      fetch: app.handle,
     });
-  } catch (error) {
-    console.error("❌ Failed to start server:", error);
+  } catch {
     process.exit(1);
   }
 }
 
 start();
+
+export default app;
