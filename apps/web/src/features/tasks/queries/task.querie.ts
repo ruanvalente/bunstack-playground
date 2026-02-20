@@ -2,7 +2,7 @@ import type { Task } from '@bunstack-playground/shared/domain';
 import type { PaginatedTasksResponseDTO } from '@bunstack-playground/shared/http';
 
 import { httpClient } from '@shared/http/http-client';
-import { API_URL, API_VERSION } from '@bunstack-playground/shared/config/';
+import { API_URL, API_VERSION } from '@shared/config/supabase';
 
 export type TaskFilters = {
   statusFilter?: 'completed' | 'pending';

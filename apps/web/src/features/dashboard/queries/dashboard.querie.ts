@@ -1,7 +1,7 @@
 import type { DashboardResponseDTO } from '@bunstack-playground/shared/http';
 
 import { httpClient } from '@shared/http/http-client';
-import { API_URL, API_VERSION } from '@bunstack-playground/shared/config/';
+import { API_URL, API_VERSION } from '@shared/config/supabase';
 
 export async function getDashboardData(
   days = 30

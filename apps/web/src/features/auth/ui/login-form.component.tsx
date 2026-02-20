@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
 
 export function LoginForm() {
@@ -8,6 +9,7 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   const { login, loginWithGithub } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,6 +20,8 @@ export function LoginForm() {
 
     if (!result.success) {
       setError(result.error || 'Login failed');
+    } else {
+      navigate('/dashboard');
     }
 
     setLoading(false);
