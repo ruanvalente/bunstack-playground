@@ -1,14 +1,14 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import type { StateStorage } from "zustand/middleware";
-import { AUTH_API_URL } from "@shared/config/supabase";
-import { encrypt, decrypt } from "@shared/utils/helpers/crypto.helper";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import type { StateStorage } from 'zustand/middleware';
+import { AUTH_API_URL } from '@shared/config/supabase';
+import { encrypt, decrypt } from '@shared/utils/helpers/crypto.helper';
 
 type Session = {
   access_token: string;
   refresh_token?: string;
   expires_at: number;
-}
+};
 
 type UserMetadata = {
   name?: string;
@@ -29,13 +29,13 @@ type AuthState = {
   setSession: (session: Session | null) => void;
   setLoading: (loading: boolean) => void;
   logout: () => Promise<void>;
-}
+};
 
 const encryptedStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     const encryptedData = localStorage.getItem(name);
     if (!encryptedData) return null;
-    
+
     try {
       const decrypted = await decrypt(encryptedData);
       return decrypted;
@@ -76,14 +76,14 @@ export const useAuthStore = create<AuthState>()(
         try {
           if (session?.access_token) {
             await fetch(`${AUTH_API_URL}/logout`, {
-              method: "POST",
+              method: 'POST',
               headers: {
                 Authorization: `Bearer ${session.access_token}`,
               },
             });
           }
         } catch (error) {
-          console.error("Logout error:", error);
+          console.error('Logout error:', error);
         } finally {
           set({
             userId: null,
@@ -95,7 +95,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       storage: createJSONStorage(() => encryptedStorage),
       partialize: (state) => ({
         userId: state.userId,

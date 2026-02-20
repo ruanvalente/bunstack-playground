@@ -1,5 +1,5 @@
-import { lazy, Suspense } from "react";
-import { Skeleton } from "@/web/shared/ui/skeleton";
+import { lazy, Suspense } from 'react';
+import { Skeleton } from '@/web/shared/ui/skeleton';
 
 const AuthPage = lazy(() =>
   import('../pages/auth.page').then((module) => ({

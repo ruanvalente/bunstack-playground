@@ -25,7 +25,7 @@ export enum HttpStatus {
 export class AppError extends Error {
   constructor(
     public override message: string,
-    public statusCode: HttpStatus = HttpStatus.BAD_REQUEST,
+    public statusCode: HttpStatus = HttpStatus.BAD_REQUEST
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -63,7 +63,7 @@ export class ValidationError extends AppError {
  * Used when authentication is required but missing or invalid
  */
 export class UnauthorizedError extends AppError {
-  constructor(message: string = "Unauthorized") {
+  constructor(message: string = 'Unauthorized') {
     super(message, HttpStatus.UNAUTHORIZED);
     Object.setPrototypeOf(this, UnauthorizedError.prototype);
   }
@@ -75,7 +75,7 @@ export class UnauthorizedError extends AppError {
  * Used when the user is authenticated but doesn't have permission
  */
 export class ForbiddenError extends AppError {
-  constructor(message: string = "Forbidden") {
+  constructor(message: string = 'Forbidden') {
     super(message, HttpStatus.FORBIDDEN);
     Object.setPrototypeOf(this, ForbiddenError.prototype);
   }

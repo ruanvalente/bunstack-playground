@@ -40,7 +40,9 @@ export function RegisterForm() {
     if (!result.success) {
       setError(result.error || 'Registration failed');
     } else {
-      setSuccess('Registration successful! Please check your email to confirm your account.');
+      setSuccess(
+        'Registration successful! Please check your email to confirm your account.'
+      );
     }
 
     setLoading(false);
@@ -64,7 +66,10 @@ export function RegisterForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700"
+          >
             Name (optional)
           </label>
           <input
@@ -77,7 +82,10 @@ export function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email
           </label>
           <input
@@ -91,7 +99,10 @@ export function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Password
           </label>
           <input

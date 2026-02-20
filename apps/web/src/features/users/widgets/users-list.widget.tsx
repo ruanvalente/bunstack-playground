@@ -1,7 +1,7 @@
-import { usePaginate } from "@/web/shared/hooks/use-paginate";
-import { DataTableComponent } from "@/web/shared/ui/datatable";
-import { Pagination } from "@/web/shared/ui/pagination/pagination";
-import { usersMock } from "@/web/shared/utils/mocks/user.mock";
+import { usePaginate } from '@/web/shared/hooks/use-paginate';
+import { DataTableComponent } from '@/web/shared/ui/datatable';
+import { Pagination } from '@/web/shared/ui/pagination/pagination';
+import { usersMock } from '@/web/shared/utils/mocks/user.mock';
 
 const PER_PAGE = 5;
 
@@ -12,11 +12,11 @@ export function UsersListWidget() {
   });
 
   const editUser = (userId: string) => {
-    console.log("Editando o user de ID: ", userId);
+    console.log('Editando o user de ID: ', userId);
   };
 
   const deleteUser = (userId: string) => {
-    console.log("Excluindo o user de ID: ", userId);
+    console.log('Excluindo o user de ID: ', userId);
   };
 
   return (

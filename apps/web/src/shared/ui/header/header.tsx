@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useHeader } from "@shared/hooks/use-header";
-import { useAuthStore } from "@features/auth/store/auth.store";
+import { Link, useNavigate } from 'react-router-dom';
+import { useHeader } from '@shared/hooks/use-header';
+import { useAuthStore } from '@features/auth/store/auth.store';
 
 export function Header() {
   const { title, showMenu, user, toggleMenu, closeMenu } = useHeader();
@@ -10,7 +10,7 @@ export function Header() {
   const handleLogout = async () => {
     await logout();
     closeMenu();
-    navigate("/auth");
+    navigate('/auth');
   };
 
   return (
@@ -37,7 +37,7 @@ export function Header() {
             </span>
             <svg
               className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${
-                showMenu ? "rotate-180" : ""
+                showMenu ? 'rotate-180' : ''
               }`}
               fill="none"
               stroke="currentColor"
@@ -65,7 +65,7 @@ export function Header() {
 
               <nav className="p-2 space-y-1">
                 <Link
-                  to={"/dashboard/settings"}
+                  to={'/dashboard/settings'}
                   onClick={closeMenu}
                   className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors duration-200 cursor-pointer"
                 >

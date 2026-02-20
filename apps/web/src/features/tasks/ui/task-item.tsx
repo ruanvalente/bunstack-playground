@@ -17,7 +17,7 @@ export function TaskItem({ title, completed, onToggle }: TaskItemProps) {
         hover:shadow-sm
         active:scale-[0.995]
         focus-within:ring-2 focus-within:ring-green-500/40 focus-within:ring-offset-2
-        ${completed ? "opacity-75" : ""}
+        ${completed ? 'opacity-75' : ''}
       `}
     >
       <div className="relative flex items-center shrink-0 py-4">
@@ -35,8 +35,8 @@ export function TaskItem({ title, completed, onToggle }: TaskItemProps) {
             peer-focus:ring-2 peer-focus:ring-green-500/30 peer-focus:ring-offset-2
             ${
               completed
-                ? "bg-green-600 border-green-600"
-                : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 group-hover:border-gray-400 dark:group-hover:border-gray-500"
+                ? 'bg-green-600 border-green-600'
+                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 group-hover:border-gray-400 dark:group-hover:border-gray-500'
             }
           `}
         >
@@ -62,7 +62,7 @@ export function TaskItem({ title, completed, onToggle }: TaskItemProps) {
         className={`
           flex-1 text-gray-800 dark:text-gray-200
           transition-all duration-200
-          ${completed ? "line-through text-gray-500 dark:text-gray-500" : ""}
+          ${completed ? 'line-through text-gray-500 dark:text-gray-500' : ''}
         `}
       >
         {title}

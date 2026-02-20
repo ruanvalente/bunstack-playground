@@ -2,9 +2,9 @@
  * Environment type definition
  */
 export enum Environment {
-  DEVELOPMENT = "development",
-  STAGING = "staging",
-  PRODUCTION = "production",
+  DEVELOPMENT = 'development',
+  STAGING = 'staging',
+  PRODUCTION = 'production',
 }
 
 /**
@@ -16,7 +16,7 @@ export const config = {
   /**
    * Current environment
    */
-  environment: (process.env.NODE_ENV || "development") as Environment,
+  environment: (process.env.NODE_ENV || 'development') as Environment,
 
   /**
    * Environment checks
@@ -56,5 +56,5 @@ export const config = {
   /**
    * Application URL for redirects
    */
-  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
 };

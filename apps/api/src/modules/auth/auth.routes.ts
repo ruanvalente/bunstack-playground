@@ -1,21 +1,21 @@
-import { Elysia, t } from "elysia";
-import { openapi } from "@elysiajs/openapi";
-import { supabaseAuth } from "@/api/infra/database/supabase/supabase.auth.client";
+import { Elysia, t } from 'elysia';
+import { openapi } from '@elysiajs/openapi';
+import { supabaseAuth } from '@/api/infra/database/supabase/supabase.auth.client';
 import {
   loginRequestSchema,
   registerRequestSchema,
   authResponseSchema,
   githubAuthUrlSchema,
   API_VERSION,
-} from "@bunstack-playground/shared/http";
-import { config } from "@/api/config";
+} from '@bunstack-playground/shared/http';
+import { config } from '@/api/config';
 
 const GITHUB_REDIRECT_URL = `${config.frontendUrl}/auth/callback`;
 
 export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
 
   .post(
-    "/register",
+    '/register',
     async ({ body, set }) => {
       const { email, password, name } = body;
 
@@ -24,7 +24,7 @@ export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         password,
         options: {
           data: {
-            name: name || email.split("@")[0],
+            name: name || email.split('@')[0],
           },
         },
       });
@@ -41,7 +41,7 @@ export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         user: data.user,
         session: data.session,
         message:
-          "Registration successful. Please check your email for confirmation.",
+          'Registration successful. Please check your email for confirmation.',
       };
     },
     {
@@ -51,15 +51,15 @@ export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         400: t.Object({ message: t.String() }),
       },
       detail: {
-        tags: ["Auth"],
-        summary: "Register new user",
-        description: "Register a new user with email and password",
+        tags: ['Auth'],
+        summary: 'Register new user',
+        description: 'Register a new user with email and password',
       },
-    },
+    }
   )
 
   .post(
-    "/login",
+    '/login',
     async ({ body, set }) => {
       const { email, password } = body;
 
@@ -93,15 +93,15 @@ export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         401: t.Object({ message: t.String() }),
       },
       detail: {
-        tags: ["Auth"],
-        summary: "Login user",
-        description: "Login with email and password",
+        tags: ['Auth'],
+        summary: 'Login user',
+        description: 'Login with email and password',
       },
-    },
+    }
   )
 
   .post(
-    "/logout",
+    '/logout',
     async ({ set }) => {
       const { error } = await supabaseAuth.auth.signOut();
 
@@ -110,31 +110,31 @@ export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         return { message: error.message };
       }
 
-      return { message: "Logout successful" };
+      return { message: 'Logout successful' };
     },
     {
       response: {
         200: t.Object({ message: t.String() }),
       },
       detail: {
-        tags: ["Auth"],
-        summary: "Logout user",
-        description: "Logout the current user",
+        tags: ['Auth'],
+        summary: 'Logout user',
+        description: 'Logout the current user',
       },
-    },
+    }
   )
 
   .get(
-    "/user",
+    '/user',
     async ({ headers, set }) => {
       const authHeader = headers.authorization;
 
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
         set.status = 401;
-        return { message: "No token provided" };
+        return { message: 'No token provided' };
       }
 
-      const token = authHeader.replace("Bearer ", "");
+      const token = authHeader.replace('Bearer ', '');
 
       const { data: user, error } = await supabaseAuth.auth.getUser(token);
 
@@ -151,21 +151,21 @@ export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         401: t.Object({ message: t.String() }),
       },
       detail: {
-        tags: ["Auth"],
-        summary: "Get current user",
-        description: "Get the current authenticated user",
+        tags: ['Auth'],
+        summary: 'Get current user',
+        description: 'Get the current authenticated user',
       },
-    },
+    }
   )
 
   .get(
-    "/github",
+    '/github',
     async ({ set }) => {
       const { data, error } = await supabaseAuth.auth.signInWithOAuth({
-        provider: "github",
+        provider: 'github',
         options: {
           redirectTo: GITHUB_REDIRECT_URL,
-          scopes: "read:user user:email",
+          scopes: 'read:user user:email',
         },
       });
 
@@ -182,11 +182,11 @@ export const authRoutes = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         400: t.Object({ message: t.String() }),
       },
       detail: {
-        tags: ["Auth"],
-        summary: "GitHub OAuth login",
-        description: "Initiate GitHub OAuth login flow",
+        tags: ['Auth'],
+        summary: 'GitHub OAuth login',
+        description: 'Initiate GitHub OAuth login flow',
       },
-    },
+    }
   )
 
   .use(openapi());

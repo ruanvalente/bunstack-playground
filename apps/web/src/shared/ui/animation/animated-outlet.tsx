@@ -1,6 +1,6 @@
-import { useLocation } from "react-router-dom";
-import { Outlet } from "react-router-dom";
-import { AnimatePresence, motion } from "motion/react";
+import { useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
 
 export function AnimatedOutlet() {
   const location = useLocation();
@@ -14,7 +14,7 @@ export function AnimatedOutlet() {
         exit={{ opacity: 0, x: 20 }}
         transition={{
           duration: 0.3,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         }}
       >
         <Outlet />

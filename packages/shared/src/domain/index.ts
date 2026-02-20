@@ -1,2 +1,2 @@
-export * from "./task.domain";
-export * from "./dashboard.domain";
+export * from './task.domain';
+export * from './dashboard.domain';
