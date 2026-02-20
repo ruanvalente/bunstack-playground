@@ -2,54 +2,32 @@
 
 ## Summary
 
-Add task filtering functionality by status (completed/pending) and sorting (created_at/updated_at) with ASC/DESC order. Also includes Prettier integration with ESLint for automatic code formatting.
+Fix CORS configuration in production to allow requests from the frontend deployed at `https://bunstack-production.up.railway.app`. The API was blocking requests with the error: "Permission was denied for this request to access the `loopback` address space".
 
 ## Type
 
-- [x] feat
+- [ ] feat
 - [x] fix
-- [x] docs
-- [x] style
-- [x] refactor
-- [x] perf
+- [ ] docs
+- [ ] style
+- [ ] refactor
+- [ ] perf
 - [ ] test
-- [x] build
-- [x] ci
-- [x] chore
+- [ ] build
+- [ ] ci
+- [ ] chore
 - [ ] revert
 
 ## Changes
 
-### Task Filter Feature (feat)
+### CORS Configuration Fix (fix)
 
 #### Backend
-- Added `statusFilter` and `sortBy` parameters to `paginationQuerySchema`
-- Updated task routes to handle new filter query parameters
-- Implemented filter logic in Supabase repository (WHERE clause by completed status)
-- Implemented filter logic in SQLite repository (WHERE clause by completed status)
-- Dynamic sorting by `created_at` or `updated_at` in both repositories
-
-#### Frontend
-- Added `useLocalStorage` hook for state persistence
-- Created `FilterWidget` component with dropdown UI
-- Integrated filter in tasks page and task list widget
-- Filter supports: All / Completed / Pending status
-- Sorting supports: Newest (created_at DESC) / Oldest (created_at ASC) / Recently Updated (updated_at DESC) / Least Recently Updated (updated_at ASC)
-- Button shows active filter (e.g., "Filter: Completed")
-- Works with both Supabase (production) and SQLite (development)
-
-### Prettier & Lint Configuration (build)
-
-- Installed `prettier`, `eslint-config-prettier`, `eslint-plugin-prettier`
-- Added `.prettierrc` with code style configuration (singleQuote, trailingComma, etc.)
-- Updated `eslint.config.js` to integrate with Prettier
-- Added format scripts to `package.json`:
-  - `bun run lint` - ESLint with auto-fix
-  - `bun run lint:check` - ESLint check only
-  - `bun run format` - Prettier write
-  - `bun run format:check` - Prettier check only
-- Updated `lint-staged.config.js` to run ESLint + Prettier on commit
-- Formatted entire codebase with Prettier
+- Updated `apps/api/src/app.ts` to configure CORS with explicit origin for production
+- Added condition to check `isProduction` environment variable
+- In production: allows only `https://bunstack-production.up.railway.app`
+- In development: allows all origins (`true`)
+- Added `credentials: true` to support cookies/auth headers
 
 ## Test
 
@@ -61,30 +39,17 @@ bun install
 # Run development (hot reload)
 bun run dev
 
-# Run lint with auto-fix
-bun run lint
-
-# Run format
-bun run format
+# Test CORS headers
+curl -I -X OPTIONS -H "Origin: https://bunstack-production.up.railway.app" -H "Access-Control-Request-Method: GET" http://localhost:4000/api/v1/dashboard
 ```
 
-### API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/tasks?statusFilter=completed&sortBy=created_at&sortOrder=DESC` | Get filtered tasks |
-
-### Filter Query Parameters
-
-| Parameter | Values | Default |
-|-----------|--------|---------|
-| `statusFilter` | `completed`, `pending` | (all) |
-| `sortBy` | `created_at`, `updated_at` | `created_at` |
-| `sortOrder` | `ASC`, `DESC` | `DESC` |
+### Expected CORS Headers (Production)
+```
+Access-Control-Allow-Origin: https://bunstack-production.up.railway.app
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+```
 
 ## Screenshots (if applicable)
 
-Filter Widget UI:
-- Button shows "Filter" or "Filter: Completed" / "Filter: Pending" when active
-- Dropdown with Status options: All, Completed, Pending
-- Dropdown with Order options: Newest, Oldest, Recently Updated, Least Recently Updated
+N/A - This is a backend fix, no visual changes.

@@ -25,7 +25,14 @@ if (serveStatic) {
 }
 
 app
-  .use(cors())
+  .use(
+    cors({
+      origin: isProduction
+        ? 'https://bunstack-production.up.railway.app'
+        : true,
+      credentials: true,
+    })
+  )
   .use(taskRoutes)
   .use(dashboardRoutes)
   .use(authRoutes)
