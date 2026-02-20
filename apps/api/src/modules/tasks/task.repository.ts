@@ -2,7 +2,7 @@ import type {
   PaginatedTasksDomain,
   PaginationQueryDTO,
   Task,
-} from "@bunstack-playground/shared";
+} from '@bunstack-playground/shared';
 
 export abstract class TaskRepositoryImpl {
   /**

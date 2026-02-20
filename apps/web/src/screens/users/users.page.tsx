@@ -1,4 +1,4 @@
-import { UsersListWidget } from "@/web/features/users/widgets/users-list.widget";
+import { UsersListWidget } from '@/web/features/users/widgets/users-list.widget';
 
 export default function UsersPage() {
   return (

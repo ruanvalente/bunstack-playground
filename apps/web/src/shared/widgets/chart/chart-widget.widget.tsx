@@ -1,15 +1,17 @@
-import { lazy, Suspense, useMemo } from "react";
-import { Skeleton } from "@/web/shared/ui/skeleton";
-import type { ChartData, ChartOptions, ChartType } from "chart.js";
+import { lazy, Suspense, useMemo } from 'react';
+import { Skeleton } from '@/web/shared/ui/skeleton';
+import type { ChartData, ChartOptions, ChartType } from 'chart.js';
 
 const ChartLazy = lazy(() =>
-  import("react-chartjs-2").then((module) => ({
+  import('react-chartjs-2').then((module) => ({
     default: module.Chart,
   }))
 );
 
 const ChartComponents = lazy(() =>
-  import("./chart-registration").then((module) => ({ default: module.ChartComponents }))
+  import('./chart-registration').then((module) => ({
+    default: module.ChartComponents,
+  }))
 );
 
 type ChartWidgetProps = {
@@ -20,10 +22,10 @@ type ChartWidgetProps = {
 };
 
 export function ChartWidget({
-  type = "line",
+  type = 'line',
   data,
   options = {},
-  height = "100%",
+  height = '100%',
 }: ChartWidgetProps) {
   const chartOptions = useMemo<ChartOptions>(() => {
     const defaultOptions: ChartOptions = {
@@ -31,20 +33,20 @@ export function ChartWidget({
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: "top",
+          position: 'top',
         },
         tooltip: {
-          mode: "index",
+          mode: 'index',
           intersect: false,
         },
       },
       interaction: {
-        mode: "nearest",
-        axis: "x",
+        mode: 'nearest',
+        axis: 'x',
         intersect: false,
       },
       scales:
-        type === "bar" || type === "line"
+        type === 'bar' || type === 'line'
           ? {
               y: {
                 beginAtZero: true,

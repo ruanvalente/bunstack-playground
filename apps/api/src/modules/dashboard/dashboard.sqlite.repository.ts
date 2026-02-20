@@ -1,12 +1,15 @@
-import type { DashboardData, ChartDataPoint } from "@bunstack-playground/shared";
-import { db } from "@/api/infra/database";
-import type { DashboardRepository } from "./dashboard.repository";
+import type {
+  DashboardData,
+  ChartDataPoint,
+} from '@bunstack-playground/shared';
+import { db } from '@/api/infra/database';
+import type { DashboardRepository } from './dashboard.repository';
 
 type PeriodStats = {
   total: number;
   completed: number;
   pending: number;
-}
+};
 
 export class DashboardSqliteRepository implements DashboardRepository {
   async getDashboardData(days: number = 30): Promise<DashboardData> {
@@ -37,12 +40,12 @@ export class DashboardSqliteRepository implements DashboardRepository {
     const startDateStr = startDate.toISOString();
 
     const totalResult = db
-      .prepare("SELECT COUNT(*) as count FROM tasks WHERE created_at >= ?")
+      .prepare('SELECT COUNT(*) as count FROM tasks WHERE created_at >= ?')
       .get(startDateStr) as { count: number };
 
     const completedResult = db
       .prepare(
-        "SELECT COUNT(*) as count FROM tasks WHERE completed = 1 AND created_at >= ?",
+        'SELECT COUNT(*) as count FROM tasks WHERE completed = 1 AND created_at >= ?'
       )
       .get(startDateStr) as { count: number };
 
@@ -64,13 +67,13 @@ export class DashboardSqliteRepository implements DashboardRepository {
 
     const totalResult = db
       .prepare(
-        "SELECT COUNT(*) as count FROM tasks WHERE created_at >= ? AND created_at < ?",
+        'SELECT COUNT(*) as count FROM tasks WHERE created_at >= ? AND created_at < ?'
       )
       .get(startDateStr, endDateStr) as { count: number };
 
     const completedResult = db
       .prepare(
-        "SELECT COUNT(*) as count FROM tasks WHERE completed = 1 AND created_at >= ? AND created_at < ?",
+        'SELECT COUNT(*) as count FROM tasks WHERE completed = 1 AND created_at >= ? AND created_at < ?'
       )
       .get(startDateStr, endDateStr) as { count: number };
 
@@ -84,7 +87,7 @@ export class DashboardSqliteRepository implements DashboardRepository {
   private getTasksByDay(days: number): ChartDataPoint[] {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-    const startDateStr = startDate.toISOString().split("T")[0] ?? "";
+    const startDateStr = startDate.toISOString().split('T')[0] ?? '';
 
     const rows = db
       .prepare(
@@ -94,7 +97,7 @@ export class DashboardSqliteRepository implements DashboardRepository {
       WHERE DATE(created_at) >= ?
       GROUP BY DATE(created_at)
       ORDER BY date ASC
-    `,
+    `
       )
       .all(startDateStr) as { date: string; count: number }[];
 
@@ -107,7 +110,7 @@ export class DashboardSqliteRepository implements DashboardRepository {
   private getCompletedByDay(days: number): ChartDataPoint[] {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-    const startDateStr = startDate.toISOString().split("T")[0] ?? "";
+    const startDateStr = startDate.toISOString().split('T')[0] ?? '';
 
     const rows = db
       .prepare(
@@ -117,7 +120,7 @@ export class DashboardSqliteRepository implements DashboardRepository {
       WHERE completed = 1 AND DATE(updated_at) >= ?
       GROUP BY DATE(updated_at)
       ORDER BY date ASC
-    `,
+    `
       )
       .all(startDateStr) as { date: string; count: number }[];
 
@@ -129,8 +132,8 @@ export class DashboardSqliteRepository implements DashboardRepository {
 
   private calculateKPIs(
     current: PeriodStats,
-    previous: PeriodStats,
-  ): DashboardData["kpis"] {
+    previous: PeriodStats
+  ): DashboardData['kpis'] {
     const calculateChange = (current: number, previous: number): number => {
       if (previous === 0) {
         return current > 0 ? 100 : 0;
@@ -151,7 +154,10 @@ export class DashboardSqliteRepository implements DashboardRepository {
       totalTasks: current.total,
       totalTasksChange: calculateChange(current.total, previous.total),
       completedTasks: current.completed,
-      completedTasksChange: calculateChange(current.completed, previous.completed),
+      completedTasksChange: calculateChange(
+        current.completed,
+        previous.completed
+      ),
       pendingTasks: current.pending,
       pendingTasksChange: calculateChange(current.pending, previous.pending),
       completionRate: currentRate,

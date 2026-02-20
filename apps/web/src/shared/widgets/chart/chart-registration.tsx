@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   LineController,
@@ -24,7 +24,7 @@ import {
   BarElement,
   PointElement,
   ArcElement,
-} from "chart.js";
+} from 'chart.js';
 
 ChartJS.register(
   LineController,
@@ -49,7 +49,7 @@ ChartJS.register(
   LineElement,
   BarElement,
   PointElement,
-  ArcElement,
+  ArcElement
 );
 
 type ChartComponentsProps = {

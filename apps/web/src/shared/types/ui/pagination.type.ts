@@ -1,4 +1,4 @@
-export type PaginationPosition = "left" | "center" | "right";
+export type PaginationPosition = 'left' | 'center' | 'right';
 
 export type PaginationProps = {
   currentPage: number;

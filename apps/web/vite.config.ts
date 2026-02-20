@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import tailwindcss from "@tailwindcss/vite";
-import path from 'node:path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import tailwindcss from '@tailwindcss/vite';
+import path from 'node:path';
 
 export default defineConfig({
   base: '/',
@@ -12,13 +12,13 @@ export default defineConfig({
         __dirname,
         '../../packages/shared/src'
       ),
-      "@/web": path.resolve(__dirname, "src"),
-      "@app": path.resolve(__dirname, "src/app"),
-      "@config": path.resolve(__dirname, "src/config"),
-      "@features": path.resolve(__dirname, "src/features"),
-      "@screens": path.resolve(__dirname, "src/screens"),
-      "@shared": path.resolve(__dirname, "src/shared"),
-    }
+      '@/web': path.resolve(__dirname, 'src'),
+      '@app': path.resolve(__dirname, 'src/app'),
+      '@config': path.resolve(__dirname, 'src/config'),
+      '@features': path.resolve(__dirname, 'src/features'),
+      '@screens': path.resolve(__dirname, 'src/screens'),
+      '@shared': path.resolve(__dirname, 'src/shared'),
+    },
   },
   build: {
     rollupOptions: {

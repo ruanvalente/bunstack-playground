@@ -1,4 +1,4 @@
-import { db } from "..";
+import { db } from '..';
 
 /**
  * Seed initial tasks data
@@ -9,7 +9,7 @@ export async function seedTasks(): Promise<void> {
   };
 
   if (count.total > 0) {
-    console.log("🟡 Seed de tasks ignorado (já existem registros) 🟡");
+    console.log('🟡 Seed de tasks ignorado (já existem registros) 🟡');
     return;
   }
 
@@ -20,9 +20,9 @@ export async function seedTasks(): Promise<void> {
     VALUES (?, ?, ?, ?, ?)
   `);
 
-  insert.run(crypto.randomUUID(), "Estudar Bun", 0, now, now);
-  insert.run(crypto.randomUUID(), "Criar API de Tasks", 1, now, now);
-  insert.run(crypto.randomUUID(), "Refatorar para Feature Module", 0, now, now);
+  insert.run(crypto.randomUUID(), 'Estudar Bun', 0, now, now);
+  insert.run(crypto.randomUUID(), 'Criar API de Tasks', 1, now, now);
+  insert.run(crypto.randomUUID(), 'Refatorar para Feature Module', 0, now, now);
 
-  console.log("🟢 Seed de tasks executado com sucesso 🟢");
+  console.log('🟢 Seed de tasks executado com sucesso 🟢');
 }

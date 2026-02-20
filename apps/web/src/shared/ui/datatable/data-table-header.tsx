@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
 export function DataTableHeader({ children }: { children: ReactNode }) {
   return (
@@ -10,7 +10,10 @@ export function DataTableHeader({ children }: { children: ReactNode }) {
 
 export function DataTableHead({ children }: { children: ReactNode }) {
   return (
-    <th scope="col" className="px-6 py-3 font-medium text-gray-700 dark:text-gray-200">
+    <th
+      scope="col"
+      className="px-6 py-3 font-medium text-gray-700 dark:text-gray-200"
+    >
       {children}
     </th>
   );

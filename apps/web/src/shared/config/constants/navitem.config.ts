@@ -1,24 +1,24 @@
-import { LayoutDashboard, CheckSquare, Settings, Users } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Settings, Users } from 'lucide-react';
 
 export const NAV_ITEMS = [
   {
-    label: "Dashboard",
+    label: 'Dashboard',
     icon: LayoutDashboard,
-    route: "/dashboard",
+    route: '/dashboard',
   },
   {
-    label: "Tasks",
+    label: 'Tasks',
     icon: CheckSquare,
-    route: "/dashboard/tasks",
+    route: '/dashboard/tasks',
   },
   {
-    label: "Configurations",
+    label: 'Configurations',
     icon: Settings,
-    route: "/dashboard/settings",
+    route: '/dashboard/settings',
   },
   {
-    label: "Users",
+    label: 'Users',
     icon: Users,
-    route: "/dashboard/users",
+    route: '/dashboard/users',
   },
 ];

@@ -1,16 +1,16 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { USER_SETTINGS_KEY } from "@shared/config/constants/storage.config";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { USER_SETTINGS_KEY } from '@shared/config/constants/storage.config';
 import type {
   NotificationSettings,
   ProfileSettings,
   UserSettingsState,
-} from "../types/user-settings.types";
+} from '../types/user-settings.types';
 
 const defaultProfile: ProfileSettings = {
-  fullName: "",
-  username: "",
-  email: "",
+  fullName: '',
+  username: '',
+  email: '',
 };
 
 const defaultNotifications: NotificationSettings = {
@@ -23,7 +23,7 @@ export const useUserSettingsStore = create<UserSettingsState>()(
     (set) => ({
       profile: defaultProfile,
       notifications: defaultNotifications,
-      theme: "system",
+      theme: 'system',
 
       // TODO: integração Supabase – atualização de profile do usuário
 
@@ -45,7 +45,7 @@ export const useUserSettingsStore = create<UserSettingsState>()(
         set({
           profile: defaultProfile,
           notifications: defaultNotifications,
-          theme: "system",
+          theme: 'system',
         });
       },
     }),
@@ -56,6 +56,6 @@ export const useUserSettingsStore = create<UserSettingsState>()(
         notifications: state.notifications,
         theme: state.theme,
       }),
-    },
-  ),
+    }
+  )
 );

@@ -4,7 +4,7 @@ const KEY_LENGTH = 256;
 
 async function getOrCreateKey(): Promise<CryptoKey> {
   const storedKey = sessionStorage.getItem(ENCRYPTION_KEY_NAME);
-  
+
   if (storedKey) {
     const keyData = JSON.parse(storedKey);
     return await crypto.subtle.importKey(
@@ -30,7 +30,9 @@ async function getOrCreateKey(): Promise<CryptoKey> {
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
-  const binary = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
+  const binary = Array.from(bytes)
+    .map((b) => String.fromCharCode(b))
+    .join('');
   return btoa(binary);
 }
 
@@ -46,7 +48,7 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
 export async function encrypt(data: string): Promise<string> {
   const key = await getOrCreateKey();
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  
+
   const encrypted = await crypto.subtle.encrypt(
     { name: ALGORITHM, iv },
     key,
@@ -63,7 +65,7 @@ export async function encrypt(data: string): Promise<string> {
 export async function decrypt(encryptedData: string): Promise<string> {
   const key = await getOrCreateKey();
   const combined = new Uint8Array(base64ToArrayBuffer(encryptedData));
-  
+
   const iv = combined.slice(0, 12);
   const data = combined.slice(12);
 

@@ -1,44 +1,58 @@
-import {
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useNavigation,
-} from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import type { PaginatedTasksResponseDTO } from "@bunstack-playground/shared/http";
+import type { PaginatedTasksResponseDTO } from '@bunstack-playground/shared/http';
 
-import { Pagination } from "@shared/ui/pagination/pagination";
-import { getTasks, toggleTask } from "../queries/task.querie";
-import { TaskItem } from "../ui/task-item";
+import { Pagination } from '@shared/ui/pagination/pagination';
+import { getTasks, toggleTask } from '../queries/task.querie';
+import { TaskItem } from '../ui/task-item';
+import type { TaskFilterState } from '@shared/ui/filter/filter';
 
-export function TaskListWidget() {
+interface TaskListWidgetProps {
+  filters: TaskFilterState;
+}
+
+export function TaskListWidget({ filters }: TaskListWidgetProps) {
   const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
-  const initialData = useLoaderData() as PaginatedTasksResponseDTO;
   const navigation = useNavigation();
 
-  const page = Number(new URLSearchParams(location.search).get("page") ?? 1);
+  const page = Number(new URLSearchParams(location.search).get('page') ?? 1);
   const perPage = Number(
-    new URLSearchParams(location.search).get("perPage") ?? 10,
+    new URLSearchParams(location.search).get('perPage') ?? 10
   );
-  const queryKey = ["tasks", page, perPage];
+
+  const apiFilters = {
+    statusFilter:
+      filters.statusFilter === 'all' ? undefined : filters.statusFilter,
+    sortBy: filters.sortBy,
+    sortOrder: filters.sortOrder,
+  };
+
+  const queryKey = [
+    'tasks',
+    page,
+    perPage,
+    filters.statusFilter,
+    filters.sortBy,
+    filters.sortOrder,
+  ];
 
   const { data: tasks } = useQuery<PaginatedTasksResponseDTO>({
     queryKey,
-    queryFn: () => getTasks(page, perPage),
-    initialData: initialData || undefined,
+    queryFn: () => getTasks(page, perPage, apiFilters),
+    staleTime: 5 * 60 * 1000,
   });
 
-  const isLoading = navigation.state === "loading";
+  const isLoading = navigation.state === 'loading';
 
   function handlePageChange(newPage: number) {
-    if (newPage < 1 || newPage > tasks.pagination.totalPages) return;
+    if (!tasks || newPage < 1 || newPage > tasks.pagination.totalPages) return;
 
     const params = new URLSearchParams(location.search);
-    params.set("page", String(newPage));
-    params.set("perPage", String(perPage));
+    params.set('page', String(newPage));
+    params.set('perPage', String(perPage));
 
     const newUrl = `${location.pathname}?${params.toString()}`;
     if (location.search !== `?${params.toString()}`) {
@@ -63,7 +77,7 @@ export function TaskListWidget() {
           data: old.data.map((task) =>
             task.id === updatedTask.id
               ? { ...task, completed: !task.completed }
-              : task,
+              : task
           ),
         };
       });
@@ -78,7 +92,7 @@ export function TaskListWidget() {
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dashboard", 30] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 30] });
     },
   });
 

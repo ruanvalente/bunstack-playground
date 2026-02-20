@@ -1,6 +1,6 @@
-import { useUserSettings } from "@features/settings/hooks/use-user-settings";
-import { useState } from "react";
-import type { ThemeMode } from "../types/user-settings.types";
+import { useUserSettings } from '@features/settings/hooks/use-user-settings';
+import { useState } from 'react';
+import type { ThemeMode } from '../types/user-settings.types';
 
 export function AppearanceSection() {
   const { theme: currentTheme, setTheme } = useUserSettings();
@@ -25,8 +25,8 @@ export function AppearanceSection() {
               type="radio"
               name="theme"
               value="light"
-              checked={selectedTheme === "light"}
-              onChange={() => setSelectedTheme("light")}
+              checked={selectedTheme === 'light'}
+              onChange={() => setSelectedTheme('light')}
               className="w-5 h-5 accent-blue-600 border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
             />
@@ -40,8 +40,8 @@ export function AppearanceSection() {
               type="radio"
               name="theme"
               value="dark"
-              checked={selectedTheme === "dark"}
-              onChange={() => setSelectedTheme("dark")}
+              checked={selectedTheme === 'dark'}
+              onChange={() => setSelectedTheme('dark')}
               className="w-5 h-5 accent-blue-600 border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
             />
@@ -55,8 +55,8 @@ export function AppearanceSection() {
               type="radio"
               name="theme"
               value="system"
-              checked={selectedTheme === "system"}
-              onChange={() => setSelectedTheme("system")}
+              checked={selectedTheme === 'system'}
+              onChange={() => setSelectedTheme('system')}
               className="w-5 h-5 accent-blue-600 border-gray-300 dark:border-gray-600
                          focus:ring-blue-500/30"
             />

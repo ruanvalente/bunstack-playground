@@ -1,15 +1,15 @@
-import { Elysia, t } from "elysia";
-import { openapi } from "@elysiajs/openapi";
-import { AppError, HttpStatus } from "@/api/shared/errors";
+import { Elysia, t } from 'elysia';
+import { openapi } from '@elysiajs/openapi';
+import { AppError, HttpStatus } from '@/api/shared/errors';
 
 import {
   createTaskSchema,
   paginatedTasksResponseSchema,
   paginationQuerySchema,
   taskSchema,
-} from "@bunstack-playground/shared/http";
-import { API_VERSION } from "@bunstack-playground/shared";
-import { getTaskRepository } from "./task.repository.factory";
+} from '@bunstack-playground/shared/http';
+import { API_VERSION } from '@bunstack-playground/shared';
+import { getTaskRepository } from './task.repository.factory';
 
 const taskService = getTaskRepository();
 
@@ -19,16 +19,22 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
    * LIST TASKS
    */
   .get(
-    "/",
+    '/',
     async ({ query }) => {
       const page = query.page ?? 1;
       const pageSize = query.pageSize ?? 10;
-      const sortOrder = (query.sortOrder ?? "DESC") as "ASC" | "DESC";
+      const sortOrder = (query.sortOrder ?? 'DESC') as 'ASC' | 'DESC';
+      const sortBy = (query.sortBy ?? 'created_at') as
+        | 'created_at'
+        | 'updated_at';
+      const statusFilter = query.statusFilter;
 
       const result = await taskService.findAll({
         page,
         pageSize,
         sortOrder,
+        sortBy,
+        statusFilter,
       });
 
       const { pagination } = result;
@@ -48,7 +54,7 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
           hasPrevPage: pagination.hasPrevPage,
         },
         meta: {
-          sortBy: "createdAt",
+          sortBy,
           sortOrder,
           timestamp: new Date().toISOString(),
         },
@@ -60,18 +66,18 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
         200: paginatedTasksResponseSchema,
       },
       detail: {
-        tags: ["Tasks"],
-        summary: "Lists all tasks with pagination",
-        description: "Return all tasks with pagination, sorting and metadata",
+        tags: ['Tasks'],
+        summary: 'Lists all tasks with pagination',
+        description: 'Return all tasks with pagination, sorting and metadata',
       },
-    },
+    }
   )
 
   /**
    * CREATE TASK
    */
   .post(
-    "/",
+    '/',
     async ({ body, set }) => {
       try {
         const task = await taskService.create(body.title);
@@ -83,7 +89,7 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
           return { message: error.message };
         }
         set.status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return { message: "Internal server error" };
+        return { message: 'Internal server error' };
       }
     },
     {
@@ -92,18 +98,18 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
         201: taskSchema,
       },
       detail: {
-        tags: ["Tasks"],
-        summary: "Create Task",
-        description: "Create a new task with the given title",
+        tags: ['Tasks'],
+        summary: 'Create Task',
+        description: 'Create a new task with the given title',
       },
-    },
+    }
   )
 
   /**
    * UPDATE TASK
    */
   .put(
-    "/:id",
+    '/:id',
     async ({ params, body, set }) => {
       try {
         const bodyTyped = body as { title: string };
@@ -111,7 +117,7 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
 
         if (!task) {
           set.status = HttpStatus.NOT_FOUND;
-          return { message: "Task not found" };
+          return { message: 'Task not found' };
         }
         return { ...task, createdAt: task.createdAt };
       } catch (error) {
@@ -120,17 +126,17 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
           return { message: error.message };
         }
         set.status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return { message: "Internal server error" };
+        return { message: 'Internal server error' };
       }
     },
     {
       params: t.Object({
-        id: t.String({ format: "uuid" }),
+        id: t.String({ format: 'uuid' }),
       }),
       body: t.Object({
         title: t.String({
           minLength: 3,
-          description: "Título atualizado da tarefa",
+          description: 'Título atualizado da tarefa',
         }),
       }),
       response: {
@@ -139,25 +145,28 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
         400: t.Object({ message: t.String() }),
       },
       detail: {
-        tags: ["Tasks"],
-        summary: "Update task",
+        tags: ['Tasks'],
+        summary: 'Update task',
         description: "Update a task's title by ID",
       },
-    },
+    }
   )
 
   /**
    * COMPLETE TASK
    */
   .patch(
-    "/:id/complete",
+    '/:id/complete',
     async ({ body, set }) => {
       try {
         const bodyTyped = body as { id: string; completed: boolean };
-        const task = await taskService.complete(bodyTyped.id, bodyTyped.completed);
+        const task = await taskService.complete(
+          bodyTyped.id,
+          bodyTyped.completed
+        );
         if (!task) {
           set.status = HttpStatus.NOT_FOUND;
-          return { message: "Task not found" };
+          return { message: 'Task not found' };
         }
         return { ...task, createdAt: task.createdAt };
       } catch (error) {
@@ -166,31 +175,31 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
           return { message: error.message };
         }
         set.status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return { message: "Internal server error" };
+        return { message: 'Internal server error' };
       }
     },
     {
       body: t.Object({
-        id: t.String({ format: "uuid" }),
-        completed: t.Boolean({ description: "New completion status" }),
+        id: t.String({ format: 'uuid' }),
+        completed: t.Boolean({ description: 'New completion status' }),
       }),
       response: {
         200: taskSchema,
         404: t.Object({ message: t.String() }),
       },
       detail: {
-        tags: ["Tasks"],
-        summary: "Completed task",
-        description: "Checked a task as completed by ID",
+        tags: ['Tasks'],
+        summary: 'Completed task',
+        description: 'Checked a task as completed by ID',
       },
-    },
+    }
   )
 
   /**
    * DELETE TASK
    */
   .delete(
-    "/:id",
+    '/:id',
     async ({ params, set }) => {
       try {
         await taskService.delete(params.id);
@@ -202,23 +211,23 @@ export const taskRoutes = new Elysia({ prefix: `api/${API_VERSION}/tasks` })
           return { message: error.message };
         }
         set.status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return { message: "Internal server error" };
+        return { message: 'Internal server error' };
       }
     },
     {
       params: t.Object({
-        id: t.String({ format: "uuid" }),
+        id: t.String({ format: 'uuid' }),
       }),
       response: {
         204: t.Null(),
         404: t.Object({ message: t.String() }),
       },
       detail: {
-        tags: ["Tasks"],
-        summary: "Remove task",
-        description: "Remove a task by ID",
+        tags: ['Tasks'],
+        summary: 'Remove task',
+        description: 'Remove a task by ID',
       },
-    },
+    }
   )
 
   .use(openapi());

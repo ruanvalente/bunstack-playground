@@ -1,9 +1,9 @@
-import type { PaginatedResult } from "../../types/ui/pagination.type";
+import type { PaginatedResult } from '../../types/ui/pagination.type';
 
 export function paginateHelper<T>(
   items: T[],
   page: number,
-  perPage: number,
+  perPage: number
 ): PaginatedResult<T> {
   const total = items.length;
   const totalPages = Math.max(1, Math.ceil(total / perPage));

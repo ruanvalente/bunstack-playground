@@ -1,6 +1,6 @@
-import { useUserSettings } from "@features/settings/hooks/use-user-settings";
-import { useAuthStore } from "@features/auth/store/auth.store";
-import type { FormEvent } from "react";
+import { useUserSettings } from '@features/settings/hooks/use-user-settings';
+import { useAuthStore } from '@features/auth/store/auth.store';
+import type { FormEvent } from 'react';
 
 export function ProfileSection() {
   const { profile, updateProfile } = useUserSettings();
@@ -10,8 +10,8 @@ export function ProfileSection() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     updateProfile({
-      username: formData.get("name") as string,
-      email: formData.get("email") as string,
+      username: formData.get('name') as string,
+      email: formData.get('email') as string,
     });
   };
 
@@ -69,7 +69,7 @@ export function ProfileSection() {
                      focus:ring-2 focus:ring-blue-500/40 focus:outline-none
                      transition-all duration-200 shadow-sm hover:shadow hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isAuthenticated ? "Gerenciado pelo Auth" : "Salvar Alterações"}
+            {isAuthenticated ? 'Gerenciado pelo Auth' : 'Salvar Alterações'}
           </button>
         </div>
       </form>

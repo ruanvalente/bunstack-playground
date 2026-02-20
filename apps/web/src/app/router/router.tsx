@@ -3,21 +3,21 @@ import {
   Navigate,
   Outlet,
   RouterProvider,
-} from "react-router-dom";
-import MainLayout from "@shared/layouts/main.layout";
-import { QueryClient } from "@tanstack/react-query";
+} from 'react-router-dom';
+import MainLayout from '@shared/layouts/main.layout';
+import { QueryClient } from '@tanstack/react-query';
 
-import { dashboardRoutes } from "@features/dashboard/routes";
-import { tasksRoutes } from "@features/tasks/routes";
-import { settingsRoutes } from "@features/settings/routes";
-import { usersRoutes } from "@/web/features/users/routes";
-import { authRoutes } from "@features/auth/routes";
-import { ProtectedRoute } from "@/web/features/auth/ui/protected-route.component";
+import { dashboardRoutes } from '@features/dashboard/routes';
+import { tasksRoutes } from '@features/tasks/routes';
+import { settingsRoutes } from '@features/settings/routes';
+import { usersRoutes } from '@/web/features/users/routes';
+import { authRoutes } from '@features/auth/routes';
+import { ProtectedRoute } from '@/web/features/auth/ui/protected-route.component';
 
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
     {
-      path: "/auth",
+      path: '/auth',
       element: <AuthLayout />,
       children: authRoutes.map((route) => ({
         ...route,
@@ -32,8 +32,8 @@ const router = (queryClient: QueryClient) =>
       ),
       children: [
         {
-          path: "/",
-          element: <Navigate to={"/dashboard"} replace />,
+          path: '/',
+          element: <Navigate to={'/dashboard'} replace />,
         },
         ...dashboardRoutes(queryClient),
         ...tasksRoutes(queryClient),

@@ -1,10 +1,10 @@
-import { openapi } from "@elysiajs/openapi";
-import { Elysia } from "elysia";
-import { z } from "zod";
+import { openapi } from '@elysiajs/openapi';
+import { Elysia } from 'elysia';
+import { z } from 'zod';
 
-import { API_VERSION } from "@bunstack-playground/shared";
-import { dashboardResponseSchema } from "@bunstack-playground/shared/http";
-import { getDashboardRepository } from "./dashboard.repository.factory";
+import { API_VERSION } from '@bunstack-playground/shared';
+import { dashboardResponseSchema } from '@bunstack-playground/shared/http';
+import { getDashboardRepository } from './dashboard.repository.factory';
 
 const dashboardRepository = getDashboardRepository();
 
@@ -16,7 +16,7 @@ export const dashboardRoutes = new Elysia({
   prefix: `api/${API_VERSION}/dashboard`,
 })
   .get(
-    "/",
+    '/',
     async ({ query }) => {
       const days = Number(query.days ?? 30);
       const result = await dashboardRepository.getDashboardData(days);
@@ -33,10 +33,10 @@ export const dashboardRoutes = new Elysia({
         200: dashboardResponseSchema,
       },
       detail: {
-        tags: ["Dashboard"],
-        summary: "Get dashboard data",
-        description: "Returns KPIs, charts and totals based on tasks data",
+        tags: ['Dashboard'],
+        summary: 'Get dashboard data',
+        description: 'Returns KPIs, charts and totals based on tasks data',
       },
-    },
+    }
   )
   .use(openapi());

@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     // Environment setup & latest features
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "target": "ES2022",
     "module": "Preserve",
     "moduleDetection": "force",
@@ -27,35 +25,17 @@
     "baseUrl": ".",
     "paths": {
       // package web
-      "@/web/*": [
-        "apps/web/src/*"
-      ],
-      "@app/*": [
-        "apps/web/src/app/*"
-      ],
-      "@config/*": [
-        "apps/web/src/config/*"
-      ],
-      "@features/*": [
-        "apps/web/src/features/*"
-      ],
-      "@screens/*": [
-        "apps/web/src/screens/*"
-      ],
-      "@shared/*": [
-        "apps/web/src/shared/*"
-      ],
+      "@/web/*": ["apps/web/src/*"],
+      "@app/*": ["apps/web/src/app/*"],
+      "@config/*": ["apps/web/src/config/*"],
+      "@features/*": ["apps/web/src/features/*"],
+      "@screens/*": ["apps/web/src/screens/*"],
+      "@shared/*": ["apps/web/src/shared/*"],
       // package share
-      "@bunstack-playground/shared": [
-        "packages/shared/src/index.ts"
-      ],
-      "@bunstack-playground/shared/*": [
-        "packages/shared/src/*"
-      ],
+      "@bunstack-playground/shared": ["packages/shared/src/index.ts"],
+      "@bunstack-playground/shared/*": ["packages/shared/src/*"],
       // package api
-      "@/api/*": [
-        "apps/api/src/*"
-      ],
+      "@/api/*": ["apps/api/src/*"]
     }
   }
 }

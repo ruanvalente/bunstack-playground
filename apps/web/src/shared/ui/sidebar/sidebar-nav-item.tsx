@@ -1,6 +1,6 @@
-import { useSidebarStore } from "@shared/store/sidebar.store";
-import type { ComponentType, SVGProps } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useSidebarStore } from '@shared/store/sidebar.store';
+import type { ComponentType, SVGProps } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 type SidebarItemProps = {
   label: string;
@@ -22,8 +22,8 @@ export function SidebarItem({ label, icon: Icon, route }: SidebarItemProps) {
         className={`flex items-center justify-center p-3 rounded-lg transition
           ${
             isActive
-              ? "bg-blue-600 text-white"
-              : "text-gray-300 hover:bg-gray-700"
+              ? 'bg-blue-600 text-white'
+              : 'text-gray-300 hover:bg-gray-700'
           }
         `}
       >
@@ -38,8 +38,8 @@ export function SidebarItem({ label, icon: Icon, route }: SidebarItemProps) {
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition
         ${
           isActive
-            ? "bg-blue-600 text-white"
-            : "text-gray-300 hover:bg-gray-700"
+            ? 'bg-blue-600 text-white'
+            : 'text-gray-300 hover:bg-gray-700'
         }
       `}
     >
