@@ -1,4 +1,4 @@
-import { seedTasks } from "./task.seed";
+import { seedTasks } from './task.seed';
 
 /**
  * Execute all database seeds

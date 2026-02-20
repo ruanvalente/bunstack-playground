@@ -1,5 +1,5 @@
-import { useUserSettings } from "@features/settings/hooks/use-user-settings";
-import type { FormEvent } from "react";
+import { useUserSettings } from '@features/settings/hooks/use-user-settings';
+import type { FormEvent } from 'react';
 
 export function NotificationsSection() {
   const { notifications, updateNotifications } = useUserSettings();

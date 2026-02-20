@@ -1,15 +1,14 @@
+import { useEffect } from 'react';
+import { useSidebarStore } from '../store/sidebar.store';
 
-import { useEffect } from "react";
-import { useSidebarStore } from "../store/sidebar.store";
-
-const MOBILE_BREAKPOINT = "(max-width: 767px)";
+const MOBILE_BREAKPOINT = '(max-width: 767px)';
 
 export function useSidebar() {
   const { isOpen, isMobile, navItems, setIsMobile, setOpen, toggle } =
     useSidebarStore();
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     const mql = window.matchMedia(MOBILE_BREAKPOINT);
 
@@ -24,8 +23,8 @@ export function useSidebar() {
 
     handleChange(mql);
 
-    mql.addEventListener("change", handleChange);
-    return () => mql.removeEventListener("change", handleChange);
+    mql.addEventListener('change', handleChange);
+    return () => mql.removeEventListener('change', handleChange);
   }, [setIsMobile, setOpen]);
 
   return {

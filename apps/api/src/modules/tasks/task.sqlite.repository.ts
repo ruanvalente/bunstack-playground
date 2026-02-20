@@ -3,17 +3,32 @@ import type {
   PaginationQueryDTO,
   Task,
   TaskDTOWithDate,
-} from "@bunstack-playground/shared";
-import { db } from "@/api/infra/database";
-import type { TaskRepositoryImpl } from "./task.repository";
+} from '@bunstack-playground/shared';
+import { db } from '@/api/infra/database';
+import type { TaskRepositoryImpl } from './task.repository';
 
 export class TaskSqliteRepository implements TaskRepositoryImpl {
   async findAll(params: PaginationQueryDTO): Promise<PaginatedTasksDomain> {
-    const { page = 1, pageSize = 10, sortOrder = "ASC" } = params;
+    const {
+      page = 1,
+      pageSize = 10,
+      sortOrder = 'DESC',
+      sortBy = 'created_at',
+      statusFilter,
+    } = params;
+
+    let whereClause = '';
+    const queryParams: any[] = [];
+
+    if (statusFilter === 'completed') {
+      whereClause = 'WHERE completed = 1';
+    } else if (statusFilter === 'pending') {
+      whereClause = 'WHERE completed = 0';
+    }
 
     const countResult = db
-      .prepare("SELECT COUNT(*) as count FROM tasks")
-      .get() as { count: number };
+      .prepare(`SELECT COUNT(*) as count FROM tasks ${whereClause}`)
+      .get(...queryParams) as { count: number };
     const total = countResult.count;
 
     const offset = (page - 1) * pageSize;
@@ -24,9 +39,10 @@ export class TaskSqliteRepository implements TaskRepositoryImpl {
         `
       SELECT id, title, completed, created_at, updated_at
       FROM tasks
-      ORDER BY created_at ${sortOrder}
+      ${whereClause}
+      ORDER BY ${sortBy} ${sortOrder}
       LIMIT ? OFFSET ?
-    `,
+    `
       )
       .all(pageSize, offset);
 
@@ -41,7 +57,7 @@ export class TaskSqliteRepository implements TaskRepositoryImpl {
         hasPrevPage: page > 1,
       },
       meta: {
-        sortBy: "createdAt",
+        sortBy,
         sortOrder,
         timestamp: new Date().toISOString(),
       },
@@ -55,7 +71,7 @@ export class TaskSqliteRepository implements TaskRepositoryImpl {
       SELECT id, title, completed, created_at, updated_at
       FROM tasks
       WHERE id = ?
-    `,
+    `
       )
       .get(id);
 
@@ -70,7 +86,7 @@ export class TaskSqliteRepository implements TaskRepositoryImpl {
       `
     INSERT INTO tasks (id, title, completed, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?)
-  `,
+  `
     ).run(taskId, title, 0, now, now);
 
     return {
@@ -89,7 +105,7 @@ export class TaskSqliteRepository implements TaskRepositoryImpl {
       UPDATE tasks
       SET title = ?, updated_at = ?
       WHERE id = ?
-    `,
+    `
       )
       .run(title, new Date().toISOString(), id);
 
@@ -105,7 +121,7 @@ export class TaskSqliteRepository implements TaskRepositoryImpl {
       UPDATE tasks
       SET completed = ?, updated_at = ?
       WHERE id = ?
-    `,
+    `
       )
       .run(completed ? 1 : 0, new Date().toISOString(), id);
 
@@ -120,7 +136,7 @@ export class TaskSqliteRepository implements TaskRepositoryImpl {
         `
       DELETE FROM tasks
       WHERE id = ?
-    `,
+    `
       )
       .run(id);
 

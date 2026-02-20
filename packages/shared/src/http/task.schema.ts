@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 /** Health check response
  */
 export const healthSchema = {
-  status: "ok",
+  status: 'ok',
   uptime: new Date().toISOString(),
 };
 
@@ -28,7 +28,7 @@ export const taskSchemaWithDate = taskSchema.transform((data) => ({
  * Payload to create a task
  */
 export const createTaskSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters long"),
+  title: z.string().min(3, 'Title must be at least 3 characters long'),
 });
 
 /**
@@ -45,8 +45,8 @@ export const updateTaskSchema = z.object({
 export const completeTaskSchema = z.object({
   id: z.string().uuid(),
   completed: z.boolean(),
-  description: "Task ID to be completed",
-  example: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  description: 'Task ID to be completed',
+  example: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
 });
 
 /**
@@ -54,8 +54,8 @@ export const completeTaskSchema = z.object({
  */
 export const deleteTaskSchema = z.object({
   id: z.string().uuid(),
-  description: "Task id to be deleted",
-  example: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  description: 'Task id to be deleted',
+  example: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
 });
 
 /**
@@ -63,18 +63,24 @@ export const deleteTaskSchema = z.object({
  */
 export const paginationQuerySchema = z.object({
   page: z.optional(
-    z.coerce.number().min(1, "Page must be at least 1").default(1),
+    z.coerce.number().min(1, 'Page must be at least 1').default(1)
   ),
   pageSize: z.optional(
     z.coerce
       .number()
-      .min(1, "Page size must be at least 1")
-      .max(100, "The page size should be a maximum of 100.")
-      .default(10),
+      .min(1, 'Page size must be at least 1')
+      .max(100, 'The page size should be a maximum of 100.')
+      .default(10)
   ),
   sortOrder: z
-    .optional(z.enum({ ASC: "ASC", DESC: "DESC" }, "Classification order"))
-    .default("ASC"),
+    .optional(z.enum({ ASC: 'ASC', DESC: 'DESC' }, 'Classification order'))
+    .default('DESC'),
+  statusFilter: z
+    .optional(z.enum({ completed: 'completed', pending: 'pending' }))
+    .optional(),
+  sortBy: z
+    .optional(z.enum({ created_at: 'created_at', updated_at: 'updated_at' }))
+    .default('created_at'),
 });
 
 /**

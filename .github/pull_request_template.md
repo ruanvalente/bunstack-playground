@@ -1,6 +1,7 @@
 🚀 Pull Request
 
 📌 Summary
+
 <!-- Descreva de forma clara e objetiva o que esta PR faz -->
 
 Ex: Configure separate deployment workflows for development and production environments using GitHub Actions and Fly.io.
@@ -22,16 +23,19 @@ Marque o tipo da alteração:
 - [ ] revert (Reversão de commit)
 
 🔄 What Changed
+
 <!-- Liste as principais alterações realizadas -->
 
 - [ ]
 
 🧪 How to Test
+
 <!-- Explique passo a passo como testar -->
 
 - [ ]
 
 📸 Screenshots (if applicable)
+
 <!-- Adicione prints ou gifs, se necessário -->
 
 ✅ Checklist

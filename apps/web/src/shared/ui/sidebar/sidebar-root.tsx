@@ -1,5 +1,4 @@
-
-import { useSidebar } from "@shared/hooks/use-sidebar";
+import { useSidebar } from '@shared/hooks/use-sidebar';
 
 export function SidebarRoot({ children }: { children: React.ReactNode }) {
   const { isOpen } = useSidebar();
@@ -9,7 +8,7 @@ export function SidebarRoot({ children }: { children: React.ReactNode }) {
       className={`
         bg-gray-800 h-min-full flex flex-col transition-all duration-300 ease-in-out
         border-r border-gray-700
-        ${isOpen ? "w-64" : "w-20"}
+        ${isOpen ? 'w-64' : 'w-20'}
       `}
     >
       {children}

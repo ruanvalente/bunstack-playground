@@ -1,4 +1,4 @@
-import { db } from "../..";
+import { db } from '../..';
 
 /**
  * Create tasks table

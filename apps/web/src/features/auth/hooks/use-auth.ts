@@ -1,6 +1,6 @@
-import { useCallback, useEffect } from "react";
-import { useAuthStore } from "../store/auth.store";
-import { AUTH_API_URL } from "@shared/config/supabase";
+import { useCallback, useEffect } from 'react';
+import { useAuthStore } from '../store/auth.store';
+import { AUTH_API_URL } from '@shared/config/supabase';
 
 type LoginCredentials = {
   email: string;
@@ -31,9 +31,9 @@ export function useAuth() {
       setLoading(true);
       try {
         const response = await fetch(`${AUTH_API_URL}/login`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(credentials),
         });
@@ -41,7 +41,7 @@ export function useAuth() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Login failed");
+          throw new Error(data.message || 'Login failed');
         }
 
         if (data.user && data.session) {
@@ -56,7 +56,7 @@ export function useAuth() {
                   email: userMetadata.email as string,
                   preferred_username: userMetadata.preferred_username as string,
                 }
-              : null,
+              : null
           );
           setSession(data.session);
         }
@@ -65,13 +65,13 @@ export function useAuth() {
       } catch (error) {
         return {
           success: false,
-          error: error instanceof Error ? error.message : "Login failed",
+          error: error instanceof Error ? error.message : 'Login failed',
         };
       } finally {
         setLoading(false);
       }
     },
-    [setUserId, setUser, setSession, setLoading],
+    [setUserId, setUser, setSession, setLoading]
   );
 
   const register = useCallback(
@@ -79,9 +79,9 @@ export function useAuth() {
       setLoading(true);
       try {
         const response = await fetch(`${AUTH_API_URL}/register`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(credentials),
         });
@@ -89,34 +89,34 @@ export function useAuth() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Registration failed");
+          throw new Error(data.message || 'Registration failed');
         }
 
         return { success: true, data };
       } catch (error) {
         return {
           success: false,
-          error: error instanceof Error ? error.message : "Registration failed",
+          error: error instanceof Error ? error.message : 'Registration failed',
         };
       } finally {
         setLoading(false);
       }
     },
-    [setLoading],
+    [setLoading]
   );
 
   const logoutUser = useCallback(async () => {
     try {
       if (session?.access_token) {
         await fetch(`${AUTH_API_URL}/logout`, {
-          method: "POST",
+          method: 'POST',
           headers: {
             Authorization: `Bearer ${session.access_token}`,
           },
         });
       }
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error('Logout error:', error);
     } finally {
       logout();
     }
@@ -151,13 +151,13 @@ export function useAuth() {
                 email: userMetadata.email as string,
                 preferred_username: userMetadata.preferred_username as string,
               }
-            : null,
+            : null
         );
       } else {
         logout();
       }
     } catch (error) {
-      console.error("Fetch user error:", error);
+      console.error('Fetch user error:', error);
       logout();
     } finally {
       setLoading(false);
@@ -170,14 +170,14 @@ export function useAuth() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "GitHub login failed");
+        throw new Error(data.message || 'GitHub login failed');
       }
 
       if (data.url) {
         window.location.href = data.url;
       }
     } catch (error) {
-      console.error("GitHub login error:", error);
+      console.error('GitHub login error:', error);
     }
   }, []);
 

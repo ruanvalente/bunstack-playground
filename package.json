@@ -16,8 +16,10 @@
     "start:api": "bun run --cwd apps/api start",
     "test": "bun test",
     "prepare": "husky",
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix"
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "lint:check": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
@@ -25,8 +27,11 @@
     "@eslint/js": "^10.0.1",
     "@types/bun": "latest",
     "eslint": "9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1",
     "turbo": "^2.8.10",
     "typescript-eslint": "^8.56.0"
   },
@@ -35,7 +40,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "eslint --max-warnings=0"
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }

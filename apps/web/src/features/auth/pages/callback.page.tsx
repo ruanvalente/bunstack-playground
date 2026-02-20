@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router";
-import { supabase } from "@shared/config/supabase";
-import { useAuthStore } from "../store/auth.store";
+import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router';
+import { supabase } from '@shared/config/supabase';
+import { useAuthStore } from '../store/auth.store';
 
 export function CallbackPage() {
   const navigate = useNavigate();
@@ -12,22 +12,22 @@ export function CallbackPage() {
     const handleCallback = async () => {
       try {
         const hashParams = new URLSearchParams(
-          window.location.hash.substring(1),
+          window.location.hash.substring(1)
         );
         const accessToken =
-          searchParams.get("access_token") || hashParams.get("access_token");
+          searchParams.get('access_token') || hashParams.get('access_token');
         const refreshToken =
-          searchParams.get("refresh_token") || hashParams.get("refresh_token");
+          searchParams.get('refresh_token') || hashParams.get('refresh_token');
 
         if (accessToken) {
           const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
-            refresh_token: refreshToken || "",
+            refresh_token: refreshToken || '',
           });
 
           if (error) {
-            console.error("Set session error:", error);
-            navigate("/auth");
+            console.error('Set session error:', error);
+            navigate('/auth');
             return;
           }
 
@@ -49,9 +49,9 @@ export function CallbackPage() {
                     preferred_username:
                       userMetadata.preferred_username as string,
                   }
-                : null,
+                : null
             );
-            navigate("/dashboard");
+            navigate('/dashboard');
             return;
           }
         }
@@ -62,8 +62,8 @@ export function CallbackPage() {
         } = await supabase.auth.getSession();
 
         if (sessionError) {
-          console.error("Session error:", sessionError);
-          navigate("/auth");
+          console.error('Session error:', sessionError);
+          navigate('/auth');
           return;
         }
 
@@ -84,16 +84,16 @@ export function CallbackPage() {
                   email: userMetadata.email as string,
                   preferred_username: userMetadata.preferred_username as string,
                 }
-              : null,
+              : null
           );
-          navigate("/dashboard");
+          navigate('/dashboard');
           return;
         }
 
-        navigate("/auth");
+        navigate('/auth');
       } catch (err) {
-        console.error("Callback error:", err);
-        navigate("/auth");
+        console.error('Callback error:', err);
+        navigate('/auth');
       }
     };
 

@@ -1,7 +1,7 @@
-import { ProfileSection } from "@features/settings/widgets/profile-section.widget";
-import { NotificationsSection } from "@features/settings/widgets/notifications-section.widget";
-import { AppearanceSection } from "@features/settings/widgets/appearance-section.widget";
-import { DangerZoneSection } from "@features/settings/widgets/danger-zone-section.widget";
+import { ProfileSection } from '@features/settings/widgets/profile-section.widget';
+import { NotificationsSection } from '@features/settings/widgets/notifications-section.widget';
+import { AppearanceSection } from '@features/settings/widgets/appearance-section.widget';
+import { DangerZoneSection } from '@features/settings/widgets/danger-zone-section.widget';
 
 export default function SettingsPage() {
   return (

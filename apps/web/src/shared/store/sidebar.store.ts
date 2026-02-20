@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { SIDEBAR_KEY } from "../config/constants/storage.config";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { SIDEBAR_KEY } from '../config/constants/storage.config';
 
 type NavItem = {
   label: string;
@@ -24,9 +24,9 @@ export const useSidebarStore = create<SidebarState>()(
       isOpen: true,
       isMobile: false,
       navItems: [
-        { label: "Dashboard", route: "/dashboard", icon: "" },
-        { label: "Tarefas", route: "/tasks", icon: "" },
-        { label: "Configurações", route: "/settings", icon: "" },
+        { label: 'Dashboard', route: '/dashboard', icon: '' },
+        { label: 'Tarefas', route: '/tasks', icon: '' },
+        { label: 'Configurações', route: '/settings', icon: '' },
       ],
 
       setIsMobile: (mobile: boolean) => set({ isMobile: mobile }),
@@ -39,6 +39,6 @@ export const useSidebarStore = create<SidebarState>()(
       // onRehydrateStorage: (state) => {
       //   console.log("Store rehydrated!", state);
       // },
-    },
-  ),
+    }
+  )
 );
