@@ -2,16 +2,16 @@
 
 ## Summary
 
-Configure deployment to Railway with Bun + Elysia API + React Frontend in a monorepo structure. The deployment includes automatic database switching between SQLite (local) and Supabase (production) using repository factories.
+Add task filtering functionality by status (completed/pending) and sorting (created_at/updated_at) with ASC/DESC order. Also includes Prettier integration with ESLint for automatic code formatting.
 
 ## Type
 
 - [x] feat
-- [ ] fix
+- [x] fix
 - [x] docs
-- [ ] style
+- [x] style
 - [x] refactor
-- [ ] perf
+- [x] perf
 - [ ] test
 - [x] build
 - [x] ci
@@ -20,31 +20,36 @@ Configure deployment to Railway with Bun + Elysia API + React Frontend in a mono
 
 ## Changes
 
-### Railway Deployment (feat)
-- Added `railway.json` with Railway project configuration
-- Added `railway.toml` with build and deploy settings (Dockerfile, healthcheck)
-- Added `.github/workflows/deploy-railway.yml` with CI/CD pipeline for automatic deployment on push to main/master
-- Updated `.gitignore` to exclude Railway config files
+### Task Filter Feature (feat)
 
-### Repository Factory Pattern (feat)
-- Added `apps/api/src/modules/tasks/task.repository.factory.ts` - Factory to switch between SQLite (development) and Supabase (production)
-- Added `apps/api/src/modules/dashboard/dashboard.repository.factory.ts` - Factory for dashboard data sources
-- Updated task and dashboard routes to use repository factories
-- Updated `apps/api/src/infra/database/supabase/supabase.client.ts` to use environment variables
+#### Backend
+- Added `statusFilter` and `sortBy` parameters to `paginationQuerySchema`
+- Updated task routes to handle new filter query parameters
+- Implemented filter logic in Supabase repository (WHERE clause by completed status)
+- Implemented filter logic in SQLite repository (WHERE clause by completed status)
+- Dynamic sorting by `created_at` or `updated_at` in both repositories
 
-### Static Files Serving (feat)
-- Updated `apps/api/src/app.ts` to serve frontend static files (React SPA) in production
-- Updated `apps/api/src/server.ts` with production environment checks and Railway detection
-- Updated `apps/api/src/config.ts` with Railway-specific configuration
+#### Frontend
+- Added `useLocalStorage` hook for state persistence
+- Created `FilterWidget` component with dropdown UI
+- Integrated filter in tasks page and task list widget
+- Filter supports: All / Completed / Pending status
+- Sorting supports: Newest (created_at DESC) / Oldest (created_at ASC) / Recently Updated (updated_at DESC) / Least Recently Updated (updated_at ASC)
+- Button shows active filter (e.g., "Filter: Completed")
+- Works with both Supabase (production) and SQLite (development)
 
-### Docker Configuration (build)
-- Added `Dockerfile` for production deployment with frontend build included
-- Updated `Dockerfile.dev` for local development with hot reload
+### Prettier & Lint Configuration (build)
 
-### Migration from Fly.io to Railway (refactor)
-- Removed `fly.toml` (Fly.io configuration)
-- Removed `Dockerfile.prod` (old production Dockerfile)
-- Removed `.github/workflows/deploy.yml` (old Fly.io deployment workflow)
+- Installed `prettier`, `eslint-config-prettier`, `eslint-plugin-prettier`
+- Added `.prettierrc` with code style configuration (singleQuote, trailingComma, etc.)
+- Updated `eslint.config.js` to integrate with Prettier
+- Added format scripts to `package.json`:
+  - `bun run lint` - ESLint with auto-fix
+  - `bun run lint:check` - ESLint check only
+  - `bun run format` - Prettier write
+  - `bun run format:check` - Prettier check only
+- Updated `lint-staged.config.js` to run ESLint + Prettier on commit
+- Formatted entire codebase with Prettier
 
 ## Test
 
@@ -56,64 +61,30 @@ bun install
 # Run development (hot reload)
 bun run dev
 
-# Or with Docker
-./rebuild-dev.sh
+# Run lint with auto-fix
+bun run lint
+
+# Run format
+bun run format
 ```
 
-### Production Build (local test)
-```bash
-# Build Docker image
-docker build -t bunstack-prod -f Dockerfile .
+### API Endpoints
 
-# Run production container
-docker run -p 4000:4000 \
-  -e SUPABASE_URL=https://xxx.supabase.co \
-  -e SUPABASE_PUBLISHABLE_DEFAULT_KEY=xxx \
-  bunstack-prod
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/tasks?statusFilter=completed&sortBy=created_at&sortOrder=DESC` | Get filtered tasks |
 
-### Deploy to Railway
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
+### Filter Query Parameters
 
-# Login
-railway login
-
-# Deploy
-railway up --environment production
-```
-
-## Environment Variables
-
-### Railway (Production)
-- `SUPABASE_URL` - Supabase project URL
-- `SUPABASE_PUBLISHABLE_DEFAULT_KEY` - Supabase anonymous key
-
-### Local Development
-- `SUPABASE_URL` (optional) - For using Supabase locally
-- `SUPABASE_PUBLISHABLE_DEFAULT_KEY` (optional)
-
-## API Endpoints
-
-| Endpoint | Description |
-|----------|-------------|
-| `/health` | Health check |
-| `/api/v1/tasks` | Task CRUD operations |
-| `/api/v1/dashboard` | Dashboard data |
-| `/api/v1/auth/*` | Authentication |
-| `/` | Frontend SPA |
-
-## Database
-
-- **Production**: Supabase (PostgreSQL via Supabase SDK)
-- **Development**: SQLite (bun:sqlite)
-
-The application automatically selects the appropriate database based on environment:
-- If `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_DEFAULT_KEY` are set → uses Supabase
-- If `NODE_ENV=production` → uses Supabase
-- Otherwise → uses SQLite
+| Parameter | Values | Default |
+|-----------|--------|---------|
+| `statusFilter` | `completed`, `pending` | (all) |
+| `sortBy` | `created_at`, `updated_at` | `created_at` |
+| `sortOrder` | `ASC`, `DESC` | `DESC` |
 
 ## Screenshots (if applicable)
 
-Production URL: https://bunstack-api-production.up.railway.app
+Filter Widget UI:
+- Button shows "Filter" or "Filter: Completed" / "Filter: Pending" when active
+- Dropdown with Status options: All, Completed, Pending
+- Dropdown with Order options: Newest, Oldest, Recently Updated, Least Recently Updated
