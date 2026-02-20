@@ -2,18 +2,34 @@ import type {
   PaginatedTasksDomain,
   PaginationQueryDTO,
   TaskDTOWithDate,
-} from "@bunstack-playground/shared";
-import type { Task } from "@bunstack-playground/shared/domain";
-import type { TaskRepositoryImpl } from "./task.repository";
-import { supabase } from "@/api/infra/database/supabase";
+} from '@bunstack-playground/shared';
+import type { Task } from '@bunstack-playground/shared/domain';
+import type { TaskRepositoryImpl } from './task.repository';
+import { supabase } from '@/api/infra/database/supabase';
 
 export class TaskSupabaseRepository implements TaskRepositoryImpl {
   async findAll(params: PaginationQueryDTO): Promise<PaginatedTasksDomain> {
-    const { page = 1, pageSize = 10, sortOrder = "ASC" } = params;
+    const {
+      page = 1,
+      pageSize = 10,
+      sortOrder = 'DESC',
+      sortBy = 'created_at',
+      statusFilter,
+    } = params;
 
-    const { count, error: countError } = await supabase
-      .from("tasks")
-      .select("*", { count: "exact", head: true });
+    let query = supabase
+      .from('tasks')
+      .select('id, title, completed, created_at, updated_at', {
+        count: 'exact',
+      });
+
+    if (statusFilter === 'completed') {
+      query = query.eq('completed', true);
+    } else if (statusFilter === 'pending') {
+      query = query.eq('completed', false);
+    }
+
+    const { count, error: countError } = await query;
 
     if (countError) {
       throw new Error(`Failed to fetch tasks count: ${countError.message}`);
@@ -23,11 +39,21 @@ export class TaskSupabaseRepository implements TaskRepositoryImpl {
     const offset = (page - 1) * pageSize;
     const totalPages = Math.ceil(total / pageSize);
 
-    const { data, error } = await supabase
-      .from("tasks")
-      .select("id, title, completed, created_at, updated_at")
-      .order("created_at", { ascending: sortOrder === "ASC" })
-      .range(offset, offset + pageSize - 1);
+    let dataQuery = supabase
+      .from('tasks')
+      .select('id, title, completed, created_at, updated_at')
+      .order(sortBy, { ascending: sortOrder === 'ASC' });
+
+    if (statusFilter === 'completed') {
+      dataQuery = dataQuery.eq('completed', true);
+    } else if (statusFilter === 'pending') {
+      dataQuery = dataQuery.eq('completed', false);
+    }
+
+    const { data, error } = await dataQuery.range(
+      offset,
+      offset + pageSize - 1
+    );
 
     if (error) {
       throw new Error(`Failed to fetch tasks: ${error.message}`);
@@ -44,7 +70,7 @@ export class TaskSupabaseRepository implements TaskRepositoryImpl {
         hasPrevPage: page > 1,
       },
       meta: {
-        sortBy: "updatedAt",
+        sortBy,
         sortOrder,
         timestamp: new Date().toISOString(),
       },
@@ -53,13 +79,13 @@ export class TaskSupabaseRepository implements TaskRepositoryImpl {
 
   async findById(id: string): Promise<Task | null> {
     const { data, error } = await supabase
-      .from("tasks")
-      .select("id, title, completed, created_at")
-      .eq("id", id)
+      .from('tasks')
+      .select('id, title, completed, created_at')
+      .eq('id', id)
       .single();
 
     if (error) {
-      if (error.code === "PGRST116") {
+      if (error.code === 'PGRST116') {
         return null;
       }
       throw new Error(`Failed to fetch task: ${error.message}`);
@@ -70,7 +96,7 @@ export class TaskSupabaseRepository implements TaskRepositoryImpl {
 
   async create(title: string): Promise<Task> {
     const { data, error } = await supabase
-      .from("tasks")
+      .from('tasks')
       .insert([{ title }])
       .select()
       .single();
@@ -84,14 +110,14 @@ export class TaskSupabaseRepository implements TaskRepositoryImpl {
 
   async updateTitle(id: string, title: string): Promise<Task | null> {
     const { data, error } = await supabase
-      .from("tasks")
+      .from('tasks')
       .update({ title })
-      .eq("id", id)
+      .eq('id', id)
       .select()
       .single();
 
     if (error) {
-      if (error.code === "PGRST116") {
+      if (error.code === 'PGRST116') {
         return null;
       }
       throw new Error(`Failed to update task: ${error.message}`);
@@ -102,14 +128,14 @@ export class TaskSupabaseRepository implements TaskRepositoryImpl {
 
   async complete(id: string, completed: boolean): Promise<Task | null> {
     const { data, error } = await supabase
-      .from("tasks")
+      .from('tasks')
       .update({ completed })
-      .eq("id", id)
+      .eq('id', id)
       .select()
       .single();
 
     if (error) {
-      if (error.code === "PGRST116") {
+      if (error.code === 'PGRST116') {
         return null;
       }
       throw new Error(`Failed to update task completion: ${error.message}`);
@@ -119,7 +145,7 @@ export class TaskSupabaseRepository implements TaskRepositoryImpl {
   }
 
   async delete(id: string): Promise<boolean> {
-    const { error } = await supabase.from("tasks").delete().eq("id", id);
+    const { error } = await supabase.from('tasks').delete().eq('id', id);
 
     if (error) {
       throw new Error(`Failed to delete task: ${error.message}`);

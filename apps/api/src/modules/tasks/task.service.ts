@@ -2,10 +2,10 @@ import type {
   PaginatedTasksResponseDTO,
   PaginationQueryDTO,
   Task,
-} from "@bunstack-playground/shared";
+} from '@bunstack-playground/shared';
 
-import { NotFoundError, ValidationError } from "@/api/shared/errors";
-import type { TaskSqliteRepository } from "./task.sqlite.repository";
+import { NotFoundError, ValidationError } from '@/api/shared/errors';
+import type { TaskSqliteRepository } from './task.sqlite.repository';
 
 /**
  * Task Service
@@ -38,7 +38,7 @@ export class TaskService {
     const newTaskTitle = title.trim();
 
     if (newTaskTitle.length === 0 || !newTaskTitle) {
-      throw new ValidationError("Title cannot be empty");
+      throw new ValidationError('Title cannot be empty');
     }
 
     return this.taskSqliteRepository.create(newTaskTitle);
@@ -57,12 +57,12 @@ export class TaskService {
     const newTaskTitle = title.trim();
 
     if (newTaskTitle.length === 0 || !newTaskTitle) {
-      throw new ValidationError("Title cannot be empty");
+      throw new ValidationError('Title cannot be empty');
     }
     const task = await this.taskSqliteRepository.updateTitle(id, newTaskTitle);
 
     if (!task) {
-      throw new NotFoundError("Task not found");
+      throw new NotFoundError('Task not found');
     }
 
     return task;
@@ -80,7 +80,7 @@ export class TaskService {
     const task = await this.taskSqliteRepository.complete(id, completed);
 
     if (!task) {
-      throw new NotFoundError("Task not found");
+      throw new NotFoundError('Task not found');
     }
 
     return task;
@@ -96,7 +96,7 @@ export class TaskService {
     const deleted = await this.taskSqliteRepository.delete(id);
 
     if (!deleted) {
-      throw new NotFoundError("Task not found");
+      throw new NotFoundError('Task not found');
     }
   }
 }
