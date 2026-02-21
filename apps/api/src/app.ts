@@ -3,9 +3,9 @@ import { staticPlugin } from '@elysiajs/static';
 
 import { cors } from '@elysiajs/cors';
 
-import { taskRoutes } from './modules/tasks/task.routes';
-import { dashboardRoutes } from './modules/dashboard/dashboard.routes';
-import { authRoutes } from './modules/auth/auth.routes';
+import { taskController } from './interfaces/tasks/task.controller';
+import { dashboardController } from './interfaces/dashboard/dashboard.controller';
+import { authController } from './interfaces/auth/auth.controller';
 
 import { healthSchema } from '@bunstack-playground/shared/http';
 
@@ -33,9 +33,9 @@ app
       credentials: true,
     })
   )
-  .use(taskRoutes)
-  .use(dashboardRoutes)
-  .use(authRoutes)
+  .use(taskController)
+  .use(dashboardController)
+  .use(authController)
   .get('/health', () => healthSchema);
 
 if (serveStatic) {
