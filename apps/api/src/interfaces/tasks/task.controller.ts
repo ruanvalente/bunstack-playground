@@ -1,21 +1,22 @@
-import { Elysia, t } from 'elysia';
 import { openapi } from '@elysiajs/openapi';
-import { AppError, HttpStatus } from '@/api/domain/errors';
+import { Elysia, t } from 'elysia';
+
+import {
+  CompleteTaskUseCase,
+  CreateTaskUseCase,
+  DeleteTaskUseCase,
+  ListTasksUseCase,
+  UpdateTaskUseCase,
+} from '@/api/application/tasks';
+import { AppError, HttpStatus } from '@/api/domain/erros';
+import { getTaskRepository } from '@/api/infrastructure/repositories/factory/task.repository.factory';
+import { API_VERSION } from '@bunstack-playground/shared';
 import {
   createTaskSchema,
   paginatedTasksResponseSchema,
   paginationQuerySchema,
   taskSchema,
 } from '@bunstack-playground/shared/http';
-import { API_VERSION } from '@bunstack-playground/shared';
-import { getTaskRepository } from '@/api/infrastructure/repositories/factory/task.repository.factory';
-import {
-  ListTasksUseCase,
-  CreateTaskUseCase,
-  UpdateTaskUseCase,
-  CompleteTaskUseCase,
-  DeleteTaskUseCase,
-} from '@/api/application/tasks';
 
 const taskRepository = getTaskRepository();
 const listTasksUseCase = new ListTasksUseCase(taskRepository);

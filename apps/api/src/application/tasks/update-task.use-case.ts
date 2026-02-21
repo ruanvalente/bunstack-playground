@@ -1,6 +1,6 @@
 import type { Task } from '@bunstack-playground/shared';
 import type { ITaskRepository } from '@/api/domain/repositories';
-import { NotFoundError, ValidationError } from '@/api/domain/errors';
+import { NotFoundError, ValidationError } from '@/api/domain/erros';
 
 export class UpdateTaskUseCase {
   constructor(private readonly taskRepository: ITaskRepository) {}
