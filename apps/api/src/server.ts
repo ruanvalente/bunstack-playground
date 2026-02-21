@@ -2,8 +2,8 @@ import { openapi } from '@elysiajs/openapi';
 import { app } from './app';
 import { config } from './config';
 
-import { runMigrations } from '@/api/infra/database/migrations';
-import { runSeeds } from '@/api/infra/database/seeds';
+import { runMigrations } from '@/api/infrastructure/database/migrations';
+import { runSeeds } from '@/api/infrastructure/database/seeds';
 import { API_PORT } from '@bunstack-playground/shared';
 
 const PORT = Number(process.env.PORT) || API_PORT;
