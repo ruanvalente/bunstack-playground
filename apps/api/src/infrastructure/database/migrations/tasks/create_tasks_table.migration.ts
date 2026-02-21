@@ -1,4 +1,4 @@
-import { db } from '../../index';
+import { db } from '../../config/index';
 
 /**
  * Create tasks table

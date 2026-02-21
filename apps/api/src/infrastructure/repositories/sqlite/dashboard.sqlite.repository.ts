@@ -2,7 +2,7 @@ import type {
   DashboardData,
   ChartDataPoint,
 } from '@bunstack-playground/shared';
-import { db } from '@/api/infrastructure/database';
+import { db } from '@/api/infrastructure/database/config';
 import type { IDashboardRepository } from '@/api/domain/repositories';
 
 type PeriodStats = {

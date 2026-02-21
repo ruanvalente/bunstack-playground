@@ -1,4 +1,4 @@
-import { db } from '../../index';
+import { db } from '../../config/index';
 
 export function addUpdatedAtToTasksMigration() {
   const tableInfo = db.prepare('PRAGMA table_info(tasks)').all() as {

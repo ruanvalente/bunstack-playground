@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { API_VERSION } from '@bunstack-playground/shared';
 import { dashboardResponseSchema } from '@bunstack-playground/shared/http';
-import { getDashboardRepository } from '@/api/infrastructure/database/dashboard.repository.factory';
+import { getDashboardRepository } from '@/api/infrastructure/repositories/factory/dashboard.repository.factory';
 import { GetDashboardUseCase } from '@/api/application/dashboard';
 
 const dashboardRepository = getDashboardRepository();

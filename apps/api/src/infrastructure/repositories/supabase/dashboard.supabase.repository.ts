@@ -3,7 +3,7 @@ import type {
   ChartDataPoint,
 } from '@bunstack-playground/shared';
 import type { IDashboardRepository } from '@/api/domain/repositories';
-import { supabase } from '@/api/infrastructure/database/supabase';
+import { supabase } from '@/api/infrastructure/supabase';
 
 type PeriodStats = {
   total: number;

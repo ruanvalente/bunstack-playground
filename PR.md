@@ -24,10 +24,11 @@ Refatoração estrutural do backend (apps/api) para adoção do padrão Clean Ar
 
 ```
 apps/api/src/
-├── domain/                    # Entidades e interfaces de repositories
-│   └── repositories/
-│       ├── task.repository.interface.ts
-│       └── dashboard.repository.interface.ts
+├── domain/                    # Entidades, interfaces de repositories e erros
+│   ├── repositories/
+│   │   ├── task.repository.interface.ts
+│   │   └── dashboard.repository.interface.ts
+│   └── errors.ts             # Classes de erro (ValidationError, NotFoundError, etc)
 │
 ├── application/               # Use Cases - regras de negócio isoladas
 │   ├── tasks/
@@ -39,14 +40,19 @@ apps/api/src/
 │   └── dashboard/
 │       └── get-dashboard.use-case.ts
 │
-├── infrastructure/            # Implementações concretas dos repositories
+├── infrastructure/            # Implementações concretas e configurações de infraestrutura
 │   └── database/
-│       ├── sqlite/
+│       ├── index.ts          # Instância SQLite
+│       ├── migrations/       # Migrações de banco
+│       ├── seeds/            # Seed de dados
+│       ├── sqlite/           # Repositories SQLite
 │       │   ├── task.sqlite.repository.ts
 │       │   └── dashboard.sqlite.repository.ts
-│       └── supabase/
+│       └── supabase/         # Repositories Supabase e clientes
 │           ├── task.supabase.repository.ts
-│           └── dashboard.supabase.repository.ts
+│           ├── dashboard.supabase.repository.ts
+│           ├── supabase.client.ts
+│           └── supabase.auth.client.ts
 │
 └── interfaces/               # Controllers HTTP
     ├── tasks/
@@ -59,17 +65,20 @@ apps/api/src/
 
 ### Principais Decisões Técnicas
 
-1. **Domain Layer**: Contém apenas interfaces abstratas (ITaskRepository, IDashboardRepository) que definem os contratos de persistência
+1. **Domain Layer**: Contém:
+   - Interfaces abstratas (ITaskRepository, IDashboardRepository) que definem os contratos de persistência
+   - Classes de erro (AppError, ValidationError, NotFoundError, etc)
 
 2. **Application Layer**: Use Cases isolam completamente as regras de negócio:
    - Validações de input
    - Transações de dados
-   - Lançamentos de exceções (ValidationError, NotFoundError)
+   - Lançamentos de exceções
 
-3. **Infrastructure Layer**: Implementações concretas dos repositories:
+3. **Infrastructure Layer**: Implementações concretas:
    - SQLite repositories
    - Supabase repositories
    - Factories para seleção de implementação
+   - Configurações de banco (migrations, seeds, instância)
 
 4. **Interfaces Layer**: Controllers HTTP que:
    - Recebem requests HTTP
@@ -80,6 +89,9 @@ apps/api/src/
 
 - Novas pastas: domain/, application/, infrastructure/, interfaces/
 - Removida pasta: modules/ (legado)
+- Removida pasta: types/ (vazia)
+- Unificado pasta: infra/ → infrastructure/ (mantendo estrutura interna)
+- Movido: shared/errors.ts → domain/errors.ts
 - Atualizado app.ts para usar novos controllers
 - Validação de funcionamento com API em execução local
 

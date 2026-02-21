@@ -8,7 +8,7 @@ import {
   taskSchema,
 } from '@bunstack-playground/shared/http';
 import { API_VERSION } from '@bunstack-playground/shared';
-import { getTaskRepository } from '@/api/infrastructure/database/task.repository.factory';
+import { getTaskRepository } from '@/api/infrastructure/repositories/factory/task.repository.factory';
 import {
   ListTasksUseCase,
   CreateTaskUseCase,

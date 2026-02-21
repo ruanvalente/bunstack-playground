@@ -1,6 +1,6 @@
 import { config } from '@/api/config';
-import { DashboardSqliteRepository } from './sqlite/dashboard.sqlite.repository';
-import { DashboardSupabaseRepository } from './supabase/dashboard.supabase.repository';
+import { DashboardSqliteRepository } from '../sqlite/dashboard.sqlite.repository';
+import { DashboardSupabaseRepository } from '../supabase/dashboard.supabase.repository';
 import type { IDashboardRepository } from '@/api/domain/repositories';
 
 const isSupabaseConfigured = Boolean(

@@ -1,4 +1,4 @@
-import { db } from '..';
+import { db } from '../config/index';
 
 /**
  * Seed initial tasks data
