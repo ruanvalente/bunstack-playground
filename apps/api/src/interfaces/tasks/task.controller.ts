@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { openapi } from '@elysiajs/openapi';
-import { AppError, HttpStatus } from '@/api/shared/errors';
+import { AppError, HttpStatus } from '@/api/domain/errors';
 import {
   createTaskSchema,
   paginatedTasksResponseSchema,

@@ -5,7 +5,7 @@ import type {
 } from '@bunstack-playground/shared';
 import type { Task } from '@bunstack-playground/shared/domain';
 import type { ITaskRepository } from '@/api/domain/repositories';
-import { supabase } from '@/api/infra/database/supabase';
+import { supabase } from '@/api/infrastructure/database/supabase';
 
 export class TaskSupabaseRepository implements ITaskRepository {
   async findAll(params: PaginationQueryDTO): Promise<PaginatedTasksDomain> {

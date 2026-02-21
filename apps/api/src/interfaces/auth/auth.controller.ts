@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { openapi } from '@elysiajs/openapi';
-import { supabaseAuth } from '@/api/infra/database/supabase/supabase.auth.client';
+import { supabaseAuth } from '@/api/infrastructure/database/supabase/supabase.auth.client';
 import {
   loginRequestSchema,
   registerRequestSchema,

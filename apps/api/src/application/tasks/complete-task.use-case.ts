@@ -1,6 +1,6 @@
 import type { Task } from '@bunstack-playground/shared';
 import type { ITaskRepository } from '@/api/domain/repositories';
-import { NotFoundError } from '@/api/shared/errors';
+import { NotFoundError } from '@/api/domain/errors';
 
 export class CompleteTaskUseCase {
   constructor(private readonly taskRepository: ITaskRepository) {}

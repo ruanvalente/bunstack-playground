@@ -2,15 +2,15 @@
 
 ## Summary
 
-Fix CORS configuration in production to allow requests from the frontend deployed at `https://bunstack-production.up.railway.app`. The API was blocking requests with the error: "Permission was denied for this request to access the `loopback` address space".
+Refatoração estrutural do backend (apps/api) para adoção do padrão Clean Architecture, utilizando use-cases como camada de orquestração de regras de negócio. A estrutura agora segue uma separação clara de responsabilidades entre domain, application, infrastructure e interfaces.
 
 ## Type
 
 - [ ] feat
-- [x] fix
+- [ ] fix
 - [ ] docs
 - [ ] style
-- [ ] refactor
+- [x] refactor
 - [ ] perf
 - [ ] test
 - [ ] build
@@ -20,14 +20,68 @@ Fix CORS configuration in production to allow requests from the frontend deploye
 
 ## Changes
 
-### CORS Configuration Fix (fix)
+### Estrutura Adotada
 
-#### Backend
-- Updated `apps/api/src/app.ts` to configure CORS with explicit origin for production
-- Added condition to check `isProduction` environment variable
-- In production: allows only `https://bunstack-production.up.railway.app`
-- In development: allows all origins (`true`)
-- Added `credentials: true` to support cookies/auth headers
+```
+apps/api/src/
+├── domain/                    # Entidades e interfaces de repositories
+│   └── repositories/
+│       ├── task.repository.interface.ts
+│       └── dashboard.repository.interface.ts
+│
+├── application/               # Use Cases - regras de negócio isoladas
+│   ├── tasks/
+│   │   ├── list-tasks.use-case.ts
+│   │   ├── create-task.use-case.ts
+│   │   ├── update-task.use-case.ts
+│   │   ├── complete-task.use-case.ts
+│   │   └── delete-task.use-case.ts
+│   └── dashboard/
+│       └── get-dashboard.use-case.ts
+│
+├── infrastructure/            # Implementações concretas dos repositories
+│   └── database/
+│       ├── sqlite/
+│       │   ├── task.sqlite.repository.ts
+│       │   └── dashboard.sqlite.repository.ts
+│       └── supabase/
+│           ├── task.supabase.repository.ts
+│           └── dashboard.supabase.repository.ts
+│
+└── interfaces/               # Controllers HTTP
+    ├── tasks/
+    │   └── task.controller.ts
+    ├── dashboard/
+    │   └── dashboard.controller.ts
+    └── auth/
+        └── auth.controller.ts
+```
+
+### Principais Decisões Técnicas
+
+1. **Domain Layer**: Contém apenas interfaces abstratas (ITaskRepository, IDashboardRepository) que definem os contratos de persistência
+
+2. **Application Layer**: Use Cases isolam completamente as regras de negócio:
+   - Validações de input
+   - Transações de dados
+   - Lançamentos de exceções (ValidationError, NotFoundError)
+
+3. **Infrastructure Layer**: Implementações concretas dos repositories:
+   - SQLite repositories
+   - Supabase repositories
+   - Factories para seleção de implementação
+
+4. **Interfaces Layer**: Controllers HTTP que:
+   - Recebem requests HTTP
+   - Chamam os use cases apropriados
+   - Formatam responses
+
+### Alterações Realizadas
+
+- Novas pastas: domain/, application/, infrastructure/, interfaces/
+- Removida pasta: modules/ (legado)
+- Atualizado app.ts para usar novos controllers
+- Validação de funcionamento com API em execução local
 
 ## Test
 
@@ -36,20 +90,19 @@ Fix CORS configuration in production to allow requests from the frontend deploye
 # Install dependencies
 bun install
 
-# Run development (hot reload)
+# Run development
 bun run dev
 
-# Test CORS headers
-curl -I -X OPTIONS -H "Origin: https://bunstack-production.up.railway.app" -H "Access-Control-Request-Method: GET" http://localhost:4000/api/v1/dashboard
-```
+# Test health endpoint
+curl http://localhost:3000/health
 
-### Expected CORS Headers (Production)
-```
-Access-Control-Allow-Origin: https://bunstack-production.up.railway.app
-Access-Control-Allow-Credentials: true
-Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+# Test tasks endpoint
+curl http://localhost:3000/api/v1/tasks
+
+# Test dashboard endpoint
+curl http://localhost:3000/api/v1/dashboard
 ```
 
 ## Screenshots (if applicable)
 
-N/A - This is a backend fix, no visual changes.
+N/A - Esta é uma refatoração estrutural, sem alterações visuais.

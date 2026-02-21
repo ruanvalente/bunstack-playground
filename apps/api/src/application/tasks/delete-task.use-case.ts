@@ -1,5 +1,5 @@
 import type { ITaskRepository } from '@/api/domain/repositories';
-import { NotFoundError } from '@/api/shared/errors';
+import { NotFoundError } from '@/api/domain/errors';
 
 export class DeleteTaskUseCase {
   constructor(private readonly taskRepository: ITaskRepository) {}
