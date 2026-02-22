@@ -15,6 +15,9 @@ Este é um playground/template para explorar e demonstrar as melhores práticas 
 - **State Management**: [TanStack React Query](https://tanstack.com/query)
 - **Validation**: [Zod](https://zod.dev) - Schema validation library
 - **Language**: [TypeScript](https://www.typescriptlang.org)
+- **Auth**: [Supabase Auth](https://supabase.com) - Autenticação com email/password e OAuth
+- **Database**: SQLite (dev) + Supabase (prod)
+- **Deploy**: [Railway](https://railway.app) - Plataforma de deployment
 
 ## Arquitetura do Projeto
 
@@ -23,31 +26,90 @@ Este é um playground/template para explorar e demonstrar as melhores práticas 
 ```
 bunstack-playground/
 ├── apps/
-│   ├── api/                    # Backend API
+│   ├── api/                         # Backend API
 │   │   └── src/
-│   │       ├── modules/        # Módulos de negócio (tarefas, etc)
-│   │       ├── infra/          # Camada de infraestrutura
-│   │       │   └── database/   # Configuração e migrações de BD
-│   │       ├── shared/         # Utilitários compartilhados
-│   │       ├── app.ts          # Configuração da aplicação Elysia
-│   │       ├── server.ts       # Inicialização do servidor
-│   │       └── config.ts       # Variáveis de ambiente
+│   │       ├── domain/              # Entidades e interfaces de repositório
+│   │       │   ├── repositories/   # Interfaces (task.repository.interface.ts)
+│   │       │   └── erros/          # Erros customizados
+│   │       ├── application/         # Use Cases
+│   │       │   ├── tasks/          # list-tasks, create-task, update-task, delete-task, complete-task
+│   │       │   └── dashboard/      # get-dashboard
+│   │       ├── interfaces/          # Controllers (Routes)
+│   │       │   ├── tasks/          # Task controller
+│   │       │   ├── dashboard/      # Dashboard controller
+│   │       │   └── auth/           # Auth controller
+│   │       ├── infrastructure/    # Implementações concretas
+│   │       │   ├── database/       # Migrações e seeds
+│   │       │   ├── repositories/   # Implementações (SQLite, Supabase)
+│   │       │   └── supabase/       # Cliente Supabase
+│   │       ├── app.ts              # Configuração principal Elysia
+│   │       ├── server.ts           # Entry point
+│   │       └── config.ts           # Variáveis de ambiente
 │   │
-│   └── web/                    # Frontend React
+│   └── web/                         # Frontend React
 │       └── src/
-│           ├── features/       # Funcionalidades (tasks, settings)
-│           ├── screens/        # Páginas da aplicação
-│           ├── shared/         # Componentes e utilitários compartilhados
-│           ├── config/         # Configuração e constantes
-│           ├── app/            # Setup da aplicação
-│           └── main.tsx        # Ponto de entrada
+│           ├── features/            # Funcionalidades isoladas
+│           │   ├── tasks/           # CRUD de tarefas
+│           │   ├── dashboard/      # Métricas e gráficos
+│           │   ├── auth/           # Login, register, callback
+│           │   ├── settings/       # Configurações usuário
+│           │   └── users/          # Gerenciamento de usuários
+│           ├── screens/             # Páginas (tasks, dashboard, settings, users)
+│           ├── shared/              # Componentes compartilhados
+│           │   ├── ui/              # Componentes UI (sidebar, datatable, filter)
+│           │   ├── hooks/           # Hooks customizados
+│           │   ├── http/            # Cliente HTTP
+│           │   ├── layouts/         # Layouts
+│           │   └── config/          # Configurações
+│           ├── app/                 # Setup router
+│           └── main.tsx             # Entry point
 │
 └── packages/
-    └── shared/                 # Código compartilhado entre apps
+    └── shared/                      # Código compartilhado
         └── src/
-            ├── domain/         # Modelos de domínio
-            ├── http/           # Schemas HTTP (Zod)
-            └── config/         # Configurações compartilhadas
+            ├── domain/              # Modelos de domínio
+            ├── http/                # Schemas HTTP (Zod)
+            └── config/              # Configurações compartilhadas
+```
+
+### Arquitetura Clean Architecture (API)
+
+```
+src/
+├── domain/           # Entidades e regras de negócio
+│   ├── repositories/ # Interfaces de repositório
+│   └── erros/       # Erros domain-specific
+├── application/     # Casos de uso (Use Cases)
+│   ├── tasks/       # CreateTaskUseCase, ListTasksUseCase, etc.
+│   └── dashboard/   # GetDashboardUseCase
+├── interfaces/     # Controllers/Routes
+│   ├── tasks/      # Task endpoints
+│   ├── dashboard/  # Dashboard endpoints
+│   └── auth/       # Auth endpoints
+└── infrastructure/ # Implementações externas
+    ├── database/   # Migrations e seeds
+    ├── repositories/ # SQLite e Supabase implementations
+    └── supabase/  # Cliente Supabase
+```
+
+### Arquitetura Feature-Based (Web)
+
+```
+src/
+├── features/        # Funcionalidades isoladas por domínio
+│   └── tasks/
+│       ├── queries/   # React Query hooks
+│       ├── actions/   # Mutações
+│       ├── routes/    # Rotas específicas
+│       ├── widgets/   # Componentes de feature
+│       ├── hooks/     # Hooks específicos
+│       └── loaders/  # React Router loaders
+├── screens/         # Páginas completas
+├── shared/          # Código reutilizável
+│   ├── ui/         # Componentes genéricos
+│   ├── hooks/      # Hooks genéricos
+│   └── layouts/   # Layouts
+└── app/           # Configuração router
 ```
 
 ## Funcionalidades Implementadas
@@ -56,20 +118,34 @@ bunstack-playground/
 
 #### Gerenciamento de Tarefas (Tasks)
 
-- **Listar Tarefas** com paginação
-  - Query parameters: `page`, `pageSize`, `sortOrder` (ASC/DESC)
+- **Listar Tarefas** com paginação e filtros
+  - Query parameters: `page`, `pageSize`, `sortOrder` (ASC/DESC), `sortBy`, `statusFilter`
   - Resposta paginada com metadados
 - **Criar Tarefa** com validação de schema
-  - Título obrigatório
-  - Descrição opcional
+  - Título obrigatório (mínimo 3 caracteres)
   - Status padrão: `pending`
 - **Atualizar Tarefa**
-  - Modificar título, descrição e status
+  - Modificar título
   - Validação de dados
+- **Completar Tarefa**
+  - Marcar como concluída via PATCH
 - **Deletar Tarefa**
   - Remoção segura com tratamento de erros
-- **Obter Detalhes da Tarefa**
-  - Busca por ID com validação
+
+#### Dashboard
+
+- **Métricas** - Total de tarefas, tarefas concluídas, pendentes
+- **Progresso** - Percentage de conclusão
+- **Gráficos** - Dados para visualização
+
+#### Autenticação (Supabase Auth)
+
+- **Registro** com email/password
+- **Login** com email/password
+- **Logout**
+- **OAuth** com GitHub
+- **JWT** - Bearer token authentication
+- **Current User** - Endpoint para obter usuário logado
 
 #### Infraestrutura
 
@@ -83,6 +159,9 @@ bunstack-playground/
   - Permitir requisições do frontend
 - **Documentação OpenAPI/Swagger**
   - Documentação interativa em `/swagger-ui`
+- **Dual Database**
+  - SQLite para desenvolvimento local
+  - Supabase para produção
 
 #### Health Check
 
@@ -168,8 +247,23 @@ bun install
 bun run dev
 
 # Ou executar separadamente:
-bun run dev:api    # Porta 3000
+bun run dev:api    # Porta 4000
 bun run dev:web    # Porta 5173
+```
+
+### Docker
+
+```bash
+# Desenvolvimento (com hot-reload)
+./rebuild-dev.sh
+# Acessos:
+# API:   http://localhost:4000
+# Web:   http://localhost:5173
+
+# Produção
+./rebuild.sh
+# Acessos:
+# API + Web: http://localhost:4000
 ```
 
 ### Build
@@ -189,15 +283,39 @@ bun test
 
 ## API Endpoints
 
-### Tarefas
+### Tarefas (v1)
 
-| Método   | Endpoint     | Descrição                             |
-| -------- | ------------ | ------------------------------------- |
-| `GET`    | `/tasks`     | Listar todas as tarefas com paginação |
-| `GET`    | `/tasks/:id` | Obter detalhes de uma tarefa          |
-| `POST`   | `/tasks`     | Criar nova tarefa                     |
-| `PUT`    | `/tasks/:id` | Atualizar tarefa                      |
-| `DELETE` | `/tasks/:id` | Deletar tarefa                        |
+| Método   | Endpoint                     | Descrição                              |
+| -------- | ---------------------------- | -------------------------------------- |
+| `GET`    | `/api/v1/tasks`              | Listar tarefas com paginação e filtros |
+| `POST`   | `/api/v1/tasks`              | Criar nova tarefa                      |
+| `PUT`    | `/api/v1/tasks/:id`          | Atualizar título da tarefa             |
+| `PATCH`  | `/api/v1/tasks/:id/complete` | Marcar tarefa como completa            |
+| `DELETE` | `/api/v1/tasks/:id`          | Deletar tarefa                         |
+
+**Query Parameters (GET /tasks):**
+
+- `page` - Número da página (padrão: 1)
+- `pageSize` - Tamanho da página (padrão: 10, máx: 100)
+- `sortOrder` - Ordenação (ASC | DESC)
+- `sortBy` - Campo para ordenação (created_at | updated_at)
+- `statusFilter` - Filtrar por status (completed | pending)
+
+### Dashboard (v1)
+
+| Método | Endpoint            | Descrição                     |
+| ------ | ------------------- | ----------------------------- |
+| `GET`  | `/api/v1/dashboard` | Obter métricas e estatísticas |
+
+### Autenticação (v1)
+
+| Método | Endpoint                | Descrição                |
+| ------ | ----------------------- | ------------------------ |
+| `POST` | `/api/v1/auth/register` | Registrar novo usuário   |
+| `POST` | `/api/v1/auth/login`    | Login com email/password |
+| `POST` | `/api/v1/auth/logout`   | Logout do usuário        |
+| `GET`  | `/api/v1/auth/user`     | Obter usuário atual      |
+| `GET`  | `/api/v1/auth/github`   | Login via OAuth GitHub   |
 
 ### Utilitários
 
@@ -205,59 +323,88 @@ bun test
 | ------ | ------------- | ----------------------- |
 | `GET`  | `/health`     | Verificar saúde da API  |
 | `GET`  | `/swagger-ui` | Documentação interativa |
+| `GET`  | `/*`          | SPA fallback (produção) |
 
 ## 🧪 Exemplo de Requisições
 
 ### Criar Tarefa
 
 ```bash
-curl -X POST http://localhost:4000/tasks \
+curl -X POST http://localhost:4000/api/v1/tasks \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Aprender Bun",
-    "description": "Explorar recursos do Bun"
+    "title": "Aprender Bun"
   }'
 ```
 
-### Listar Tarefas
+### Listar Tarefas com Filtros
 
 ```bash
-curl "http://localhost:4000/tasks?page=1&pageSize=10&sortOrder=DESC"
+curl "http://localhost:4000/api/v1/tasks?page=1&pageSize=10&sortOrder=DESC&statusFilter=pending"
 ```
 
 ### Atualizar Tarefa
 
 ```bash
-curl -X PUT http://localhost:4000/tasks/1 \
+curl -X PUT http://localhost:4000/api/v1/tasks/{id} \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Novo título",
-    "status": "completed"
+    "title": "Novo título"
   }'
 ```
 
-## Estrutura de Pastas Explicada (ou não 😅)
+### Completar Tarefa
 
-### apps/api
+```bash
+curl -X PATCH http://localhost:4000/api/v1/tasks/{id}/complete \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "{id}",
+    "completed": true
+  }'
+```
 
-- **modules/tasks**: Lógica de negócio para tarefas (rotas, serviço, repositório)
-- **infra/database**: Migrações, seeds e configuração de BD
-- **shared/errors**: Tratamento de erros centralizado
-- **types**: Definições de tipos compartilhadas
+### Login
 
-### apps/web
+```bash
+curl -X POST http://localhost:4000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "password123"
+  }'
+```
 
-- **features**: Funcionalidades isoladas (tasks, settings)
-- **features/tasks**: Actions (mutations), queries, routes, UI components
-- **screens**: Páginas da aplicação
-- **shared/layouts**: Componentes de layout reutilizáveis
-- **config**: Constantes e configurações globais
+## Estrutura de Pastas Explicada
+
+### apps/api (Clean Architecture)
+
+- **domain/**: Entidades e interfaces de repositório (Task, erros customizados)
+- **application/**: Use cases (list-tasks, create-task, update-task, delete-task, complete-task, get-dashboard)
+- **interfaces/**: Controllers/Routes (tasks, dashboard, auth)
+- **infrastructure/**: Implementações concretas (repositories SQLite/Supabase, database, supabase client)
+- **app.ts**: Configuração principal Elysia com CORS e static files
+- **server.ts**: Entry point
+
+### apps/web (Feature-Based)
+
+- **features/**: Funcionalidades isoladas (tasks, dashboard, auth, settings, users)
+  - **tasks**: Queries, actions, routes, widgets, hooks, loaders
+  - **auth**: Login, register, OAuth callback, protected routes
+  - **dashboard**: KPIs, gráficos
+  - **settings**: Preferências usuário
+- **screens/**: Páginas completas (tasks, dashboard, settings, users)
+- **shared/**: Componentes reutilizáveis
+  - **ui/**: Componentes (sidebar, datatable, filter, pagination, skeleton)
+  - **hooks/**: Hooks customizados
+  - **http/**: Cliente HTTP
+  - **layouts/**: Layouts principais
 
 ### packages/shared
 
-- **domain**: Modelos de domínio de negócio
-- **http**: Schemas de validação HTTP (Zod)
-- **config**: Constantes compartilhadas
+- **domain/**: Modelos de domínio de negócio
+- **http/**: Schemas de validação HTTP (Zod)
+- **config/**: Constantes compartilhadas
 
 ## Pontos-Chave da Arquitetura
 
@@ -273,31 +420,60 @@ curl -X PUT http://localhost:4000/tasks/1 \
 ## Fluxo de Dados
 
 ```
-Frontend (React)
-    ↓
-React Query (cache/sync)
-    ↓
-API Client (HTTP)
-    ↓
-Elysia Routes
-    ↓
-Task Service (lógica)
-    ↓
-Task Repository (persistência)
-    ↓
-Database
+Frontend (React + React Query)
+         ↓
+    HTTP Client
+         ↓
+┌─────────────────────────────────────────┐
+│  Elysia Routes (Interfaces/Controllers) │
+│    → Task Controller                     │
+│    → Auth Controller                      │
+│    → Dashboard Controller                │
+└─────────────────────────────────────────┘
+         ↓
+┌─────────────────────────────────────────┐
+│  Use Cases (Application Layer)          │
+│    → CreateTaskUseCase                  │
+│    → ListTasksUseCase                   │
+│    → UpdateTaskUseCase                  │
+│    → DeleteTaskUseCase                  │
+│    → CompleteTaskUseCase                │
+│    → GetDashboardUseCase                │
+└─────────────────────────────────────────┘
+         ↓
+┌─────────────────────────────────────────┐
+│  Repository Interface (Domain Layer)    │
+└─────────────────────────────────────────┘
+         ↓
+┌─────────────────────────────────────────┐
+│  Repository Implementation              │
+│    → SQLite (dev)                       │
+│    → Supabase (prod)                    │
+└─────────────────────────────────────────┘
+         ↓
+    Database
 ```
 
-## Próximos Passos ?
+## Roadmap de Funcionalidades
 
-- [ ] Autenticação e autorização
-- [ ] Websockets para atualizações em tempo real
-- [ ] Testes automatizados (unit, integration, e2e)
-- [ ] CI/CD com GitHub Actions
-- [ ] Docker para containerização
-- [ ] Documentação de API mais detalhada
-- [ ] Filtros avançados nas tarefas
-- [ ] Sistema de categorias/tags
+### ✅ Implementados
+
+- [x] **Autenticação e autorização** - Supabase Auth (email/password + GitHub OAuth)
+- [x] **CI/CD com GitHub Actions** - Workflow para lint e deploy automático para Railway
+- [x] **Docker para containerização** - Dockerfile e Dockerfile.dev com scripts rebuild
+- [x] **Documentação de API** - OpenAPI/Swagger em `/swagger-ui`
+- [x] **Filtros avançados nas tarefas** - statusFilter, sortBy, sortOrder
+- [x] **Dashboard com métricas** - Total tarefas, concluídas, pendentes, progresso
+
+### ⏳ Pendentes / Futuro
+
+- [ ] **Websockets** - Atualizações em tempo real
+- [ ] **Testes automatizados** - Unit, integration e e2e
+- [ ] **Sistema de categorias/tags** - Organizar tarefas por categorias
+- [ ] **Notifications** - Notificações em tempo real
+- [ ] **Upload de arquivos** - Anexar arquivos às tarefas
+- [ ] **Task comments** - Comentários em tarefas
+- [ ] **Team collaboration** - Múltiplos usuários por tarefa
 
 ## Licença
 
