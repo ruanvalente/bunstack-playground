@@ -38,11 +38,19 @@ export const config = {
    */
   shouldRunSeeds(): boolean {
     if (process.env.RAILWAY_STATIC_URL) return false;
+    const isSupabaseConfigured = Boolean(
+      process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY
+    );
+    if (isSupabaseConfigured) return false;
     return this.isDevelopment();
   },
 
   shouldRunMigrations(): boolean {
     if (process.env.RAILWAY_STATIC_URL) return false;
+    const isSupabaseConfigured = Boolean(
+      process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY
+    );
+    if (isSupabaseConfigured) return false;
     return this.isDevelopment();
   },
 

@@ -40,3 +40,4 @@ rebuild-dev.sh
 rebuild.sh
 .vercel
 database.sqlite
+diagnose-supabase.sh
