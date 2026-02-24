@@ -12,11 +12,14 @@ type PeriodStats = {
 };
 
 export class DashboardSupabaseRepository implements IDashboardRepository {
-  async getDashboardData(days: number = 30): Promise<DashboardData> {
-    const currentStats = await this.getCurrentPeriodStats(days);
-    const previousStats = await this.getPreviousPeriodStats(days);
-    const tasksByDay = await this.getTasksByDay(days);
-    const completedByDay = await this.getCompletedByDay(days);
+  async getDashboardData(
+    days: number = 30,
+    userId: string
+  ): Promise<DashboardData> {
+    const currentStats = await this.getCurrentPeriodStats(days, userId);
+    const previousStats = await this.getPreviousPeriodStats(days, userId);
+    const tasksByDay = await this.getTasksByDay(days, userId);
+    const completedByDay = await this.getCompletedByDay(days, userId);
 
     const totals = {
       totalTasks: currentStats.total,
@@ -34,7 +37,10 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     return { kpis, charts, totals };
   }
 
-  private async getCurrentPeriodStats(days: number): Promise<PeriodStats> {
+  private async getCurrentPeriodStats(
+    days: number,
+    userId: string
+  ): Promise<PeriodStats> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     const startDateStr = startDate.toISOString();
@@ -42,6 +48,7 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     const { data: allTasks, error: allError } = await supabase
       .from('tasks')
       .select('completed')
+      .eq('user_id', userId)
       .gte('created_at', startDateStr);
 
     if (allError) {
@@ -59,7 +66,10 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     return { total, completed, pending };
   }
 
-  private async getPreviousPeriodStats(days: number): Promise<PeriodStats> {
+  private async getPreviousPeriodStats(
+    days: number,
+    userId: string
+  ): Promise<PeriodStats> {
     const endDate = new Date();
     endDate.setDate(endDate.getDate() - days);
     const startDate = new Date();
@@ -71,6 +81,7 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     const { data: allTasks, error: allError } = await supabase
       .from('tasks')
       .select('completed')
+      .eq('user_id', userId)
       .gte('created_at', startDateStr)
       .lt('created_at', endDateStr);
 
@@ -89,7 +100,10 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     return { total, completed, pending };
   }
 
-  private async getTasksByDay(days: number): Promise<ChartDataPoint[]> {
+  private async getTasksByDay(
+    days: number,
+    userId: string
+  ): Promise<ChartDataPoint[]> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     const startDateStr = startDate.toISOString().split('T')[0] ?? '';
@@ -97,6 +111,7 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     const { data, error } = await supabase
       .from('tasks')
       .select('created_at')
+      .eq('user_id', userId)
       .gte('created_at', startDateStr);
 
     if (error) {
@@ -118,7 +133,10 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
       .sort((a, b) => a.date.localeCompare(b.date));
   }
 
-  private async getCompletedByDay(days: number): Promise<ChartDataPoint[]> {
+  private async getCompletedByDay(
+    days: number,
+    userId: string
+  ): Promise<ChartDataPoint[]> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     const startDateStr = startDate.toISOString().split('T')[0] ?? '';
@@ -126,6 +144,7 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     const { data, error } = await supabase
       .from('tasks')
       .select('updated_at, completed')
+      .eq('user_id', userId)
       .gte('updated_at', startDateStr);
 
     if (error) {

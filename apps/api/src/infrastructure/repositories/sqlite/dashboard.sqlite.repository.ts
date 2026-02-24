@@ -12,11 +12,14 @@ type PeriodStats = {
 };
 
 export class DashboardSqliteRepository implements IDashboardRepository {
-  async getDashboardData(days: number = 30): Promise<DashboardData> {
-    const currentStats = this.getCurrentPeriodStats(days);
-    const previousStats = this.getPreviousPeriodStats(days);
-    const tasksByDay = this.getTasksByDay(days);
-    const completedByDay = this.getCompletedByDay(days);
+  async getDashboardData(
+    days: number = 30,
+    userId: string
+  ): Promise<DashboardData> {
+    const currentStats = this.getCurrentPeriodStats(days, userId);
+    const previousStats = this.getPreviousPeriodStats(days, userId);
+    const tasksByDay = this.getTasksByDay(days, userId);
+    const completedByDay = this.getCompletedByDay(days, userId);
 
     const totals = {
       totalTasks: currentStats.total,
@@ -34,20 +37,22 @@ export class DashboardSqliteRepository implements IDashboardRepository {
     return { kpis, charts, totals };
   }
 
-  private getCurrentPeriodStats(days: number): PeriodStats {
+  private getCurrentPeriodStats(days: number, userId: string): PeriodStats {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     const startDateStr = startDate.toISOString();
 
     const totalResult = db
-      .prepare('SELECT COUNT(*) as count FROM tasks WHERE created_at >= ?')
-      .get(startDateStr) as { count: number };
+      .prepare(
+        'SELECT COUNT(*) as count FROM tasks WHERE user_id = ? AND created_at >= ?'
+      )
+      .get(userId, startDateStr) as { count: number };
 
     const completedResult = db
       .prepare(
-        'SELECT COUNT(*) as count FROM tasks WHERE completed = 1 AND created_at >= ?'
+        'SELECT COUNT(*) as count FROM tasks WHERE user_id = ? AND completed = 1 AND created_at >= ?'
       )
-      .get(startDateStr) as { count: number };
+      .get(userId, startDateStr) as { count: number };
 
     return {
       total: totalResult.count,
@@ -56,7 +61,7 @@ export class DashboardSqliteRepository implements IDashboardRepository {
     };
   }
 
-  private getPreviousPeriodStats(days: number): PeriodStats {
+  private getPreviousPeriodStats(days: number, userId: string): PeriodStats {
     const endDate = new Date();
     endDate.setDate(endDate.getDate() - days);
     const startDate = new Date();
@@ -67,15 +72,15 @@ export class DashboardSqliteRepository implements IDashboardRepository {
 
     const totalResult = db
       .prepare(
-        'SELECT COUNT(*) as count FROM tasks WHERE created_at >= ? AND created_at < ?'
+        'SELECT COUNT(*) as count FROM tasks WHERE user_id = ? AND created_at >= ? AND created_at < ?'
       )
-      .get(startDateStr, endDateStr) as { count: number };
+      .get(userId, startDateStr, endDateStr) as { count: number };
 
     const completedResult = db
       .prepare(
-        'SELECT COUNT(*) as count FROM tasks WHERE completed = 1 AND created_at >= ? AND created_at < ?'
+        'SELECT COUNT(*) as count FROM tasks WHERE user_id = ? AND completed = 1 AND created_at >= ? AND created_at < ?'
       )
-      .get(startDateStr, endDateStr) as { count: number };
+      .get(userId, startDateStr, endDateStr) as { count: number };
 
     return {
       total: totalResult.count,
@@ -84,7 +89,7 @@ export class DashboardSqliteRepository implements IDashboardRepository {
     };
   }
 
-  private getTasksByDay(days: number): ChartDataPoint[] {
+  private getTasksByDay(days: number, userId: string): ChartDataPoint[] {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     const startDateStr = startDate.toISOString().split('T')[0] ?? '';
@@ -94,12 +99,12 @@ export class DashboardSqliteRepository implements IDashboardRepository {
         `
       SELECT DATE(created_at) as date, COUNT(*) as count
       FROM tasks
-      WHERE DATE(created_at) >= ?
+      WHERE user_id = ? AND DATE(created_at) >= ?
       GROUP BY DATE(created_at)
       ORDER BY date ASC
     `
       )
-      .all(startDateStr) as { date: string; count: number }[];
+      .all(userId, startDateStr) as { date: string; count: number }[];
 
     return rows.map((row) => ({
       date: row.date,
@@ -107,7 +112,7 @@ export class DashboardSqliteRepository implements IDashboardRepository {
     }));
   }
 
-  private getCompletedByDay(days: number): ChartDataPoint[] {
+  private getCompletedByDay(days: number, userId: string): ChartDataPoint[] {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
     const startDateStr = startDate.toISOString().split('T')[0] ?? '';
@@ -117,12 +122,12 @@ export class DashboardSqliteRepository implements IDashboardRepository {
         `
       SELECT DATE(updated_at) as date, COUNT(*) as count
       FROM tasks
-      WHERE completed = 1 AND DATE(updated_at) >= ?
+      WHERE user_id = ? AND completed = 1 AND DATE(updated_at) >= ?
       GROUP BY DATE(updated_at)
       ORDER BY date ASC
     `
       )
-      .all(startDateStr) as { date: string; count: number }[];
+      .all(userId, startDateStr) as { date: string; count: number }[];
 
     return rows.map((row) => ({
       date: row.date,
