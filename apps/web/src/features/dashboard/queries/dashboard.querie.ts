@@ -1,16 +1,16 @@
 import type { DashboardResponseDTO } from '@bunstack-playground/shared/http';
 
-import { httpClient } from '@shared/http/http-client';
-import { API_URL, API_VERSION } from '@shared/config/supabase';
+import { axiosInstance } from '@shared/http/axios-client';
+import { API_VERSION } from '@shared/config/supabase';
 
 export async function getDashboardData(
   days = 30
 ): Promise<DashboardResponseDTO> {
   try {
-    const response = await httpClient<DashboardResponseDTO>(
-      `${API_URL}/api/${API_VERSION}/dashboard?days=${days}`
+    const response = await axiosInstance.get<DashboardResponseDTO>(
+      `/api/${API_VERSION}/dashboard?days=${days}`
     );
-    return response;
+    return response.data;
   } catch (err) {
     throw new Error(
       'Not is possible to fetch dashboard data. Please try again later.',
