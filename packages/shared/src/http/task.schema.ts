@@ -107,7 +107,7 @@ export const paginationSchema = z.object({
   total: z.coerce.number().min(0),
   page: z.coerce.number().int().min(1),
   pageSize: z.coerce.number().int().min(1),
-  totalPages: z.coerce.number().int().min(1),
+  totalPages: z.coerce.number().int().min(0),
   hasNextPage: z.boolean(),
   hasPrevPage: z.boolean(),
 });

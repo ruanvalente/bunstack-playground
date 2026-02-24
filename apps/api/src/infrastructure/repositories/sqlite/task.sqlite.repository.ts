@@ -35,7 +35,7 @@ export class TaskSqliteRepository implements ITaskRepository {
     const total = countResult.count;
 
     const offset = (page - 1) * pageSize;
-    const totalPages = Math.ceil(total / pageSize);
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     const rows = db
       .prepare(

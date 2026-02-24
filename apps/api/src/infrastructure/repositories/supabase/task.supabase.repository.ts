@@ -41,7 +41,7 @@ export class TaskSupabaseRepository implements ITaskRepository {
 
     const total = count || 0;
     const offset = (page - 1) * pageSize;
-    const totalPages = Math.ceil(total / pageSize);
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     let dataQuery = supabase
       .from('tasks')
