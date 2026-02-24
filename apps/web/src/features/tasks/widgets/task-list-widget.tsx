@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import type { Task } from '@bunstack-playground/shared/domain';
 import type { PaginatedTasksResponseDTO } from '@bunstack-playground/shared/http';
 
 import { Pagination } from '@shared/ui/pagination/pagination';
 import { getTasks, toggleTask } from '../queries/task.querie';
 import { TaskItem } from '../ui/task-item';
+import { EditTaskModal } from '../ui/edit-task-modal';
 import type { TaskFilterState } from '@shared/ui/filter/filter';
+import { useDeleteTask } from '../hooks/use-delete-task';
 
 interface TaskListWidgetProps {
   filters: TaskFilterState;
@@ -17,6 +21,11 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const navigation = useNavigation();
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+
+  const deleteMutation = useDeleteTask();
 
   const page = Number(new URLSearchParams(location.search).get('page') ?? 1);
   const perPage = Number(
@@ -57,6 +66,17 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
     const newUrl = `${location.pathname}?${params.toString()}`;
     if (location.search !== `?${params.toString()}`) {
       navigate(newUrl);
+    }
+  }
+
+  function handleEdit(task: Task) {
+    setTaskToEdit(task);
+    setIsEditModalOpen(true);
+  }
+
+  function handleDelete(taskId: string) {
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      deleteMutation.mutate(taskId);
     }
   }
 
@@ -118,6 +138,7 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
         {tasks.data.map((task) => (
           <TaskItem
             key={task.id}
+            id={task.id}
             title={task.title}
             completed={task.completed}
             onToggle={() =>
@@ -126,6 +147,8 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
                 completed: task.completed,
               })
             }
+            onEdit={() => handleEdit(task)}
+            onDelete={() => handleDelete(task.id)}
           />
         ))}
       </div>
@@ -135,6 +158,15 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
         totalPages={tasks.pagination.totalPages}
         onPageChange={handlePageChange}
         position="center"
+      />
+
+      <EditTaskModal
+        isOpen={isEditModalOpen}
+        task={taskToEdit}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setTaskToEdit(null);
+        }}
       />
     </div>
   );

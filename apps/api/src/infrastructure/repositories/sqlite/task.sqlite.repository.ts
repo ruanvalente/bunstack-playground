@@ -8,7 +8,10 @@ import { db } from '@/api/infrastructure/database/config';
 import type { ITaskRepository } from '@/api/domain/repositories';
 
 export class TaskSqliteRepository implements ITaskRepository {
-  async findAll(params: PaginationQueryDTO): Promise<PaginatedTasksDomain> {
+  async findAll(
+    params: PaginationQueryDTO,
+    userId: string
+  ): Promise<PaginatedTasksDomain> {
     const {
       page = 1,
       pageSize = 10,
@@ -17,13 +20,13 @@ export class TaskSqliteRepository implements ITaskRepository {
       statusFilter,
     } = params;
 
-    let whereClause = '';
-    const queryParams: any[] = [];
+    let whereClause = 'WHERE user_id = ?';
+    const queryParams: any[] = [userId];
 
     if (statusFilter === 'completed') {
-      whereClause = 'WHERE completed = 1';
+      whereClause += ' AND completed = 1';
     } else if (statusFilter === 'pending') {
-      whereClause = 'WHERE completed = 0';
+      whereClause += ' AND completed = 0';
     }
 
     const countResult = db
@@ -32,19 +35,19 @@ export class TaskSqliteRepository implements ITaskRepository {
     const total = countResult.count;
 
     const offset = (page - 1) * pageSize;
-    const totalPages = Math.ceil(total / pageSize);
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     const rows = db
       .prepare(
         `
-      SELECT id, title, completed, created_at, updated_at
+      SELECT id, user_id, title, completed, created_at, updated_at
       FROM tasks
       ${whereClause}
       ORDER BY ${sortBy} ${sortOrder}
       LIMIT ? OFFSET ?
     `
       )
-      .all(pageSize, offset);
+      .all(userId, pageSize, offset);
 
     return {
       data: rows.map(mapRowToTask),
@@ -64,33 +67,34 @@ export class TaskSqliteRepository implements ITaskRepository {
     };
   }
 
-  async findById(id: string): Promise<Task | null> {
+  async findById(id: string, userId: string): Promise<Task | null> {
     const row = db
       .prepare(
         `
-      SELECT id, title, completed, created_at, updated_at
+      SELECT id, user_id, title, completed, created_at, updated_at
       FROM tasks
-      WHERE id = ?
+      WHERE id = ? AND user_id = ?
     `
       )
-      .get(id);
+      .get(id, userId);
 
     return row ? mapRowToTask(row) : null;
   }
 
-  async create(title: string): Promise<Task> {
+  async create(title: string, userId: string): Promise<Task> {
     const taskId = crypto.randomUUID();
     const now = new Date().toISOString();
 
     db.prepare(
       `
-    INSERT INTO tasks (id, title, completed, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO tasks (id, user_id, title, completed, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?)
   `
-    ).run(taskId, title, 0, now, now);
+    ).run(taskId, userId, title, 0, now, now);
 
     return {
       id: taskId,
+      userId,
       title,
       completed: false,
       createdAt: now,
@@ -98,47 +102,55 @@ export class TaskSqliteRepository implements ITaskRepository {
     };
   }
 
-  async updateTitle(id: string, title: string): Promise<Task | null> {
+  async updateTitle(
+    id: string,
+    title: string,
+    userId: string
+  ): Promise<Task | null> {
     const result = db
       .prepare(
         `
       UPDATE tasks
       SET title = ?, updated_at = ?
-      WHERE id = ?
+      WHERE id = ? AND user_id = ?
     `
       )
-      .run(title, new Date().toISOString(), id);
+      .run(title, new Date().toISOString(), id, userId);
 
     if (result.changes === 0) return null;
 
-    return this.findById(id);
+    return this.findById(id, userId);
   }
 
-  async complete(id: string, completed: boolean): Promise<Task | null> {
+  async complete(
+    id: string,
+    completed: boolean,
+    userId: string
+  ): Promise<Task | null> {
     const result = db
       .prepare(
         `
       UPDATE tasks
       SET completed = ?, updated_at = ?
-      WHERE id = ?
+      WHERE id = ? AND user_id = ?
     `
       )
-      .run(completed ? 1 : 0, new Date().toISOString(), id);
+      .run(completed ? 1 : 0, new Date().toISOString(), id, userId);
 
     if (result.changes === 0) return null;
 
-    return this.findById(id);
+    return this.findById(id, userId);
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: string, userId: string): Promise<boolean> {
     const result = db
       .prepare(
         `
       DELETE FROM tasks
-      WHERE id = ?
+      WHERE id = ? AND user_id = ?
     `
       )
-      .run(id);
+      .run(id, userId);
 
     return result.changes > 0;
   }
@@ -147,6 +159,7 @@ export class TaskSqliteRepository implements ITaskRepository {
 function mapRowToTask(row: any): TaskDTOWithDate {
   return {
     id: row.id,
+    userId: row.user_id,
     title: row.title,
     completed: Boolean(row.completed),
     createdAt: new Date(row.created_at).toISOString(),
