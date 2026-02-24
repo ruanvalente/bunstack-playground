@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App.tsx';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { setAuthTokenGetter } from './shared/http/axios-client';
+import { useAuthStore } from './features/auth/store/auth.store';
+
+setAuthTokenGetter(() => useAuthStore.getState().session?.access_token ?? null);
 
 const queryClient = new QueryClient({
   defaultOptions: {

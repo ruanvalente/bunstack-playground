@@ -12,6 +12,7 @@ export const healthSchema = {
  */
 export const taskSchema = z.object({
   id: z.string().uuid(),
+  userId: z.string(),
   title: z.string().min(3),
   completed: z.boolean(),
   createdAt: z.iso.datetime(),
@@ -37,6 +38,13 @@ export const createTaskSchema = z.object({
 export const updateTaskSchema = z.object({
   id: z.string().uuid(),
   title: z.string().min(3),
+});
+
+/**
+ * Payload to edit task title (form)
+ */
+export const editTaskTitleSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters long'),
 });
 
 /**
@@ -99,7 +107,7 @@ export const paginationSchema = z.object({
   total: z.coerce.number().min(0),
   page: z.coerce.number().int().min(1),
   pageSize: z.coerce.number().int().min(1),
-  totalPages: z.coerce.number().int().min(1),
+  totalPages: z.coerce.number().int().min(0),
   hasNextPage: z.boolean(),
   hasPrevPage: z.boolean(),
 });
@@ -126,6 +134,7 @@ export type TaskDTO = z.infer<typeof taskSchema>;
 export type TaskDTOWithDate = z.infer<typeof taskSchemaWithDate>;
 export type CreateTaskDTO = z.infer<typeof createTaskSchema>;
 export type UpdateTaskDTO = z.infer<typeof updateTaskSchema>;
+export type EditTaskTitleDTO = z.infer<typeof editTaskTitleSchema>;
 export type CompleteTaskDTO = z.infer<typeof completeTaskSchema>;
 export type DeleteTaskDTO = z.infer<typeof deleteTaskSchema>;
 export type PaginationQueryDTO = z.infer<typeof paginationQuerySchema>;

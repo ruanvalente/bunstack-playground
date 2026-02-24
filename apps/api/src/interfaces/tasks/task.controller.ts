@@ -8,8 +8,9 @@ import {
   ListTasksUseCase,
   UpdateTaskUseCase,
 } from '@/api/application/tasks';
-import { AppError, HttpStatus } from '@/api/domain/erros';
+import { AppError, HttpStatus, UnauthorizedError } from '@/api/domain/erros';
 import { getTaskRepository } from '@/api/infrastructure/repositories/factory/task.repository.factory';
+import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
 import { API_VERSION } from '@bunstack-playground/shared';
 import {
   createTaskSchema,
@@ -25,13 +26,34 @@ const updateTaskUseCase = new UpdateTaskUseCase(taskRepository);
 const completeTaskUseCase = new CompleteTaskUseCase(taskRepository);
 const deleteTaskUseCase = new DeleteTaskUseCase(taskRepository);
 
+async function authenticateUser(
+  headers: Record<string, unknown>
+): Promise<string> {
+  const authHeader = headers.authorization as string | undefined;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new UnauthorizedError('No token provided');
+  }
+
+  const token = authHeader.replace('Bearer ', '');
+
+  const { data: user, error } = await supabaseAuth.auth.getUser(token);
+
+  if (error || !user?.user) {
+    throw new UnauthorizedError('Invalid or expired token');
+  }
+
+  return user.user.id;
+}
+
 export const taskController = new Elysia({
   prefix: `api/${API_VERSION}/tasks`,
 })
 
   .get(
     '/',
-    async ({ query }) => {
+    async ({ query, headers }) => {
+      const userId = await authenticateUser(headers);
       const page = query.page ?? 1;
       const pageSize = query.pageSize ?? 10;
       const sortOrder = (query.sortOrder ?? 'DESC') as 'ASC' | 'DESC';
@@ -40,13 +62,16 @@ export const taskController = new Elysia({
         | 'updated_at';
       const statusFilter = query.statusFilter;
 
-      const result = await listTasksUseCase.execute({
-        page,
-        pageSize,
-        sortOrder,
-        sortBy,
-        statusFilter,
-      });
+      const result = await listTasksUseCase.execute(
+        {
+          page,
+          pageSize,
+          sortOrder,
+          sortBy,
+          statusFilter,
+        },
+        userId
+      );
 
       const { pagination } = result;
 
@@ -86,9 +111,10 @@ export const taskController = new Elysia({
 
   .post(
     '/',
-    async ({ body, set }) => {
+    async ({ body, set, headers }) => {
       try {
-        const task = await createTaskUseCase.execute(body.title);
+        const userId = await authenticateUser(headers);
+        const task = await createTaskUseCase.execute(body.title, userId);
         set.status = HttpStatus.CREATED;
         return task;
       } catch (error) {
@@ -115,12 +141,14 @@ export const taskController = new Elysia({
 
   .put(
     '/:id',
-    async ({ params, body, set }) => {
+    async ({ params, body, set, headers }) => {
       try {
+        const userId = await authenticateUser(headers);
         const bodyTyped = body as { title: string };
         const task = await updateTaskUseCase.execute(
           params.id,
-          bodyTyped.title
+          bodyTyped.title,
+          userId
         );
 
         return { ...task, createdAt: task.createdAt };
@@ -158,12 +186,14 @@ export const taskController = new Elysia({
 
   .patch(
     '/:id/complete',
-    async ({ body, set }) => {
+    async ({ body, set, headers }) => {
       try {
+        const userId = await authenticateUser(headers);
         const bodyTyped = body as { id: string; completed: boolean };
         const task = await completeTaskUseCase.execute(
           bodyTyped.id,
-          bodyTyped.completed
+          bodyTyped.completed,
+          userId
         );
         return { ...task, createdAt: task.createdAt };
       } catch (error) {
@@ -194,9 +224,10 @@ export const taskController = new Elysia({
 
   .delete(
     '/:id',
-    async ({ params, set }) => {
+    async ({ params, set, headers }) => {
       try {
-        await deleteTaskUseCase.execute(params.id);
+        const userId = await authenticateUser(headers);
+        await deleteTaskUseCase.execute(params.id, userId);
         set.status = HttpStatus.NO_CONTENT;
         return null;
       } catch (error) {

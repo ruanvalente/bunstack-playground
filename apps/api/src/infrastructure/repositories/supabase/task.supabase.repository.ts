@@ -8,7 +8,10 @@ import type { ITaskRepository } from '@/api/domain/repositories';
 import { supabase } from '@/api/infrastructure/supabase';
 
 export class TaskSupabaseRepository implements ITaskRepository {
-  async findAll(params: PaginationQueryDTO): Promise<PaginatedTasksDomain> {
+  async findAll(
+    params: PaginationQueryDTO,
+    userId: string
+  ): Promise<PaginatedTasksDomain> {
     const {
       page = 1,
       pageSize = 10,
@@ -19,9 +22,10 @@ export class TaskSupabaseRepository implements ITaskRepository {
 
     let query = supabase
       .from('tasks')
-      .select('id, title, completed, created_at, updated_at', {
+      .select('id, user_id, title, completed, created_at, updated_at', {
         count: 'exact',
-      });
+      })
+      .eq('user_id', userId);
 
     if (statusFilter === 'completed') {
       query = query.eq('completed', true);
@@ -37,11 +41,12 @@ export class TaskSupabaseRepository implements ITaskRepository {
 
     const total = count || 0;
     const offset = (page - 1) * pageSize;
-    const totalPages = Math.ceil(total / pageSize);
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     let dataQuery = supabase
       .from('tasks')
-      .select('id, title, completed, created_at, updated_at')
+      .select('id, user_id, title, completed, created_at, updated_at')
+      .eq('user_id', userId)
       .order(sortBy, { ascending: sortOrder === 'ASC' });
 
     if (statusFilter === 'completed') {
@@ -77,11 +82,12 @@ export class TaskSupabaseRepository implements ITaskRepository {
     };
   }
 
-  async findById(id: string): Promise<Task | null> {
+  async findById(id: string, userId: string): Promise<Task | null> {
     const { data, error } = await supabase
       .from('tasks')
-      .select('id, title, completed, created_at')
+      .select('id, user_id, title, completed, created_at, updated_at')
       .eq('id', id)
+      .eq('user_id', userId)
       .single();
 
     if (error) {
@@ -94,10 +100,10 @@ export class TaskSupabaseRepository implements ITaskRepository {
     return data ? mapRowToTask(data) : null;
   }
 
-  async create(title: string): Promise<Task> {
+  async create(title: string, userId: string): Promise<Task> {
     const { data, error } = await supabase
       .from('tasks')
-      .insert([{ title }])
+      .insert([{ title, user_id: userId }])
       .select()
       .single();
 
@@ -108,11 +114,16 @@ export class TaskSupabaseRepository implements ITaskRepository {
     return mapRowToTask(data);
   }
 
-  async updateTitle(id: string, title: string): Promise<Task | null> {
+  async updateTitle(
+    id: string,
+    title: string,
+    userId: string
+  ): Promise<Task | null> {
     const { data, error } = await supabase
       .from('tasks')
       .update({ title })
       .eq('id', id)
+      .eq('user_id', userId)
       .select()
       .single();
 
@@ -126,11 +137,16 @@ export class TaskSupabaseRepository implements ITaskRepository {
     return data ? mapRowToTask(data) : null;
   }
 
-  async complete(id: string, completed: boolean): Promise<Task | null> {
+  async complete(
+    id: string,
+    completed: boolean,
+    userId: string
+  ): Promise<Task | null> {
     const { data, error } = await supabase
       .from('tasks')
       .update({ completed })
       .eq('id', id)
+      .eq('user_id', userId)
       .select()
       .single();
 
@@ -144,8 +160,12 @@ export class TaskSupabaseRepository implements ITaskRepository {
     return data ? mapRowToTask(data) : null;
   }
 
-  async delete(id: string): Promise<boolean> {
-    const { error } = await supabase.from('tasks').delete().eq('id', id);
+  async delete(id: string, userId: string): Promise<boolean> {
+    const { error } = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', userId);
 
     if (error) {
       throw new Error(`Failed to delete task: ${error.message}`);
@@ -158,6 +178,7 @@ export class TaskSupabaseRepository implements ITaskRepository {
 function mapRowToTask(row: any): TaskDTOWithDate {
   return {
     id: row.id,
+    userId: row.user_id,
     title: row.title,
     completed: Boolean(row.completed),
     createdAt: new Date(row.created_at).toISOString(),
