@@ -6,6 +6,8 @@ import {
   editTaskTitleSchema,
   type EditTaskTitleDTO,
 } from '@bunstack-playground/shared/http';
+import { CategorySelect } from '../../categories/ui/category-select';
+import { useState, useEffect } from 'react';
 
 type EditTaskModalProps = {
   isOpen: boolean;
@@ -15,6 +17,7 @@ type EditTaskModalProps = {
 
 export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
   const mutation = useUpdateTaskTitle();
+  const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
 
   const {
     register,
@@ -30,11 +33,18 @@ export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
     },
   });
 
+  useEffect(() => {
+    if (task) {
+      setCategoryId(task.categoryId);
+      reset({ title: task.title });
+    }
+  }, [task, reset]);
+
   const onSubmit = (data: EditTaskTitleDTO) => {
     if (!task) return;
 
     mutation.mutate(
-      { id: task.id, title: data.title },
+      { id: task.id, title: data.title, categoryId },
       {
         onSuccess: () => {
           reset();
@@ -72,6 +82,9 @@ export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
                 {errors.title.message}
               </p>
             )}
+          </div>
+          <div className="mb-4">
+            <CategorySelect value={categoryId} onChange={setCategoryId} />
           </div>
           <div className="flex justify-end gap-2">
             <button

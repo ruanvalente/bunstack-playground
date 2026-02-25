@@ -5,7 +5,13 @@ export function useCreateTask() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (title: string) => createTask(title),
+    mutationFn: ({
+      title,
+      categoryId,
+    }: {
+      title: string;
+      categoryId?: string;
+    }) => createTask(title, categoryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });

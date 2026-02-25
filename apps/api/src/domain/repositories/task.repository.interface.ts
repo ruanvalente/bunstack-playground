@@ -10,8 +10,13 @@ export interface ITaskRepository {
     userId: string
   ): Promise<PaginatedTasksDomain>;
   findById(id: string, userId: string): Promise<Task | null>;
-  create(title: string, userId: string): Promise<Task>;
-  updateTitle(id: string, title: string, userId: string): Promise<Task | null>;
+  create(title: string, userId: string, categoryId?: string): Promise<Task>;
+  updateTitle(
+    id: string,
+    title: string,
+    userId: string,
+    categoryId?: string
+  ): Promise<Task | null>;
   complete(
     id: string,
     completed: boolean,

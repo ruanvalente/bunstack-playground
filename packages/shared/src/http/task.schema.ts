@@ -15,6 +15,7 @@ export const taskSchema = z.object({
   userId: z.string(),
   title: z.string().min(3),
   completed: z.boolean(),
+  categoryId: z.string().uuid().optional(),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });
@@ -30,6 +31,7 @@ export const taskSchemaWithDate = taskSchema.transform((data) => ({
  */
 export const createTaskSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters long'),
+  categoryId: z.string().uuid().optional(),
 });
 
 /**
@@ -38,6 +40,7 @@ export const createTaskSchema = z.object({
 export const updateTaskSchema = z.object({
   id: z.string().uuid(),
   title: z.string().min(3),
+  categoryId: z.string().uuid().optional(),
 });
 
 /**
@@ -86,6 +89,7 @@ export const paginationQuerySchema = z.object({
   statusFilter: z
     .optional(z.enum({ completed: 'completed', pending: 'pending' }))
     .optional(),
+  categoryFilter: z.optional(z.string().uuid()).optional(),
   sortBy: z
     .optional(z.enum({ created_at: 'created_at', updated_at: 'updated_at' }))
     .default('created_at'),
@@ -143,3 +147,36 @@ export type PaginatedTasksResponseDTO = z.infer<
 >;
 export type PaginatedTasksDomain = z.infer<typeof paginatedTaskDomain>;
 export type HealthResponseDTO = typeof healthSchema;
+
+export const categorySchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  name: z.string().min(1).max(50),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  createdAt: z.iso.datetime(),
+});
+
+export const categorySchemaWithDate = categorySchema.transform((data) => ({
+  ...data,
+  createdAt: new Date(data.createdAt).toISOString(),
+}));
+
+export const createCategorySchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(50, 'Name must be at most 50 characters'),
+  color: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format')
+    .default('#3B82F6'),
+});
+
+export const deleteCategorySchema = z.object({
+  id: z.string().uuid(),
+});
+
+export type CategoryDTO = z.infer<typeof categorySchema>;
+export type CategoryDTOWithDate = z.infer<typeof categorySchemaWithDate>;
+export type CreateCategoryDTO = z.infer<typeof createCategorySchema>;
+export type DeleteCategoryDTO = z.infer<typeof deleteCategorySchema>;

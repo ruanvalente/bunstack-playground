@@ -469,7 +469,7 @@ Frontend (React + React Query)
 
 - [ ] **Websockets** - Atualizações em tempo real
 - [ ] **Testes automatizados** - Unit, integration e e2e
-- [ ] **Sistema de categorias/tags** - Organizar tarefas por categorias
+- [x] **Sistema de categorias/tags** - Organizar tarefas por categorias
 - [ ] **Notifications** - Notificações em tempo real
 - [ ] **Upload de arquivos** - Anexar arquivos às tarefas
 - [ ] **Task comments** - Comentários em tarefas

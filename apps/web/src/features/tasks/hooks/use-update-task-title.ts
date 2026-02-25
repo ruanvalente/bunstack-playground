@@ -5,8 +5,15 @@ export function useUpdateTaskTitle() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: ({ id, title }: { id: string; title: string }) =>
-      updateTaskTitle(id, title),
+    mutationFn: ({
+      id,
+      title,
+      categoryId,
+    }: {
+      id: string;
+      title: string;
+      categoryId?: string;
+    }) => updateTaskTitle(id, title, categoryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });

@@ -26,7 +26,10 @@ async function start() {
             description: 'API para gerenciamento de tarefas',
             version: '1.0.0',
           },
-          tags: [{ name: 'Tasks', description: 'API for task management' }],
+          tags: [
+            { name: 'Tasks', description: 'API for task management' },
+            { name: 'Categories', description: 'API for category management' },
+          ],
         },
       })
     );
