@@ -61,6 +61,7 @@ export const taskController = new Elysia({
         | 'created_at'
         | 'updated_at';
       const statusFilter = query.statusFilter;
+      const categoryFilter = query.categoryFilter;
 
       const result = await listTasksUseCase.execute(
         {
@@ -69,6 +70,7 @@ export const taskController = new Elysia({
           sortOrder,
           sortBy,
           statusFilter,
+          categoryFilter,
         },
         userId
       );
@@ -114,7 +116,12 @@ export const taskController = new Elysia({
     async ({ body, set, headers }) => {
       try {
         const userId = await authenticateUser(headers);
-        const task = await createTaskUseCase.execute(body.title, userId);
+        const bodyTyped = body as { title: string; categoryId?: string };
+        const task = await createTaskUseCase.execute(
+          bodyTyped.title,
+          userId,
+          bodyTyped.categoryId
+        );
         set.status = HttpStatus.CREATED;
         return task;
       } catch (error) {
@@ -127,7 +134,13 @@ export const taskController = new Elysia({
       }
     },
     {
-      body: createTaskSchema,
+      body: t.Object({
+        title: t.String({
+          minLength: 3,
+          description: 'Título da tarefa',
+        }),
+        categoryId: t.Optional(t.String({ format: 'uuid' })),
+      }),
       response: {
         201: taskSchema,
       },
@@ -144,11 +157,12 @@ export const taskController = new Elysia({
     async ({ params, body, set, headers }) => {
       try {
         const userId = await authenticateUser(headers);
-        const bodyTyped = body as { title: string };
+        const bodyTyped = body as { title: string; categoryId?: string };
         const task = await updateTaskUseCase.execute(
           params.id,
           bodyTyped.title,
-          userId
+          userId,
+          bodyTyped.categoryId
         );
 
         return { ...task, createdAt: task.createdAt };
@@ -170,6 +184,7 @@ export const taskController = new Elysia({
           minLength: 3,
           description: 'Título atualizado da tarefa',
         }),
+        categoryId: t.Optional(t.String({ format: 'uuid' })),
       }),
       response: {
         200: taskSchema,

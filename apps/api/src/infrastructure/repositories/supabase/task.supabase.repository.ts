@@ -18,19 +18,27 @@ export class TaskSupabaseRepository implements ITaskRepository {
       sortOrder = 'DESC',
       sortBy = 'created_at',
       statusFilter,
+      categoryFilter,
     } = params;
 
     let query = supabase
       .from('tasks')
-      .select('id, user_id, title, completed, created_at, updated_at', {
-        count: 'exact',
-      })
+      .select(
+        'id, user_id, title, completed, category_id, created_at, updated_at',
+        {
+          count: 'exact',
+        }
+      )
       .eq('user_id', userId);
 
     if (statusFilter === 'completed') {
       query = query.eq('completed', true);
     } else if (statusFilter === 'pending') {
       query = query.eq('completed', false);
+    }
+
+    if (categoryFilter) {
+      query = query.eq('category_id', categoryFilter);
     }
 
     const { count, error: countError } = await query;
@@ -45,7 +53,9 @@ export class TaskSupabaseRepository implements ITaskRepository {
 
     let dataQuery = supabase
       .from('tasks')
-      .select('id, user_id, title, completed, created_at, updated_at')
+      .select(
+        'id, user_id, title, completed, category_id, created_at, updated_at'
+      )
       .eq('user_id', userId)
       .order(sortBy, { ascending: sortOrder === 'ASC' });
 
@@ -53,6 +63,10 @@ export class TaskSupabaseRepository implements ITaskRepository {
       dataQuery = dataQuery.eq('completed', true);
     } else if (statusFilter === 'pending') {
       dataQuery = dataQuery.eq('completed', false);
+    }
+
+    if (categoryFilter) {
+      dataQuery = dataQuery.eq('category_id', categoryFilter);
     }
 
     const { data, error } = await dataQuery.range(
@@ -85,7 +99,9 @@ export class TaskSupabaseRepository implements ITaskRepository {
   async findById(id: string, userId: string): Promise<Task | null> {
     const { data, error } = await supabase
       .from('tasks')
-      .select('id, user_id, title, completed, created_at, updated_at')
+      .select(
+        'id, user_id, title, completed, category_id, created_at, updated_at'
+      )
       .eq('id', id)
       .eq('user_id', userId)
       .single();
@@ -100,10 +116,14 @@ export class TaskSupabaseRepository implements ITaskRepository {
     return data ? mapRowToTask(data) : null;
   }
 
-  async create(title: string, userId: string): Promise<Task> {
+  async create(
+    title: string,
+    userId: string,
+    categoryId?: string
+  ): Promise<Task> {
     const { data, error } = await supabase
       .from('tasks')
-      .insert([{ title, user_id: userId }])
+      .insert([{ title, user_id: userId, category_id: categoryId || null }])
       .select()
       .single();
 
@@ -117,11 +137,17 @@ export class TaskSupabaseRepository implements ITaskRepository {
   async updateTitle(
     id: string,
     title: string,
-    userId: string
+    userId: string,
+    categoryId?: string
   ): Promise<Task | null> {
+    const updateData: any = { title };
+    if (categoryId !== undefined) {
+      updateData.category_id = categoryId || null;
+    }
+
     const { data, error } = await supabase
       .from('tasks')
-      .update({ title })
+      .update(updateData)
       .eq('id', id)
       .eq('user_id', userId)
       .select()
@@ -181,6 +207,7 @@ function mapRowToTask(row: any): TaskDTOWithDate {
     userId: row.user_id,
     title: row.title,
     completed: Boolean(row.completed),
+    categoryId: row.category_id || undefined,
     createdAt: new Date(row.created_at).toISOString(),
     updatedAt: new Date(row.updated_at).toISOString(),
   };

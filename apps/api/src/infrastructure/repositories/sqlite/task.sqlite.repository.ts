@@ -18,6 +18,7 @@ export class TaskSqliteRepository implements ITaskRepository {
       sortOrder = 'DESC',
       sortBy = 'created_at',
       statusFilter,
+      categoryFilter,
     } = params;
 
     let whereClause = 'WHERE user_id = ?';
@@ -27,6 +28,11 @@ export class TaskSqliteRepository implements ITaskRepository {
       whereClause += ' AND completed = 1';
     } else if (statusFilter === 'pending') {
       whereClause += ' AND completed = 0';
+    }
+
+    if (categoryFilter) {
+      whereClause += ' AND category_id = ?';
+      queryParams.push(categoryFilter);
     }
 
     const countResult = db
@@ -40,14 +46,14 @@ export class TaskSqliteRepository implements ITaskRepository {
     const rows = db
       .prepare(
         `
-      SELECT id, user_id, title, completed, created_at, updated_at
+      SELECT id, user_id, title, completed, category_id, created_at, updated_at
       FROM tasks
       ${whereClause}
       ORDER BY ${sortBy} ${sortOrder}
       LIMIT ? OFFSET ?
     `
       )
-      .all(userId, pageSize, offset);
+      .all(...queryParams, pageSize, offset);
 
     return {
       data: rows.map(mapRowToTask),
@@ -71,7 +77,7 @@ export class TaskSqliteRepository implements ITaskRepository {
     const row = db
       .prepare(
         `
-      SELECT id, user_id, title, completed, created_at, updated_at
+      SELECT id, user_id, title, completed, category_id, created_at, updated_at
       FROM tasks
       WHERE id = ? AND user_id = ?
     `
@@ -81,22 +87,27 @@ export class TaskSqliteRepository implements ITaskRepository {
     return row ? mapRowToTask(row) : null;
   }
 
-  async create(title: string, userId: string): Promise<Task> {
+  async create(
+    title: string,
+    userId: string,
+    categoryId?: string
+  ): Promise<Task> {
     const taskId = crypto.randomUUID();
     const now = new Date().toISOString();
 
     db.prepare(
       `
-    INSERT INTO tasks (id, user_id, title, completed, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO tasks (id, user_id, title, completed, category_id, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `
-    ).run(taskId, userId, title, 0, now, now);
+    ).run(taskId, userId, title, 0, categoryId || null, now, now);
 
     return {
       id: taskId,
       userId,
       title,
       completed: false,
+      categoryId: categoryId || undefined,
       createdAt: now,
       updatedAt: now,
     };
@@ -105,17 +116,28 @@ export class TaskSqliteRepository implements ITaskRepository {
   async updateTitle(
     id: string,
     title: string,
-    userId: string
+    userId: string,
+    categoryId?: string
   ): Promise<Task | null> {
+    const updates: string[] = ['title = ?', 'updated_at = ?'];
+    const params: any[] = [title, new Date().toISOString()];
+
+    if (categoryId !== undefined) {
+      updates.push('category_id = ?');
+      params.push(categoryId || null);
+    }
+
+    params.push(id, userId);
+
     const result = db
       .prepare(
         `
       UPDATE tasks
-      SET title = ?, updated_at = ?
+      SET ${updates.join(', ')}
       WHERE id = ? AND user_id = ?
     `
       )
-      .run(title, new Date().toISOString(), id, userId);
+      .run(...params);
 
     if (result.changes === 0) return null;
 
@@ -162,6 +184,7 @@ function mapRowToTask(row: any): TaskDTOWithDate {
     userId: row.user_id,
     title: row.title,
     completed: Boolean(row.completed),
+    categoryId: row.category_id || undefined,
     createdAt: new Date(row.created_at).toISOString(),
     updatedAt: new Date(row.updated_at).toISOString(),
   };

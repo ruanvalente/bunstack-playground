@@ -6,6 +6,7 @@ import { cors } from '@elysiajs/cors';
 import { taskController } from './interfaces/tasks/task.controller';
 import { dashboardController } from './interfaces/dashboard/dashboard.controller';
 import { authController } from './interfaces/auth/auth.controller';
+import { categoryController } from './interfaces/categories/category.controller';
 
 import { healthSchema } from '@bunstack-playground/shared/http';
 
@@ -36,6 +37,7 @@ app
   .use(taskController)
   .use(dashboardController)
   .use(authController)
+  .use(categoryController)
   .get('/health', () => healthSchema);
 
 if (serveStatic) {
