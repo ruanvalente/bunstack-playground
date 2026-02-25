@@ -5,7 +5,12 @@ import { NotFoundError, ValidationError } from '@/api/domain/erros';
 export class UpdateTaskUseCase {
   constructor(private readonly taskRepository: ITaskRepository) {}
 
-  async execute(id: string, title: string, userId: string): Promise<Task> {
+  async execute(
+    id: string,
+    title: string,
+    userId: string,
+    categoryId?: string
+  ): Promise<Task> {
     const newTaskTitle = title.trim();
 
     if (newTaskTitle.length === 0 || !newTaskTitle) {
@@ -15,7 +20,8 @@ export class UpdateTaskUseCase {
     const task = await this.taskRepository.updateTitle(
       id,
       newTaskTitle,
-      userId
+      userId,
+      categoryId
     );
 
     if (!task) {

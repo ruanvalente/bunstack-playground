@@ -5,6 +5,8 @@ import {
   type CreateTaskDTO,
 } from '@bunstack-playground/shared/http';
 import { useCreateTask } from '../hooks/use-create-task';
+import { CategorySelect } from '../../categories/ui/category-select';
+import { useState } from 'react';
 
 type CreateTaskModalProps = {
   isOpen: boolean;
@@ -12,6 +14,7 @@ type CreateTaskModalProps = {
 };
 
 export function CreateTaskModal({ isOpen, onClose }: CreateTaskModalProps) {
+  const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
   const {
     register,
     handleSubmit,
@@ -25,12 +28,16 @@ export function CreateTaskModal({ isOpen, onClose }: CreateTaskModalProps) {
   const mutation = useCreateTask();
 
   const onSubmit = (data: CreateTaskDTO) => {
-    mutation.mutate(data.title, {
-      onSuccess: () => {
-        reset();
-        onClose();
-      },
-    });
+    mutation.mutate(
+      { title: data.title, categoryId },
+      {
+        onSuccess: () => {
+          reset();
+          setCategoryId(undefined);
+          onClose();
+        },
+      }
+    );
   };
 
   if (!isOpen) {
@@ -60,6 +67,9 @@ export function CreateTaskModal({ isOpen, onClose }: CreateTaskModalProps) {
                 {errors.title.message}
               </p>
             )}
+          </div>
+          <div className="mb-4">
+            <CategorySelect value={categoryId} onChange={setCategoryId} />
           </div>
           <div className="flex justify-end gap-2">
             <button
