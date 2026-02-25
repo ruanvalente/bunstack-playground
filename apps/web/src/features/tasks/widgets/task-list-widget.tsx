@@ -6,11 +6,13 @@ import type { Task } from '@bunstack-playground/shared/domain';
 import type { PaginatedTasksResponseDTO } from '@bunstack-playground/shared/http';
 
 import { Pagination } from '@shared/ui/pagination/pagination';
+import { TaskListSkeleton } from '@shared/ui/skeleton/task-list-skeleton';
 import { getTasks, toggleTask } from '../queries/task.querie';
 import { TaskItem } from '../ui/task-item';
 import { EditTaskModal } from '../ui/edit-task-modal';
 import type { TaskFilterState } from '@shared/ui/filter/filter';
 import { useDeleteTask } from '../hooks/use-delete-task';
+import { getCategories } from '../../categories/queries/category.querie';
 
 interface TaskListWidgetProps {
   filters: TaskFilterState;
@@ -37,6 +39,7 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
       filters.statusFilter === 'all' ? undefined : filters.statusFilter,
     sortBy: filters.sortBy,
     sortOrder: filters.sortOrder,
+    categoryFilter: filters.categoryFilter,
   };
 
   const queryKey = [
@@ -46,12 +49,19 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
     filters.statusFilter,
     filters.sortBy,
     filters.sortOrder,
+    filters.categoryFilter,
   ];
 
   const { data: tasks } = useQuery<PaginatedTasksResponseDTO>({
     queryKey,
     queryFn: () => getTasks(page, perPage, apiFilters),
     staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
+    staleTime: 10 * 60 * 1000,
   });
 
   const isLoading = navigation.state === 'loading';
@@ -116,12 +126,18 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
     },
   });
 
+  function getCategoryInfo(categoryId?: string) {
+    if (!categoryId) return undefined;
+    const category = categories.find((c) => c.id === categoryId);
+    if (!category) return undefined;
+    return {
+      name: category.name,
+      color: category.color,
+    };
+  }
+
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
-        Carregando tarefas...
-      </div>
-    );
+    return <TaskListSkeleton />;
   }
 
   if (!tasks || tasks.data.length === 0) {
@@ -141,6 +157,9 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
             id={task.id}
             title={task.title}
             completed={task.completed}
+            categoryId={task.categoryId}
+            categoryName={getCategoryInfo(task.categoryId)?.name}
+            categoryColor={getCategoryInfo(task.categoryId)?.color}
             onToggle={() =>
               toggleMutation.mutate({
                 id: task.id,

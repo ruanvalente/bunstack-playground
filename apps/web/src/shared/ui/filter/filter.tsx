@@ -6,18 +6,23 @@ import {
   ArrowUpDown,
   Clock,
   Calendar,
+  Tag,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { getCategories } from '@features/categories/queries/category.querie';
 
 export type TaskFilterState = {
   statusFilter: 'all' | 'completed' | 'pending';
   sortBy: 'created_at' | 'updated_at';
   sortOrder: 'ASC' | 'DESC';
+  categoryFilter?: string;
 };
 
 const DEFAULT_FILTERS: TaskFilterState = {
   statusFilter: 'all',
   sortBy: 'created_at',
   sortOrder: 'DESC',
+  categoryFilter: undefined,
 };
 
 type FilterWidgetProps = {
@@ -60,6 +65,16 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
     onFilterChange(DEFAULT_FILTERS);
   };
 
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const handleCategoryChange = (categoryId: string | undefined) => {
+    onFilterChange({ ...filters, categoryFilter: categoryId });
+  };
+
   const statusOptions = [
     { value: 'all' as const, label: 'All', icon: ArrowUpDown },
     { value: 'completed' as const, label: 'Completed', icon: CheckCircle },
@@ -96,7 +111,11 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
   };
 
   const activeStatusLabel = statusLabels[filters.statusFilter];
-  const hasActiveFilter = filters.statusFilter !== 'all';
+  const hasActiveFilter =
+    filters.statusFilter !== 'all' || filters.categoryFilter !== undefined;
+  const activeCategoryLabel = filters.categoryFilter
+    ? categories.find((c) => c.id === filters.categoryFilter)?.name
+    : undefined;
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -109,7 +128,10 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
         }`}
       >
         <Filter className="w-5 h-5" />
-        <span>Filter{activeStatusLabel ? `: ${activeStatusLabel}` : ''}</span>
+        <span>
+          Filter{activeStatusLabel ? `: ${activeStatusLabel}` : ''}
+          {activeCategoryLabel ? `: ${activeCategoryLabel}` : ''}
+        </span>
       </button>
 
       {isOpen && (
@@ -138,6 +160,42 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
                   >
                     <option.icon className="w-4 h-4" />
                     {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mb-3">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 px-2">
+                Category
+              </label>
+              <div className="space-y-1 max-h-40 overflow-y-auto">
+                <button
+                  onClick={() => handleCategoryChange(undefined)}
+                  className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
+                    !filters.categoryFilter
+                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <Tag className="w-4 h-4" />
+                  All
+                </button>
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => handleCategoryChange(category.id)}
+                    className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
+                      filters.categoryFilter === category.id
+                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                        : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <span
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: category.color }}
+                    />
+                    {category.name}
                   </button>
                 ))}
               </div>

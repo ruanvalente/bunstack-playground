@@ -8,6 +8,7 @@ export type TaskFilters = {
   statusFilter?: 'completed' | 'pending';
   sortBy?: 'created_at' | 'updated_at';
   sortOrder?: 'ASC' | 'DESC';
+  categoryFilter?: string;
 };
 
 export async function getTasks(
@@ -28,6 +29,9 @@ export async function getTasks(
     }
     if (filters?.sortOrder) {
       params.set('sortOrder', filters.sortOrder);
+    }
+    if (filters?.categoryFilter) {
+      params.set('categoryFilter', filters.categoryFilter);
     }
 
     const response = await axiosInstance.get<PaginatedTasksResponseDTO>(
@@ -59,11 +63,14 @@ export async function toggleTask(
   }
 }
 
-export async function createTask(title: string): Promise<Task> {
+export async function createTask(
+  title: string,
+  categoryId?: string
+): Promise<Task> {
   try {
     const response = await axiosInstance.post<Task>(
       `/api/${API_VERSION}/tasks`,
-      { title }
+      { title, categoryId }
     );
 
     return response.data;
@@ -86,12 +93,13 @@ export async function deleteTask(taskId: string): Promise<void> {
 
 export async function updateTaskTitle(
   taskId: string,
-  title: string
+  title: string,
+  categoryId?: string
 ): Promise<Task> {
   try {
     const response = await axiosInstance.put<Task>(
       `/api/${API_VERSION}/tasks/${taskId}`,
-      { title }
+      { title, categoryId }
     );
 
     return response.data;
