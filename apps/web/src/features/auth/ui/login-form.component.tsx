@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
+import { toast } from '@shared/ui/toaster';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
@@ -20,7 +21,9 @@ export function LoginForm() {
 
     if (!result.success) {
       setError(result.error || 'Login failed');
+      toast.error(result.error || 'Invalid email or password');
     } else {
+      toast.success('Login successful');
       navigate('/dashboard');
     }
 
@@ -28,6 +31,7 @@ export function LoginForm() {
   };
 
   const handleGithubLogin = () => {
+    toast.info('Redirecting to GitHub for authentication...');
     loginWithGithub();
   };
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../hooks/use-auth';
+import { toast } from '@shared/ui/toaster';
 
 export function RegisterForm() {
   const [email, setEmail] = useState('');
@@ -39,10 +40,12 @@ export function RegisterForm() {
 
     if (!result.success) {
       setError(result.error || 'Registration failed');
+      toast.error(result.error || 'Registration failed. Please try again');
     } else {
       setSuccess(
         'Registration successful! Please check your email to confirm your account.'
       );
+      toast.success('Check your email to confirm your account');
     }
 
     setLoading(false);

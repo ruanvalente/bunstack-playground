@@ -13,6 +13,7 @@ import { EditTaskModal } from '../ui/edit-task-modal';
 import type { TaskFilterState } from '@shared/ui/filter/filter';
 import { useDeleteTask } from '../hooks/use-delete-task';
 import { getCategories } from '../../categories/queries/category.querie';
+import { toast } from '@shared/ui/toaster';
 
 interface TaskListWidgetProps {
   filters: TaskFilterState;
@@ -119,10 +120,12 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
       if (context?.previousTasks) {
         queryClient.setQueryData(queryKey, context.previousTasks);
       }
+      toast.error('Failed to update task status');
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dashboard', 30] });
+      toast.success('Task status updated');
     },
   });
 
