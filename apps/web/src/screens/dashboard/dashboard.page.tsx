@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import type { DashboardResponseDTO } from '@bunstack-playground/shared/http';
@@ -6,17 +7,25 @@ import { KPIWidget } from '@/web/features/dashboard/widgets/kpi-widget';
 import { ChartsWidget } from '@/web/features/dashboard/widgets/charts-widget';
 import { SummaryWidget } from '@/web/features/dashboard/widgets/summary-widget';
 import { DashboardSkeleton } from '@/web/shared/ui/skeleton';
+import { toast } from '@shared/ui/toaster';
 
 export default function DashboardPage() {
   const initialData = useLoaderData() as DashboardResponseDTO;
 
-  const { data: dashboard } = useQuery<DashboardResponseDTO>({
+  const { data: dashboard, isError } = useQuery<DashboardResponseDTO>({
     queryKey: ['dashboard', 30],
     queryFn: () => getDashboardData(30),
     initialData,
     staleTime: 0,
     refetchOnMount: true,
+    retry: false,
   });
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('Failed to load dashboard data');
+    }
+  }, [isError]);
 
   if (!dashboard) {
     return <DashboardSkeleton />;

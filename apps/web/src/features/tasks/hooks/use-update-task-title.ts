@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateTaskTitle } from '../queries/task.querie';
+import { toast } from '@shared/ui/toaster';
 
 export function useUpdateTaskTitle() {
   const queryClient = useQueryClient();
@@ -17,6 +18,10 @@ export function useUpdateTaskTitle() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      toast.success('Task updated successfully');
+    },
+    onError: () => {
+      toast.error('Failed to update task');
     },
   });
 
