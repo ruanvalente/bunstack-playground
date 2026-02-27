@@ -8,6 +8,7 @@ import { ChartsWidget } from '@/web/features/dashboard/widgets/charts-widget';
 import { SummaryWidget } from '@/web/features/dashboard/widgets/summary-widget';
 import { DashboardSkeleton } from '@/web/shared/ui/skeleton';
 import { toast } from '@shared/ui/toaster';
+import { ErrorBoundary } from '@/web/shared/ui/error-boundary';
 
 export default function DashboardPage() {
   const initialData = useLoaderData() as DashboardResponseDTO;
@@ -40,13 +41,19 @@ export default function DashboardPage() {
       </h1>
 
       <div className="mb-6">
-        <KPIWidget kpis={kpis} />
+        <ErrorBoundary>
+          <KPIWidget kpis={kpis} />
+        </ErrorBoundary>
       </div>
       <div>
-        <ChartsWidget charts={charts} />
+        <ErrorBoundary>
+          <ChartsWidget charts={charts} />
+        </ErrorBoundary>
       </div>
       <div>
-        <SummaryWidget totals={totals} />
+        <ErrorBoundary>
+          <SummaryWidget totals={totals} />
+        </ErrorBoundary>
       </div>
     </section>
   );
