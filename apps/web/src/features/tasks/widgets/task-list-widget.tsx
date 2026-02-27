@@ -163,18 +163,6 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
     },
   });
 
-  if (isLoading) {
-    return <TaskListSkeleton />;
-  }
-
-  if (!tasks || tasks.data.length === 0) {
-    return (
-      <div className="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
-        Nenhuma tarefa encontrada.
-      </div>
-    );
-  }
-
   const handleToggle = useCallback(
     (id: string, completed: boolean) => {
       toggleMutation.mutate({ id, completed });
@@ -186,6 +174,18 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
     setIsEditModalOpen(false);
     setTaskToEdit(null);
   }, []);
+
+  if (isLoading) {
+    return <TaskListSkeleton />;
+  }
+
+  if (!tasks || tasks.data.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+        Nenhuma tarefa encontrada.
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>
