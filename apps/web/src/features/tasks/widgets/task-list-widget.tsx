@@ -14,6 +14,7 @@ import type { TaskFilterState } from '@shared/ui/filter/filter';
 import { useDeleteTask } from '../hooks/use-delete-task';
 import { getCategories } from '../../categories/queries/category.querie';
 import { toast } from '@shared/ui/toaster';
+import { ErrorBoundary } from '@/web/shared/ui/error-boundary';
 
 interface TaskListWidgetProps {
   filters: TaskFilterState;
@@ -86,9 +87,16 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
   }
 
   function handleDelete(taskId: string) {
-    if (window.confirm('Are you sure you want to delete this task?')) {
-      deleteMutation.mutate(taskId);
-    }
+    toast.warning('Are you sure you want to delete this task?', {
+      action: {
+        label: 'Delete',
+        onClick: () => deleteMutation.mutate(taskId),
+      },
+      cancel: {
+        label: 'Cancel',
+        onClick: () => {},
+      },
+    });
   }
 
   const toggleMutation = useMutation({
@@ -152,44 +160,46 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        {tasks.data.map((task) => (
-          <TaskItem
-            key={task.id}
-            id={task.id}
-            title={task.title}
-            completed={task.completed}
-            categoryId={task.categoryId}
-            categoryName={getCategoryInfo(task.categoryId)?.name}
-            categoryColor={getCategoryInfo(task.categoryId)?.color}
-            onToggle={() =>
-              toggleMutation.mutate({
-                id: task.id,
-                completed: task.completed,
-              })
-            }
-            onEdit={() => handleEdit(task)}
-            onDelete={() => handleDelete(task.id)}
-          />
-        ))}
+    <ErrorBoundary>
+      <div className="space-y-4">
+        <div className="space-y-2">
+          {tasks.data.map((task) => (
+            <TaskItem
+              key={task.id}
+              id={task.id}
+              title={task.title}
+              completed={task.completed}
+              categoryId={task.categoryId}
+              categoryName={getCategoryInfo(task.categoryId)?.name}
+              categoryColor={getCategoryInfo(task.categoryId)?.color}
+              onToggle={() =>
+                toggleMutation.mutate({
+                  id: task.id,
+                  completed: task.completed,
+                })
+              }
+              onEdit={() => handleEdit(task)}
+              onDelete={() => handleDelete(task.id)}
+            />
+          ))}
+        </div>
+
+        <Pagination
+          currentPage={tasks.pagination.page}
+          totalPages={tasks.pagination.totalPages}
+          onPageChange={handlePageChange}
+          position="center"
+        />
+
+        <EditTaskModal
+          isOpen={isEditModalOpen}
+          task={taskToEdit}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setTaskToEdit(null);
+          }}
+        />
       </div>
-
-      <Pagination
-        currentPage={tasks.pagination.page}
-        totalPages={tasks.pagination.totalPages}
-        onPageChange={handlePageChange}
-        position="center"
-      />
-
-      <EditTaskModal
-        isOpen={isEditModalOpen}
-        task={taskToEdit}
-        onClose={() => {
-          setIsEditModalOpen(false);
-          setTaskToEdit(null);
-        }}
-      />
-    </div>
+    </ErrorBoundary>
   );
 }
