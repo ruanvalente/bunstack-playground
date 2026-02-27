@@ -1,7 +1,7 @@
 import type { DashboardResponseDTO } from '@bunstack-playground/shared/http';
 
-import { axiosInstance } from '@shared/http/axios-client';
 import { API_VERSION } from '@shared/config/supabase';
+import { axiosInstance } from '@shared/http/axios-client';
 
 export async function getDashboardData(
   days = 30

@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+
 import { AnimatePresence, motion } from 'motion/react';
 
 export function AnimatedOutlet() {

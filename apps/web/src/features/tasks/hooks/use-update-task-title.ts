@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateTaskTitle } from '../queries/task.querie';
+
 import { toast } from '@shared/ui/toaster';
+
+import { updateTaskTitle } from '../queries/task.querie';
 
 export function useUpdateTaskTitle() {
   const queryClient = useQueryClient();

@@ -1,7 +1,8 @@
 import { config } from '@/api/config';
+import type { ICategoryRepository } from '@/api/domain/repositories';
+
 import { CategorySqliteRepository } from '../sqlite/category.sqlite.repository';
 import { CategorySupabaseRepository } from '../supabase/category.supabase.repository';
-import type { ICategoryRepository } from '@/api/domain/repositories';
 
 const isSupabaseConfigured = Boolean(
   process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY

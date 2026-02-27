@@ -1,10 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './App.tsx';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { setAuthTokenGetter } from './shared/http/axios-client';
+
+import { App } from './App.tsx';
 import { useAuthStore } from './features/auth/store/auth.store';
+import { setAuthTokenGetter } from './shared/http/axios-client';
 import { Toaster } from './shared/ui/toaster';
 
 setAuthTokenGetter(() => useAuthStore.getState().session?.access_token ?? null);

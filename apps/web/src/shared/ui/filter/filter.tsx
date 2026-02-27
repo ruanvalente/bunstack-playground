@@ -1,15 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import { getCategories } from '@features/categories/queries/category.querie';
+import { useQuery } from '@tanstack/react-query';
 import {
-  Filter,
+  ArrowUpDown,
+  Calendar,
   CheckCircle,
   Circle,
-  ArrowUpDown,
   Clock,
-  Calendar,
+  Filter,
   Tag,
 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { getCategories } from '@features/categories/queries/category.querie';
 
 export type TaskFilterState = {
   statusFilter: 'all' | 'completed' | 'pending';

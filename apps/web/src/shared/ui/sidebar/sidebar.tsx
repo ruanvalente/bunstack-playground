@@ -1,5 +1,6 @@
-import { useSidebar } from '@shared/hooks/use-sidebar';
 import { HomeIcon } from 'lucide-react';
+
+import { useSidebar } from '@shared/hooks/use-sidebar';
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
   const { isOpen, toggle } = useSidebar();

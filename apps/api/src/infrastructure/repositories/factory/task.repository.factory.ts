@@ -1,7 +1,8 @@
 import { config } from '@/api/config';
+import type { ITaskRepository } from '@/api/domain/repositories';
+
 import { TaskSqliteRepository } from '../sqlite/task.sqlite.repository';
 import { TaskSupabaseRepository } from '../supabase/task.supabase.repository';
-import type { ITaskRepository } from '@/api/domain/repositories';
 
 const isSupabaseConfigured = Boolean(
   process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY

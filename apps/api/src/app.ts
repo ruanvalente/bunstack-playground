@@ -1,14 +1,13 @@
-import { Elysia, file } from 'elysia';
-import { staticPlugin } from '@elysiajs/static';
-
 import { cors } from '@elysiajs/cors';
-
-import { taskController } from './interfaces/tasks/task.controller';
-import { dashboardController } from './interfaces/dashboard/dashboard.controller';
-import { authController } from './interfaces/auth/auth.controller';
-import { categoryController } from './interfaces/categories/category.controller';
+import { staticPlugin } from '@elysiajs/static';
+import { Elysia, file } from 'elysia';
 
 import { healthSchema } from '@bunstack-playground/shared/http';
+
+import { authController } from './interfaces/auth/auth.controller';
+import { categoryController } from './interfaces/categories/category.controller';
+import { dashboardController } from './interfaces/dashboard/dashboard.controller';
+import { taskController } from './interfaces/tasks/task.controller';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isRailway = process.env.RAILWAY_STATIC_URL !== undefined;

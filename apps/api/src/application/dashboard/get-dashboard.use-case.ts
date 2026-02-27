@@ -1,4 +1,5 @@
 import type { DashboardData } from '@bunstack-playground/shared';
+
 import type { IDashboardRepository } from '@/api/domain/repositories';
 
 export class GetDashboardUseCase {

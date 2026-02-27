@@ -1,8 +1,8 @@
 import type { Task } from '@bunstack-playground/shared/domain';
 import type { PaginatedTasksResponseDTO } from '@bunstack-playground/shared/http';
 
-import { axiosInstance } from '@shared/http/axios-client';
 import { API_VERSION } from '@shared/config/supabase';
+import { axiosInstance } from '@shared/http/axios-client';
 
 export type TaskFilters = {
   statusFilter?: 'completed' | 'pending';

@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
 import { useLoaderData } from 'react-router-dom';
+
 import { useQuery } from '@tanstack/react-query';
+
 import type { DashboardResponseDTO } from '@bunstack-playground/shared/http';
-import { getDashboardData } from '@/web/features/dashboard/queries/dashboard.querie';
-import { KPIWidget } from '@/web/features/dashboard/widgets/kpi-widget';
-import { ChartsWidget } from '@/web/features/dashboard/widgets/charts-widget';
-import { SummaryWidget } from '@/web/features/dashboard/widgets/summary-widget';
-import { DashboardSkeleton } from '@/web/shared/ui/skeleton';
+
 import { toast } from '@shared/ui/toaster';
+import { getDashboardData } from '@/web/features/dashboard/queries/dashboard.querie';
+import { ChartsWidget } from '@/web/features/dashboard/widgets/charts-widget';
+import { KPIWidget } from '@/web/features/dashboard/widgets/kpi-widget';
+import { SummaryWidget } from '@/web/features/dashboard/widgets/summary-widget';
 import { ErrorBoundary } from '@/web/shared/ui/error-boundary';
+import { DashboardSkeleton } from '@/web/shared/ui/skeleton';
 
 export default function DashboardPage() {
   const initialData = useLoaderData() as DashboardResponseDTO;

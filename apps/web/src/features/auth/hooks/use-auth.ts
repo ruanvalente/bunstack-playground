@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from 'react';
-import { useAuthStore } from '../store/auth.store';
+
 import { AUTH_API_URL } from '@shared/config/supabase';
+
+import { useAuthStore } from '../store/auth.store';
 
 type LoginCredentials = {
   email: string;

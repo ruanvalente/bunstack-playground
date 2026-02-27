@@ -1,7 +1,8 @@
 import type {
-  DashboardData,
   ChartDataPoint,
+  DashboardData,
 } from '@bunstack-playground/shared';
+
 import type { IDashboardRepository } from '@/api/domain/repositories';
 import { supabase } from '@/api/infrastructure/supabase';
 

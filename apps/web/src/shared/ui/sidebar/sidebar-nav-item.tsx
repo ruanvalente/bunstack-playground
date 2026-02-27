@@ -1,6 +1,8 @@
-import { useSidebarStore } from '@shared/store/sidebar.store';
-import type { ComponentType, SVGProps } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
+import type { ComponentType, SVGProps } from 'react';
+
+import { useSidebarStore } from '@shared/store/sidebar.store';
 
 type SidebarItemProps = {
   label: string;

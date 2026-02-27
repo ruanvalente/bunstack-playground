@@ -1,4 +1,5 @@
 import type { ChartDataPointDTO } from '@bunstack-playground/shared/http';
+
 import { ChartWidget } from '@/web/shared/widgets/chart/chart-widget.widget';
 
 type BarChartWidgetProps = {

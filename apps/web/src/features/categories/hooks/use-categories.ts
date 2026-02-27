@@ -1,10 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { toast } from '@shared/ui/toaster';
+
 import {
-  getCategories,
   createCategory,
   deleteCategory,
+  getCategories,
 } from '../queries/category.querie';
-import { toast } from '@shared/ui/toaster';
 
 export function useCategories() {
   return useQuery({

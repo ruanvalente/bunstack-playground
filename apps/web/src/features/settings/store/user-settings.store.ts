@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+
 import { USER_SETTINGS_KEY } from '@shared/config/constants/storage.config';
+
 import type {
   NotificationSettings,
   ProfileSettings,

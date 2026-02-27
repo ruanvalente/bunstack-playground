@@ -1,6 +1,7 @@
-import { Skeleton } from '@/web/shared/ui/skeleton';
 import { lazy, Suspense } from 'react';
 import type { RouteObject } from 'react-router-dom';
+
+import { Skeleton } from '@/web/shared/ui/skeleton';
 
 const UsersPage = lazy(() =>
   import('@/web/screens/users/users.page').then((module) => ({

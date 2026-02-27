@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import type { StateStorage } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+
 import { AUTH_API_URL } from '@shared/config/supabase';
-import { encrypt, decrypt } from '@shared/utils/helpers/crypto.helper';
+import { decrypt, encrypt } from '@shared/utils/helpers/crypto.helper';
 
 type Session = {
   access_token: string;

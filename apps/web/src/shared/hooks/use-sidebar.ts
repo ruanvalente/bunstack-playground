@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { useSidebarStore } from '../store/sidebar.store';
 
 const MOBILE_BREAKPOINT = '(max-width: 767px)';

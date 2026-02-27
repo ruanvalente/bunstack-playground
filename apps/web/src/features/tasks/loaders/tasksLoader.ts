@@ -1,6 +1,8 @@
 import type { LoaderFunctionArgs } from 'react-router-dom';
-import { getTasks } from '../queries/task.querie';
+
 import type { QueryClient } from '@tanstack/react-query';
+
+import { getTasks } from '../queries/task.querie';
 
 export const tasksLoader =
   (queryClient: QueryClient) =>

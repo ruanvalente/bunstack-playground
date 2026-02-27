@@ -1,6 +1,14 @@
 import { openapi } from '@elysiajs/openapi';
 import { Elysia, t } from 'elysia';
 
+import { API_VERSION } from '@bunstack-playground/shared';
+import {
+  createTaskSchema,
+  paginatedTasksResponseSchema,
+  paginationQuerySchema,
+  taskSchema,
+} from '@bunstack-playground/shared/http';
+
 import {
   CompleteTaskUseCase,
   CreateTaskUseCase,
@@ -11,13 +19,6 @@ import {
 import { AppError, HttpStatus, UnauthorizedError } from '@/api/domain/erros';
 import { getTaskRepository } from '@/api/infrastructure/repositories/factory/task.repository.factory';
 import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
-import { API_VERSION } from '@bunstack-playground/shared';
-import {
-  createTaskSchema,
-  paginatedTasksResponseSchema,
-  paginationQuerySchema,
-  taskSchema,
-} from '@bunstack-playground/shared/http';
 
 const taskRepository = getTaskRepository();
 const listTasksUseCase = new ListTasksUseCase(taskRepository);
