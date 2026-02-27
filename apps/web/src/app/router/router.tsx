@@ -4,15 +4,16 @@ import {
   Outlet,
   RouterProvider,
 } from 'react-router-dom';
-import MainLayout from '@shared/layouts/main.layout';
+
+import { authRoutes } from '@features/auth/routes';
+import { dashboardRoutes } from '@features/dashboard/routes';
+import { settingsRoutes } from '@features/settings/routes';
+import { tasksRoutes } from '@features/tasks/routes';
 import { QueryClient } from '@tanstack/react-query';
 
-import { dashboardRoutes } from '@features/dashboard/routes';
-import { tasksRoutes } from '@features/tasks/routes';
-import { settingsRoutes } from '@features/settings/routes';
-import { usersRoutes } from '@/web/features/users/routes';
-import { authRoutes } from '@features/auth/routes';
+import MainLayout from '@shared/layouts/main.layout';
 import { ProtectedRoute } from '@/web/features/auth/ui/protected-route.component';
+import { usersRoutes } from '@/web/features/users/routes';
 
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([

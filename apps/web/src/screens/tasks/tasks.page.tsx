@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { CreateTaskWidget } from '@/web/features/tasks/widgets/create-task-widget';
-import { TaskListWidget } from '../../features/tasks/widgets/task-list-widget';
+
 import {
-  FilterWidget,
   DEFAULT_FILTERS,
+  FilterWidget,
   type TaskFilterState,
 } from '@shared/ui/filter/filter';
+import { CreateTaskWidget } from '@/web/features/tasks/widgets/create-task-widget';
+
+import { TaskListWidget } from '../../features/tasks/widgets/task-list-widget';
 
 export default function TasksPage() {
   const [filters, setFilters] = useState<TaskFilterState>(DEFAULT_FILTERS);

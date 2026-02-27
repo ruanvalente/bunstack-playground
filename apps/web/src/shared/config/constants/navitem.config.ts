@@ -1,4 +1,4 @@
-import { LayoutDashboard, CheckSquare, Settings, Users } from 'lucide-react';
+import { CheckSquare, LayoutDashboard, Settings, Users } from 'lucide-react';
 
 export const NAV_ITEMS = [
   {

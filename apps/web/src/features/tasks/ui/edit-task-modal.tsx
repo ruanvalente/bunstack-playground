@@ -1,13 +1,16 @@
+import { useEffect, useState } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useUpdateTaskTitle } from '../hooks/use-update-task-title';
+
 import type { Task } from '@bunstack-playground/shared/domain';
 import {
-  editTaskTitleSchema,
   type EditTaskTitleDTO,
+  editTaskTitleSchema,
 } from '@bunstack-playground/shared/http';
+
 import { CategorySelect } from '../../categories/ui/category-select';
-import { useState, useEffect } from 'react';
+import { useUpdateTaskTitle } from '../hooks/use-update-task-title';
 
 type EditTaskModalProps = {
   isOpen: boolean;

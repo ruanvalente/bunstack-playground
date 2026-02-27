@@ -1,5 +1,5 @@
-import { useUserSettings } from '@features/settings/hooks/use-user-settings';
 import { useAuthStore } from '@features/auth/store/auth.store';
+import { useUserSettings } from '@features/settings/hooks/use-user-settings';
 import type { FormEvent } from 'react';
 
 export function ProfileSection() {

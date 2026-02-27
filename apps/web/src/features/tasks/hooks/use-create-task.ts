@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createTask } from '../queries/task.querie';
+
 import { toast } from '@shared/ui/toaster';
+
+import { createTask } from '../queries/task.querie';
 
 export function useCreateTask() {
   const queryClient = useQueryClient();

@@ -1,5 +1,6 @@
-import { useHeaderStore } from '../store/header.store';
 import { useAuthStore } from '@features/auth/store/auth.store';
+
+import { useHeaderStore } from '../store/header.store';
 
 const DEFAULT_AVATAR =
   'https://api.dicebear.com/9.x/adventurer/svg?seed=Kingston';

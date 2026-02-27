@@ -1,6 +1,8 @@
-import { useUserSettingsStore } from '../store/user-settings.store';
-import { useAuthStore } from '@features/auth/store/auth.store';
 import { useMemo } from 'react';
+
+import { useAuthStore } from '@features/auth/store/auth.store';
+
+import { useUserSettingsStore } from '../store/user-settings.store';
 
 export function useUserSettings() {
   const store = useUserSettingsStore();

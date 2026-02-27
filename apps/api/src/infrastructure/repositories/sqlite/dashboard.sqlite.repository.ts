@@ -1,9 +1,10 @@
 import type {
-  DashboardData,
   ChartDataPoint,
+  DashboardData,
 } from '@bunstack-playground/shared';
-import { db } from '@/api/infrastructure/database/config';
+
 import type { IDashboardRepository } from '@/api/domain/repositories';
+import { db } from '@/api/infrastructure/database/config';
 
 type PeriodStats = {
   total: number;

@@ -1,4 +1,5 @@
 import type { DashboardChartsDTO } from '@bunstack-playground/shared/http';
+
 import { BarChartWidget } from './bar-chart.widget';
 import { LineChartWidget } from './line-chart.widget';
 

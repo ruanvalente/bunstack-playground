@@ -4,10 +4,11 @@ import { z } from 'zod';
 
 import { API_VERSION } from '@bunstack-playground/shared';
 import { dashboardResponseSchema } from '@bunstack-playground/shared/http';
-import { getDashboardRepository } from '@/api/infrastructure/repositories/factory/dashboard.repository.factory';
+
 import { GetDashboardUseCase } from '@/api/application/dashboard';
-import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
 import { UnauthorizedError } from '@/api/domain/erros';
+import { getDashboardRepository } from '@/api/infrastructure/repositories/factory/dashboard.repository.factory';
+import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
 
 const dashboardRepository = getDashboardRepository();
 const getDashboardUseCase = new GetDashboardUseCase(dashboardRepository);

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+
 import { SIDEBAR_KEY } from '../config/constants/storage.config';
 
 type NavItem = {

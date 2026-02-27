@@ -1,4 +1,5 @@
 import type { Category } from '@bunstack-playground/shared';
+
 import { getCategoryRepository } from '@/api/infrastructure/repositories/factory/category.repository.factory';
 
 export class CreateCategoryUseCase {

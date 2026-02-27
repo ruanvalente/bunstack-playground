@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
+
 import { supabase } from '@shared/config/supabase';
+
 import { useAuthStore } from '../store/auth.store';
 
 export function CallbackPage() {
