@@ -13,6 +13,7 @@
     "@elysiajs/openapi": "^1.4.13",
     "@elysiajs/static": "^1.4.7",
     "@supabase/supabase-js": "^2.93.3",
+    "csv-parser": "^3.0.0",
     "elysia": "^1.4.22",
     "zod": "^4.3.5"
   }
