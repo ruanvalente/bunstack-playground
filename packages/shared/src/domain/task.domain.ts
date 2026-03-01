@@ -15,3 +15,14 @@ export type Task = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TaskAttachment = {
+  id: string;
+  taskId: string;
+  userId: string;
+  fileName: string;
+  filePath: string;
+  fileSize: number;
+  mimeType: string;
+  createdAt: string;
+};

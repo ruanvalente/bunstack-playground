@@ -42,26 +42,21 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     days: number,
     userId: string
   ): Promise<PeriodStats> {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    const startDateStr = startDate.toISOString();
+    const { data, error } = await supabase.rpc('get_dashboard_tasks', {
+      p_user_id: userId,
+      p_days: days,
+    });
 
-    const { data: allTasks, error: allError } = await supabase
-      .from('tasks')
-      .select('completed')
-      .eq('user_id', userId)
-      .gte('created_at', startDateStr);
-
-    if (allError) {
-      throw new Error(`Failed to fetch tasks: ${allError.message}`);
+    if (error) {
+      throw new Error(`Failed to fetch tasks: ${error.message}`);
     }
 
-    const total = allTasks?.length || 0;
-    const completed =
-      allTasks?.filter(
-        (t) =>
-          t.completed === true || t.completed === 'true' || t.completed === 1
-      ).length || 0;
+    const tasks = data || [];
+    const total = tasks.length;
+    const completed = tasks.filter(
+      (t: any) =>
+        t.completed === true || t.completed === 'true' || t.completed === 1
+    ).length;
     const pending = total - completed;
 
     return { total, completed, pending };
@@ -71,31 +66,21 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     days: number,
     userId: string
   ): Promise<PeriodStats> {
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() - days);
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days * 2);
+    const { data, error } = await supabase.rpc('get_dashboard_tasks', {
+      p_user_id: userId,
+      p_days: days * 2,
+    });
 
-    const startDateStr = startDate.toISOString();
-    const endDateStr = endDate.toISOString();
-
-    const { data: allTasks, error: allError } = await supabase
-      .from('tasks')
-      .select('completed')
-      .eq('user_id', userId)
-      .gte('created_at', startDateStr)
-      .lt('created_at', endDateStr);
-
-    if (allError) {
-      throw new Error(`Failed to fetch tasks: ${allError.message}`);
+    if (error) {
+      throw new Error(`Failed to fetch tasks: ${error.message}`);
     }
 
-    const total = allTasks?.length || 0;
-    const completed =
-      allTasks?.filter(
-        (t) =>
-          t.completed === true || t.completed === 'true' || t.completed === 1
-      ).length || 0;
+    const tasks = data || [];
+    const total = tasks.length;
+    const completed = tasks.filter(
+      (t: any) =>
+        t.completed === true || t.completed === 'true' || t.completed === 1
+    ).length;
     const pending = total - completed;
 
     return { total, completed, pending };
@@ -105,31 +90,27 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     days: number,
     userId: string
   ): Promise<ChartDataPoint[]> {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    const startDateStr = startDate.toISOString().split('T')[0] ?? '';
-
-    const { data, error } = await supabase
-      .from('tasks')
-      .select('created_at')
-      .eq('user_id', userId)
-      .gte('created_at', startDateStr);
+    const { data, error } = await supabase.rpc('get_dashboard_tasks', {
+      p_user_id: userId,
+      p_days: days,
+    });
 
     if (error) {
       throw new Error('Failed to fetch tasks by day');
     }
 
-    const grouped = data.reduce(
-      (acc, task) => {
+    const tasks = data || [];
+    const grouped = tasks.reduce(
+      (acc: Record<string, number>, task: any) => {
         const date =
-          new Date(task.created_at).toISOString().split('T')[0] ?? '';
+          new Date(task.created_at).toISOString().split('T')[0] || '';
         acc[date] = (acc[date] || 0) + 1;
         return acc;
       },
       {} as Record<string, number>
     );
 
-    return Object.entries(grouped)
+    return (Object.entries(grouped) as [string, number][])
       .map(([date, count]) => ({ date, count }))
       .sort((a, b) => a.date.localeCompare(b.date));
   }
@@ -138,37 +119,32 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     days: number,
     userId: string
   ): Promise<ChartDataPoint[]> {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    const startDateStr = startDate.toISOString().split('T')[0] ?? '';
-
-    const { data, error } = await supabase
-      .from('tasks')
-      .select('updated_at, completed')
-      .eq('user_id', userId)
-      .gte('updated_at', startDateStr);
+    const { data, error } = await supabase.rpc('get_dashboard_tasks', {
+      p_user_id: userId,
+      p_days: days,
+    });
 
     if (error) {
       throw new Error('Failed to fetch completed tasks by day');
     }
 
-    const completedTasks =
-      data?.filter(
-        (t) =>
-          t.completed === true || t.completed === 'true' || t.completed === 1
-      ) || [];
+    const tasks = data || [];
+    const completedTasks = tasks.filter(
+      (t: any) =>
+        t.completed === true || t.completed === 'true' || t.completed === 1
+    );
 
     const grouped = completedTasks.reduce(
-      (acc, task) => {
+      (acc: Record<string, number>, task: any) => {
         const date =
-          new Date(task.updated_at).toISOString().split('T')[0] ?? '';
+          new Date(task.updated_at).toISOString().split('T')[0] || '';
         acc[date] = (acc[date] || 0) + 1;
         return acc;
       },
       {} as Record<string, number>
     );
 
-    return Object.entries(grouped)
+    return (Object.entries(grouped) as [string, number][])
       .map(([date, count]) => ({ date, count }))
       .sort((a, b) => a.date.localeCompare(b.date));
   }

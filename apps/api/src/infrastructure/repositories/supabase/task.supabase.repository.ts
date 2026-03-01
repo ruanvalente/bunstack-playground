@@ -22,65 +22,26 @@ export class TaskSupabaseRepository implements ITaskRepository {
       categoryFilter,
     } = params;
 
-    let query = supabase
-      .from('tasks')
-      .select(
-        'id, user_id, title, completed, category_id, created_at, updated_at',
-        {
-          count: 'exact',
-        }
-      )
-      .eq('user_id', userId);
+    const { data: rpcData, error: rpcError } = await supabase.rpc('get_tasks', {
+      p_user_id: userId,
+      p_page: page,
+      p_page_size: pageSize,
+      p_sort_by: sortBy,
+      p_sort_order: sortOrder,
+      p_status_filter: statusFilter,
+      p_category_filter: categoryFilter,
+    });
 
-    if (statusFilter === 'completed') {
-      query = query.eq('completed', true);
-    } else if (statusFilter === 'pending') {
-      query = query.eq('completed', false);
+    if (rpcError) {
+      throw new Error(`Failed to fetch tasks: ${rpcError.message}`);
     }
 
-    if (categoryFilter) {
-      query = query.eq('category_id', categoryFilter);
-    }
-
-    const { count, error: countError } = await query;
-
-    if (countError) {
-      throw new Error(`Failed to fetch tasks count: ${countError.message}`);
-    }
-
-    const total = count || 0;
-    const offset = (page - 1) * pageSize;
+    const tasks = (rpcData?.data || []).map(mapRowToTask);
+    const total = rpcData?.total || 0;
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
-    let dataQuery = supabase
-      .from('tasks')
-      .select(
-        'id, user_id, title, completed, category_id, created_at, updated_at'
-      )
-      .eq('user_id', userId)
-      .order(sortBy, { ascending: sortOrder === 'ASC' });
-
-    if (statusFilter === 'completed') {
-      dataQuery = dataQuery.eq('completed', true);
-    } else if (statusFilter === 'pending') {
-      dataQuery = dataQuery.eq('completed', false);
-    }
-
-    if (categoryFilter) {
-      dataQuery = dataQuery.eq('category_id', categoryFilter);
-    }
-
-    const { data, error } = await dataQuery.range(
-      offset,
-      offset + pageSize - 1
-    );
-
-    if (error) {
-      throw new Error(`Failed to fetch tasks: ${error.message}`);
-    }
-
     return {
-      data: data.map(mapRowToTask),
+      data: tasks,
       pagination: {
         page,
         total,
@@ -98,23 +59,20 @@ export class TaskSupabaseRepository implements ITaskRepository {
   }
 
   async findById(id: string, userId: string): Promise<Task | null> {
-    const { data, error } = await supabase
-      .from('tasks')
-      .select(
-        'id, user_id, title, completed, category_id, created_at, updated_at'
-      )
-      .eq('id', id)
-      .eq('user_id', userId)
-      .single();
+    const { data, error } = await supabase.rpc('get_task_by_id', {
+      p_id: id,
+      p_user_id: userId,
+    });
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return null;
-      }
       throw new Error(`Failed to fetch task: ${error.message}`);
     }
 
-    return data ? mapRowToTask(data) : null;
+    if (!data) {
+      return null;
+    }
+
+    return mapRowToTask(data);
   }
 
   async create(
@@ -122,11 +80,11 @@ export class TaskSupabaseRepository implements ITaskRepository {
     userId: string,
     categoryId?: string
   ): Promise<Task> {
-    const { data, error } = await supabase
-      .from('tasks')
-      .insert([{ title, user_id: userId, category_id: categoryId || null }])
-      .select()
-      .single();
+    const { data, error } = await supabase.rpc('create_task', {
+      p_title: title,
+      p_user_id: userId,
+      p_category_id: categoryId || null,
+    });
 
     if (error) {
       throw new Error(`Failed to create task: ${error.message}`);
@@ -141,27 +99,22 @@ export class TaskSupabaseRepository implements ITaskRepository {
     userId: string,
     categoryId?: string
   ): Promise<Task | null> {
-    const updateData: any = { title };
-    if (categoryId !== undefined) {
-      updateData.category_id = categoryId || null;
-    }
-
-    const { data, error } = await supabase
-      .from('tasks')
-      .update(updateData)
-      .eq('id', id)
-      .eq('user_id', userId)
-      .select()
-      .single();
+    const { data, error } = await supabase.rpc('update_task', {
+      p_id: id,
+      p_user_id: userId,
+      p_title: title,
+      p_category_id: categoryId || null,
+    });
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return null;
-      }
       throw new Error(`Failed to update task: ${error.message}`);
     }
 
-    return data ? mapRowToTask(data) : null;
+    if (!data) {
+      return null;
+    }
+
+    return mapRowToTask(data);
   }
 
   async complete(
@@ -169,36 +122,34 @@ export class TaskSupabaseRepository implements ITaskRepository {
     completed: boolean,
     userId: string
   ): Promise<Task | null> {
-    const { data, error } = await supabase
-      .from('tasks')
-      .update({ completed })
-      .eq('id', id)
-      .eq('user_id', userId)
-      .select()
-      .single();
+    const { data, error } = await supabase.rpc('complete_task', {
+      p_id: id,
+      p_user_id: userId,
+      p_completed: completed,
+    });
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return null;
-      }
       throw new Error(`Failed to update task completion: ${error.message}`);
     }
 
-    return data ? mapRowToTask(data) : null;
+    if (!data) {
+      return null;
+    }
+
+    return mapRowToTask(data);
   }
 
   async delete(id: string, userId: string): Promise<boolean> {
-    const { error } = await supabase
-      .from('tasks')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', userId);
+    const { data, error } = await supabase.rpc('delete_task', {
+      p_id: id,
+      p_user_id: userId,
+    });
 
     if (error) {
       throw new Error(`Failed to delete task: ${error.message}`);
     }
 
-    return true;
+    return data === true;
   }
 }
 
