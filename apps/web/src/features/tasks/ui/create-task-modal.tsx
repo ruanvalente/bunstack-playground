@@ -1,12 +1,15 @@
+import { useState } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+
 import {
-  createTaskSchema,
   type CreateTaskDTO,
+  createTaskSchema,
 } from '@bunstack-playground/shared/http';
-import { useCreateTask } from '../hooks/use-create-task';
+
 import { CategorySelect } from '../../categories/ui/category-select';
-import { useState } from 'react';
+import { useCreateTask } from '../hooks/use-create-task';
 
 type CreateTaskModalProps = {
   isOpen: boolean;

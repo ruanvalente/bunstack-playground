@@ -1,6 +1,8 @@
 import { lazy, Suspense, useMemo } from 'react';
-import { Skeleton } from '@/web/shared/ui/skeleton';
+
 import type { ChartData, ChartOptions, ChartType } from 'chart.js';
+
+import { Skeleton } from '@/web/shared/ui/skeleton';
 
 const ChartLazy = lazy(() =>
   import('react-chartjs-2').then((module) => ({

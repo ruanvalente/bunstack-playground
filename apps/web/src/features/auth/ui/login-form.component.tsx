@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/use-auth';
+
 import { toast } from '@shared/ui/toaster';
+
+import { useAuth } from '../hooks/use-auth';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');

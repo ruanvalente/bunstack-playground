@@ -1,4 +1,5 @@
 import type { Category } from '@bunstack-playground/shared';
+
 import type { ICategoryRepository } from '@/api/domain/repositories';
 import { supabase } from '@/api/infrastructure/supabase';
 

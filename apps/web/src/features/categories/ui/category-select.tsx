@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
 import { ChevronDown, Plus, X } from 'lucide-react';
+
 import {
   useCategories,
   useCreateCategory,

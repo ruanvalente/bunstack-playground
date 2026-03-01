@@ -1,6 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useHeader } from '@shared/hooks/use-header';
+
 import { useAuthStore } from '@features/auth/store/auth.store';
+
+import { useHeader } from '@shared/hooks/use-header';
 
 export function Header() {
   const { title, showMenu, user, toggleMenu, closeMenu } = useHeader();

@@ -1,12 +1,13 @@
 import { openapi } from '@elysiajs/openapi';
 import { Elysia, t } from 'elysia';
 
+import { API_VERSION } from '@bunstack-playground/shared';
+
 import { CreateCategoryUseCase } from '@/api/application/categories/create-category.use-case';
 import { DeleteCategoryUseCase } from '@/api/application/categories/delete-category.use-case';
 import { ListCategoriesUseCase } from '@/api/application/categories/list-categories.use-case';
 import { AppError, HttpStatus, UnauthorizedError } from '@/api/domain/erros';
 import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
-import { API_VERSION } from '@bunstack-playground/shared';
 
 const listCategoriesUseCase = new ListCategoriesUseCase();
 const createCategoryUseCase = new CreateCategoryUseCase();

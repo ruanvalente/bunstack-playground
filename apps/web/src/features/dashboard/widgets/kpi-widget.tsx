@@ -1,4 +1,5 @@
 import type { DashboardKPIsDTO } from '@bunstack-playground/shared/http';
+
 import { KPICard } from './kpi-card.widget';
 
 type KPIWidgetProps = {

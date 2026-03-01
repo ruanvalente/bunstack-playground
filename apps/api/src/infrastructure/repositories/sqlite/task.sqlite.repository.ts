@@ -4,8 +4,9 @@ import type {
   Task,
   TaskDTOWithDate,
 } from '@bunstack-playground/shared';
-import { db } from '@/api/infrastructure/database/config';
+
 import type { ITaskRepository } from '@/api/domain/repositories';
+import { db } from '@/api/infrastructure/database/config';
 
 export class TaskSqliteRepository implements ITaskRepository {
   async findAll(

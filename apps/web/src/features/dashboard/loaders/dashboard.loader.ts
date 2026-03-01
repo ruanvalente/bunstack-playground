@@ -1,6 +1,8 @@
 import type { LoaderFunctionArgs } from 'react-router-dom';
-import { getDashboardData } from '../queries/dashboard.querie';
+
 import type { QueryClient } from '@tanstack/react-query';
+
+import { getDashboardData } from '../queries/dashboard.querie';
 
 export const dashboardLoader =
   (queryClient: QueryClient) =>

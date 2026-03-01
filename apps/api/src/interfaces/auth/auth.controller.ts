@@ -1,14 +1,16 @@
-import { Elysia, t } from 'elysia';
 import { openapi } from '@elysiajs/openapi';
-import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
+import { Elysia, t } from 'elysia';
+
 import {
-  loginRequestSchema,
-  registerRequestSchema,
+  API_VERSION,
   authResponseSchema,
   githubAuthUrlSchema,
-  API_VERSION,
+  loginRequestSchema,
+  registerRequestSchema,
 } from '@bunstack-playground/shared/http';
+
 import { config } from '@/api/config';
+import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
 
 const GITHUB_REDIRECT_URL = `${config.frontendUrl}/auth/callback`;
 

@@ -1,4 +1,5 @@
 import { useEffect, useSyncExternalStore } from 'react';
+
 import { useUserSettingsStore } from '../store/user-settings.store';
 
 function getSystemTheme(): 'light' | 'dark' {

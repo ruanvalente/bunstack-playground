@@ -1,8 +1,10 @@
 import { lazy, Suspense } from 'react';
 import type { RouteObject } from 'react-router-dom';
+
 import type { QueryClient } from '@tanstack/react-query';
 
 import { Skeleton } from '@/web/shared/ui/skeleton';
+
 import { dashboardLoader } from '../loaders/dashboard.loader';
 
 const DashboardPage = lazy(() =>

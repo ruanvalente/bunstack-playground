@@ -1,5 +1,7 @@
-import { useUserSettings } from '@features/settings/hooks/use-user-settings';
 import { useState } from 'react';
+
+import { useUserSettings } from '@features/settings/hooks/use-user-settings';
+
 import type { ThemeMode } from '../types/user-settings.types';
 
 export function AppearanceSection() {

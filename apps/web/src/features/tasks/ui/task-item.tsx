@@ -1,7 +1,7 @@
+import { TaskItemActions } from './task-item-actions';
 import { TaskItemCheckbox } from './task-item-checkbox';
 import { TaskItemContent } from './task-item-content';
 import { TaskItemStatus } from './task-item-status';
-import { TaskItemActions } from './task-item-actions';
 
 type TaskItemProps = {
   id: string;
