@@ -11,6 +11,7 @@ import {
 
 import { CategorySelect } from '../../categories/ui/category-select';
 import { useUpdateTaskTitle } from '../hooks/use-update-task-title';
+import { FileAttachmentsWidget } from '../widgets/file-attachments.widget';
 
 type EditTaskModalProps = {
   isOpen: boolean;
@@ -63,7 +64,7 @@ export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-opacity-95 flex justify-center items-center z-10">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Edit Task</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
@@ -89,6 +90,14 @@ export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
           <div className="mb-4">
             <CategorySelect value={categoryId} onChange={setCategoryId} />
           </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Attachments
+            </label>
+            <FileAttachmentsWidget taskId={task.id} />
+          </div>
+
           <div className="flex justify-end gap-2">
             <button
               type="button"
