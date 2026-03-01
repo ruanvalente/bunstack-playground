@@ -2,12 +2,16 @@ import { cors } from '@elysiajs/cors';
 import { staticPlugin } from '@elysiajs/static';
 import { Elysia, file } from 'elysia';
 
-import { healthSchema } from '@bunstack-playground/shared/http';
-
+import { taskController } from './interfaces/tasks/task.controller';
+import { dashboardController } from './interfaces/dashboard/dashboard.controller';
 import { authController } from './interfaces/auth/auth.controller';
 import { categoryController } from './interfaces/categories/category.controller';
-import { dashboardController } from './interfaces/dashboard/dashboard.controller';
-import { taskController } from './interfaces/tasks/task.controller';
+import {
+  fileController,
+  csvController,
+} from './interfaces/files/file.controller';
+
+import { healthSchema } from '@bunstack-playground/shared/http';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isRailway = process.env.RAILWAY_STATIC_URL !== undefined;
@@ -37,6 +41,8 @@ app
   .use(dashboardController)
   .use(authController)
   .use(categoryController)
+  .use(fileController)
+  .use(csvController)
   .get('/health', () => healthSchema);
 
 if (serveStatic) {

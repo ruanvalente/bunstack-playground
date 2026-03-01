@@ -54,50 +54,55 @@ export const taskController = new Elysia({
   .get(
     '/',
     async ({ query, headers }) => {
-      const userId = await authenticateUser(headers);
-      const page = query.page ?? 1;
-      const pageSize = query.pageSize ?? 10;
-      const sortOrder = (query.sortOrder ?? 'DESC') as 'ASC' | 'DESC';
-      const sortBy = (query.sortBy ?? 'created_at') as
-        | 'created_at'
-        | 'updated_at';
-      const statusFilter = query.statusFilter;
-      const categoryFilter = query.categoryFilter;
+      try {
+        const userId = await authenticateUser(headers);
+        const page = query.page ?? 1;
+        const pageSize = query.pageSize ?? 10;
+        const sortOrder = (query.sortOrder ?? 'DESC') as 'ASC' | 'DESC';
+        const sortBy = (query.sortBy ?? 'created_at') as
+          | 'created_at'
+          | 'updated_at';
+        const statusFilter = query.statusFilter;
+        const categoryFilter = query.categoryFilter;
 
-      const result = await listTasksUseCase.execute(
-        {
-          page,
-          pageSize,
-          sortOrder,
-          sortBy,
-          statusFilter,
-          categoryFilter,
-        },
-        userId
-      );
+        const result = await listTasksUseCase.execute(
+          {
+            page,
+            pageSize,
+            sortOrder,
+            sortBy,
+            statusFilter,
+            categoryFilter,
+          },
+          userId
+        );
 
-      const { pagination } = result;
+        const { pagination } = result;
 
-      return {
-        data: result.data.map((task) => ({
-          ...task,
-          createdAt: task.createdAt,
-        })),
+        return {
+          data: result.data.map((task) => ({
+            ...task,
+            createdAt: task.createdAt,
+          })),
 
-        pagination: {
-          total: pagination.total,
-          page: pagination.page,
-          pageSize: pagination.pageSize,
-          totalPages: pagination.totalPages,
-          hasNextPage: pagination.hasNextPage,
-          hasPrevPage: pagination.hasPrevPage,
-        },
-        meta: {
-          sortBy,
-          sortOrder,
-          timestamp: new Date().toISOString(),
-        },
-      };
+          pagination: {
+            total: pagination.total,
+            page: pagination.page,
+            pageSize: pagination.pageSize,
+            totalPages: pagination.totalPages,
+            hasNextPage: pagination.hasNextPage,
+            hasPrevPage: pagination.hasPrevPage,
+          },
+          meta: {
+            sortBy,
+            sortOrder,
+            timestamp: new Date().toISOString(),
+          },
+        };
+      } catch (error) {
+        console.error('GET /tasks error:', error);
+        throw error;
+      }
     },
     {
       query: paginationQuerySchema,
@@ -213,6 +218,7 @@ export const taskController = new Elysia({
         );
         return { ...task, createdAt: task.createdAt };
       } catch (error) {
+        console.error('PATCH /:id/complete error:', error);
         if (error instanceof AppError) {
           set.status = error.statusCode;
           return { message: error.message };
