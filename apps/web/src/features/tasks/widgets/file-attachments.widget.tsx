@@ -1,50 +1,7 @@
-import { useState, useRef } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Upload, X, File, Image, FileText, Eye, Download } from 'lucide-react';
-import { axiosInstance } from '@shared/http/axios-client';
-import { API_URL } from '@shared/config/supabase';
-import { toast } from '@shared/ui/toaster';
+import { Download, Eye, File, FileText, Image, Upload, X } from 'lucide-react';
 
-export type TaskAttachment = {
-  id: string;
-  taskId: string;
-  userId: string;
-  fileName: string;
-  filePath: string;
-  fileSize: number;
-  mimeType: string;
-  createdAt: string;
-  publicUrl: string;
-};
-
-async function listFiles(taskId: string): Promise<TaskAttachment[]> {
-  const response = await axiosInstance.get<TaskAttachment[]>(
-    `${API_URL}/api/v1/files/task/${taskId}`
-  );
-  return response.data;
-}
-
-async function uploadFile(taskId: string, file: File): Promise<TaskAttachment> {
-  const formData = new FormData();
-  formData.append('taskId', taskId);
-  formData.append('file', file);
-
-  const response = await axiosInstance.post<TaskAttachment>(
-    `${API_URL}/api/v1/files/upload`,
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  );
-
-  return response.data;
-}
-
-async function deleteFile(fileId: string): Promise<void> {
-  await axiosInstance.delete(`${API_URL}/api/v1/files/${fileId}`);
-}
+import { useTaskAttachments } from '../hooks/use-task-attachments';
+import type { TaskAttachment } from '../queries/task-files.queries';
 
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
@@ -64,85 +21,27 @@ function isImage(mimeType: string): boolean {
   return mimeType.startsWith('image/');
 }
 
-interface FileAttachmentsWidgetProps {
+type FileAttachmentsWidgetProps = {
   taskId: string;
-}
+};
 
 export function FileAttachmentsWidget({ taskId }: FileAttachmentsWidgetProps) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<TaskAttachment | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const queryClient = useQueryClient();
-
-  const { data: files = [], isLoading } = useQuery({
-    queryKey: ['files', taskId],
-    queryFn: () => listFiles(taskId),
-    enabled: !!taskId,
-  });
-
-  const uploadMutation = useMutation({
-    mutationFn: (file: File) => uploadFile(taskId, file),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['files', taskId] });
-      toast.success('File uploaded successfully');
-    },
-    onError: () => {
-      toast.error('Failed to upload file');
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (fileId: string) => deleteFile(fileId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['files', taskId] });
-      toast.success('File deleted successfully');
-    },
-    onError: () => {
-      toast.error('Failed to delete file');
-    },
-  });
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const droppedFiles = e.dataTransfer.files;
-    if (droppedFiles.length > 0) {
-      const file = droppedFiles[0];
-      if (!file) return;
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error('File too large. Maximum size is 10MB');
-        return;
-      }
-      uploadMutation.mutate(file);
-    }
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    if (selectedFiles && selectedFiles.length > 0) {
-      const file = selectedFiles[0];
-      if (!file) return;
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error('File too large. Maximum size is 10MB');
-        return;
-      }
-      uploadMutation.mutate(file);
-    }
-  };
-
-  const handleDelete = (fileId: string) => {
-    deleteMutation.mutate(fileId);
-  };
+  const {
+    files,
+    isLoading,
+    isDragging,
+    selectedFile,
+    setSelectedFile,
+    fileInputRef,
+    isUploading,
+    isDeleting,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    handleFileSelect,
+    handleDelete,
+    openFileInput,
+  } = useTaskAttachments(taskId);
 
   return (
     <div className="space-y-3">
@@ -155,7 +54,7 @@ export function FileAttachmentsWidget({ taskId }: FileAttachmentsWidgetProps) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
+        onClick={openFileInput}
       >
         <input
           ref={fileInputRef}
@@ -222,7 +121,7 @@ export function FileAttachmentsWidget({ taskId }: FileAttachmentsWidgetProps) {
                 <button
                   onClick={() => handleDelete(file.id)}
                   className="p-1 text-gray-500 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
-                  disabled={deleteMutation.isPending}
+                  disabled={isDeleting}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -232,7 +131,7 @@ export function FileAttachmentsWidget({ taskId }: FileAttachmentsWidgetProps) {
         </div>
       )}
 
-      {uploadMutation.isPending && (
+      {isUploading && (
         <div className="text-center text-sm text-blue-600">Uploading...</div>
       )}
 
