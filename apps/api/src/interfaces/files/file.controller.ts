@@ -1,21 +1,22 @@
 import { Elysia } from 'elysia';
 
-import {
-  uploadFile,
-  deleteFile,
-  listFiles,
-  parseCsvPreview,
-  executeCsvImport,
-} from '@/api/application/files';
-import { AppError, HttpStatus, UnauthorizedError } from '@/api/domain/erros';
-import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
 import { API_VERSION } from '@bunstack-playground/shared';
 import {
   ALLOWED_MIME_TYPES,
   MAX_FILE_SIZES,
 } from '@bunstack-playground/shared/http';
 
-interface UploadBody {
+import {
+  deleteFile,
+  executeCsvImport,
+  listFiles,
+  parseCsvPreview,
+  uploadFile,
+} from '@/api/application/files';
+import { AppError, HttpStatus, UnauthorizedError } from '@/api/domain/erros';
+import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
+
+type UploadBody = {
   file: {
     name: string;
     size: number;
@@ -23,14 +24,14 @@ interface UploadBody {
     arrayBuffer: () => Promise<ArrayBuffer>;
   };
   taskId: string;
-}
+};
 
-interface CsvBody {
+type CsvBody = {
   file: {
     name: string;
     arrayBuffer: () => Promise<ArrayBuffer>;
   };
-}
+};
 
 async function authenticateUser(
   headers: Record<string, unknown>
