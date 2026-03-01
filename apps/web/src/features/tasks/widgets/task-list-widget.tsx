@@ -18,10 +18,10 @@ import { getTasks, toggleTask } from '../queries/task.querie';
 import { EditTaskModal } from '../ui/edit-task-modal';
 import { TaskItem } from '../ui/task-item';
 
-interface CategoryInfo {
+type CategoryInfo = {
   name: string;
   color: string;
-}
+};
 
 function getCategoryInfo(
   categoryId: string | undefined,

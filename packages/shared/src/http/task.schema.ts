@@ -180,3 +180,108 @@ export type CategoryDTO = z.infer<typeof categorySchema>;
 export type CategoryDTOWithDate = z.infer<typeof categorySchemaWithDate>;
 export type CreateCategoryDTO = z.infer<typeof createCategorySchema>;
 export type DeleteCategoryDTO = z.infer<typeof deleteCategorySchema>;
+
+/**
+ * Task Attachment schema
+ */
+export const taskAttachmentSchema = z.object({
+  id: z.string().uuid(),
+  taskId: z.string().uuid(),
+  userId: z.string(),
+  fileName: z.string(),
+  filePath: z.string(),
+  fileSize: z.number().int().min(0),
+  mimeType: z.string(),
+  createdAt: z.iso.datetime(),
+  publicUrl: z.string().optional(),
+});
+
+export const taskAttachmentSchemaWithDate = taskAttachmentSchema.transform(
+  (data) => ({
+    ...data,
+    createdAt: new Date(data.createdAt).toISOString(),
+  })
+);
+
+export type TaskAttachmentDTO = z.infer<typeof taskAttachmentSchema>;
+export type TaskAttachmentDTOWithDate = z.infer<
+  typeof taskAttachmentSchemaWithDate
+>;
+
+/**
+ * CSV Import schemas
+ */
+export const csvRowSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  completed: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (!val) return false;
+      return val.toLowerCase() === 'true';
+    }),
+  categoryName: z.string().optional(),
+});
+
+export const csvImportPreviewSchema = z.object({
+  totalRows: z.number().int().min(0),
+  validRows: z.number().int().min(0),
+  toCreate: z.number().int().min(0),
+  toUpdate: z.number().int().min(0),
+  errors: z.array(
+    z.object({
+      row: z.number().int(),
+      message: z.string(),
+      data: z.record(z.string(), z.string()).optional(),
+    })
+  ),
+  sampleData: z.array(csvRowSchema).max(5),
+});
+
+export const csvImportConfirmSchema = z.object({
+  fileName: z.string(),
+  overwriteExisting: z.boolean().default(false),
+});
+
+export type CsvRowDTO = z.infer<typeof csvRowSchema>;
+export type CsvImportPreviewDTO = z.infer<typeof csvImportPreviewSchema>;
+export type CsvImportConfirmDTO = z.infer<typeof csvImportConfirmSchema>;
+
+/**
+ * File upload schemas
+ */
+export const ALLOWED_MIME_TYPES = {
+  images: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+  documents: [
+    'application/pdf',
+    'text/plain',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ],
+  csv: ['text/csv', 'application/csv'],
+} as const;
+
+export const MAX_FILE_SIZES = {
+  images: 5 * 1024 * 1024, // 5MB
+  documents: 10 * 1024 * 1024, // 10MB
+  csv: 50 * 1024 * 1024, // 50MB
+} as const;
+
+export const uploadFileSchema = z.object({
+  taskId: z.string().uuid(),
+  fileName: z.string().min(1).max(255),
+  fileSize: z.number().int().min(1),
+  mimeType: z.string(),
+});
+
+export const deleteFileSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export const listFilesSchema = z.object({
+  taskId: z.string().uuid(),
+});
+
+export type UploadFileDTO = z.infer<typeof uploadFileSchema>;
+export type DeleteFileDTO = z.infer<typeof deleteFileSchema>;
+export type ListFilesDTO = z.infer<typeof listFilesSchema>;
