@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Task } from '@bunstack-playground/shared/domain';
 import type { PaginatedTasksResponseDTO } from '@bunstack-playground/shared/http';
 
+import { useLanguage } from '@shared/hooks/use-language';
 import type { TaskFilterState } from '@shared/ui/filter/filter';
 import { Pagination } from '@shared/ui/pagination/pagination';
 import { TaskListSkeleton } from '@shared/ui/skeleton/task-list-skeleton';
@@ -41,6 +42,7 @@ type TaskListWidgetProps = {
 };
 
 export function TaskListWidget({ filters }: TaskListWidgetProps) {
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
@@ -111,18 +113,18 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
 
   const handleDelete = useCallback(
     (taskId: string) => {
-      toast.warning('Are you sure you want to delete this task?', {
+      toast.warning(t.tasks.deleteConfirm, {
         action: {
-          label: 'Delete',
+          label: t.tasks.delete,
           onClick: () => deleteMutation.mutate(taskId),
         },
         cancel: {
-          label: 'Cancel',
+          label: t.common.cancel,
           onClick: () => {},
         },
       });
     },
-    [deleteMutation]
+    [deleteMutation, t]
   );
 
   const toggleMutation = useMutation({
@@ -154,12 +156,12 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
       if (context?.previousTasks) {
         queryClient.setQueryData(queryKey, context.previousTasks);
       }
-      toast.error('Failed to update task status');
+      toast.error(t.tasks.failedToUpdateTask);
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dashboard', 30] });
-      toast.success('Task status updated');
+      toast.success(t.tasks.taskStatusUpdated);
     },
   });
 
@@ -182,7 +184,7 @@ export function TaskListWidget({ filters }: TaskListWidgetProps) {
   if (!tasks || tasks.data.length === 0) {
     return (
       <div className="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
-        Nenhuma tarefa encontrada.
+        {t.tasks.noTasksFound}
       </div>
     );
   }

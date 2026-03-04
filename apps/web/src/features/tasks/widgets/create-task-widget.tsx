@@ -1,8 +1,11 @@
 import { useState } from 'react';
 
+import { useLanguage } from '@shared/hooks/use-language';
+
 import { CreateTaskModal } from '../ui/create-task-modal';
 
 export function CreateTaskWidget() {
+  const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -25,7 +28,7 @@ export function CreateTaskWidget() {
           <path d="M5 12h14" />
           <path d="M12 5v14" />
         </svg>
-        Add Task
+        {t.tasks.addTask}
       </button>
       <CreateTaskModal
         isOpen={isModalOpen}

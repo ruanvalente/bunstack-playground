@@ -1,19 +1,23 @@
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
+
+import { useQueryClient } from '@tanstack/react-query';
 import {
-  Upload,
-  Download,
-  FileText,
   AlertCircle,
   Check,
+  Download,
+  FileText,
+  Upload,
   X,
 } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
+
+import { useLanguage } from '@shared/hooks/use-language';
 import { toast } from '@shared/ui/toaster';
+
 import {
-  previewCsvImport,
   confirmCsvImport,
-  downloadCsvTemplate,
   type CsvImportPreview,
+  downloadCsvTemplate,
+  previewCsvImport,
 } from '../queries/import-csv.queries';
 
 interface ImportCsvWidgetProps {
@@ -22,6 +26,7 @@ interface ImportCsvWidgetProps {
 }
 
 export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
+  const { t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<CsvImportPreview | null>(null);
@@ -34,12 +39,12 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
     if (!file) return;
 
     if (!file.name.toLowerCase().endsWith('.csv')) {
-      toast.error('Please select a CSV file');
+      toast.error(t.import.selectCsv);
       return;
     }
 
     if (file.size > 50 * 1024 * 1024) {
-      toast.error('File too large. Maximum size is 50MB');
+      toast.error(t.import.fileTooLarge);
       return;
     }
 
@@ -50,7 +55,7 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
       const data = await previewCsvImport(file);
       setPreview(data);
     } catch (error) {
-      toast.error('Failed to parse CSV file');
+      toast.error(t.import.failedToParse);
     } finally {
       setIsPreviewLoading(false);
     }
@@ -62,11 +67,13 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
     setIsConfirming(true);
     try {
       const result = await confirmCsvImport(selectedFile);
-      toast.success(`Successfully imported ${result.success} tasks`);
+      toast.success(
+        t.import.successImport.replace('{count}', String(result.success))
+      );
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
       handleClose();
     } catch (error) {
-      toast.error('Failed to import tasks');
+      toast.error(t.import.failedToImport);
     } finally {
       setIsConfirming(false);
     }
@@ -91,7 +98,7 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
     <div className="fixed inset-0 bg-black/60 backdrop-opacity-95 flex justify-center items-center z-20">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
         <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-xl font-bold">Import Tasks from CSV</h2>
+          <h2 className="text-xl font-bold">{t.import.importTasksFromCsv}</h2>
           <button
             onClick={handleClose}
             className="p-1 hover:bg-gray-100 rounded"
@@ -109,14 +116,14 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
                   className="flex-1 flex items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
                 >
                   <Upload className="w-6 h-6 text-gray-400" />
-                  <span>Select CSV File</span>
+                  <span>{t.import.selectCsvFile}</span>
                 </button>
                 <button
                   onClick={handleDownloadTemplate}
                   className="flex items-center justify-center gap-2 p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <Download className="w-6 h-6 text-gray-400" />
-                  <span>Template</span>
+                  <span>{t.import.template}</span>
                 </button>
               </div>
 
@@ -129,7 +136,7 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
               />
 
               <div className="text-sm text-gray-600">
-                <p className="font-medium mb-2">CSV Format:</p>
+                <p className="font-medium mb-2">{t.import.csvFormat}:</p>
                 <div className="bg-gray-50 p-3 rounded-lg font-mono text-xs">
                   title,completed,category_name
                   <br />
@@ -155,7 +162,7 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
           {isPreviewLoading && (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-2 text-gray-600">Processing CSV...</p>
+              <p className="mt-2 text-gray-600">{t.import.processingCsv}</p>
             </div>
           )}
 
@@ -169,19 +176,19 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
                   <p className="text-2xl font-bold">{preview.totalRows}</p>
-                  <p className="text-sm text-gray-600">Total Rows</p>
+                  <p className="text-sm text-gray-600">{t.import.totalRows}</p>
                 </div>
                 <div className="text-center p-3 bg-green-50 rounded-lg">
                   <p className="text-2xl font-bold text-green-600">
                     {preview.validRows}
                   </p>
-                  <p className="text-sm text-gray-600">Valid</p>
+                  <p className="text-sm text-gray-600">{t.import.valid}</p>
                 </div>
                 <div className="text-center p-3 bg-red-50 rounded-lg">
                   <p className="text-2xl font-bold text-red-600">
                     {preview.errors.length}
                   </p>
-                  <p className="text-sm text-gray-600">Errors</p>
+                  <p className="text-sm text-gray-600">{t.import.errors}</p>
                 </div>
               </div>
 
@@ -189,7 +196,7 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
                 <div className="space-y-2">
                   <h4 className="font-medium flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 text-red-500" />
-                    Errors
+                    {t.import.errors}
                   </h4>
                   <div className="max-h-40 overflow-y-auto bg-red-50 rounded-lg p-2">
                     {preview.errors.slice(0, 10).map((error, idx) => (
@@ -197,13 +204,18 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
                         key={idx}
                         className="text-sm p-2 bg-white rounded mb-1"
                       >
-                        <span className="font-medium">Row {error.row}:</span>{' '}
+                        <span className="font-medium">
+                          {t.import.row} {error.row}:
+                        </span>{' '}
                         {error.message}
                       </div>
                     ))}
                     {preview.errors.length > 10 && (
                       <p className="text-sm text-gray-500 text-center">
-                        ...and {preview.errors.length - 10} more errors
+                        {t.import.moreErrors.replace(
+                          '{count}',
+                          String(preview.errors.length - 10)
+                        )}
                       </p>
                     )}
                   </div>
@@ -212,14 +224,20 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
 
               {preview.sampleData.length > 0 && (
                 <div>
-                  <h4 className="font-medium mb-2">Preview</h4>
+                  <h4 className="font-medium mb-2">{t.import.preview}</h4>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-3 py-2 text-left">Title</th>
-                          <th className="px-3 py-2 text-left">Completed</th>
-                          <th className="px-3 py-2 text-left">Category</th>
+                          <th className="px-3 py-2 text-left">
+                            {t.common.title}
+                          </th>
+                          <th className="px-3 py-2 text-left">
+                            {t.common.completed}
+                          </th>
+                          <th className="px-3 py-2 text-left">
+                            {t.common.category}
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -252,7 +270,7 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
             onClick={handleClose}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
           >
-            Cancel
+            {t.common.cancel}
           </button>
           {preview && (
             <button
@@ -261,8 +279,11 @@ export function ImportCsvWidget({ isOpen, onClose }: ImportCsvWidgetProps) {
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isConfirming
-                ? 'Importing...'
-                : `Import ${preview.validRows} Tasks`}
+                ? t.import.importing
+                : t.import.importTasks.replace(
+                    '{count}',
+                    String(preview.validRows)
+                  )}
             </button>
           )}
         </div>
