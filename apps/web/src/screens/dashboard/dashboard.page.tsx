@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import type { DashboardResponseDTO } from '@bunstack-playground/shared/http';
 
+import { useLanguage } from '@shared/hooks/use-language';
 import { toast } from '@shared/ui/toaster';
 import { getDashboardData } from '@/web/features/dashboard/queries/dashboard.querie';
 import { ChartsWidget } from '@/web/features/dashboard/widgets/charts-widget';
@@ -14,6 +15,7 @@ import { ErrorBoundary } from '@/web/shared/ui/error-boundary';
 import { DashboardSkeleton } from '@/web/shared/ui/skeleton';
 
 export default function DashboardPage() {
+  const { t } = useLanguage();
   const initialData = useLoaderData() as DashboardResponseDTO;
 
   const { data: dashboard, isError } = useQuery<DashboardResponseDTO>({
@@ -40,7 +42,7 @@ export default function DashboardPage() {
   return (
     <section className="p-6">
       <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-950 mb-2">
-        Dashboard
+        {t.common.dashboard}
       </h1>
 
       <div className="mb-6">
