@@ -12,6 +12,8 @@ import {
   Tag,
 } from 'lucide-react';
 
+import { useLanguage } from '@shared/hooks/use-language';
+
 export type TaskFilterState = {
   statusFilter: 'all' | 'completed' | 'pending';
   sortBy: 'created_at' | 'updated_at';
@@ -32,6 +34,7 @@ type FilterWidgetProps = {
 };
 
 export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -77,38 +80,42 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
   };
 
   const statusOptions = [
-    { value: 'all' as const, label: 'All', icon: ArrowUpDown },
-    { value: 'completed' as const, label: 'Completed', icon: CheckCircle },
-    { value: 'pending' as const, label: 'Pending', icon: Circle },
+    { value: 'all' as const, label: t.common.all, icon: ArrowUpDown },
+    {
+      value: 'completed' as const,
+      label: t.filters.completed,
+      icon: CheckCircle,
+    },
+    { value: 'pending' as const, label: t.filters.pending, icon: Circle },
   ];
 
   const sortOptions = [
     {
       value: { sortBy: 'created_at', sortOrder: 'DESC' as const },
-      label: 'Newest',
+      label: t.filters.newest,
       icon: Calendar,
     },
     {
       value: { sortBy: 'created_at', sortOrder: 'ASC' as const },
-      label: 'Oldest',
+      label: t.filters.oldest,
       icon: Calendar,
     },
     {
       value: { sortBy: 'updated_at', sortOrder: 'DESC' as const },
-      label: 'Recently Updated',
+      label: t.filters.recentlyUpdated,
       icon: Clock,
     },
     {
       value: { sortBy: 'updated_at', sortOrder: 'ASC' as const },
-      label: 'Least Recently Updated',
+      label: t.filters.leastRecentlyUpdated,
       icon: Clock,
     },
   ];
 
   const statusLabels: Record<TaskFilterState['statusFilter'], string> = {
     all: '',
-    completed: 'Completed',
-    pending: 'Pending',
+    completed: t.filters.completed,
+    pending: t.filters.pending,
   };
 
   const activeStatusLabel = statusLabels[filters.statusFilter];
@@ -130,7 +137,8 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
       >
         <Filter className="w-5 h-5" />
         <span>
-          Filter{activeStatusLabel ? `: ${activeStatusLabel}` : ''}
+          {t.filters.filter}
+          {activeStatusLabel ? `: ${activeStatusLabel}` : ''}
           {activeCategoryLabel ? `: ${activeCategoryLabel}` : ''}
         </span>
       </button>
@@ -139,14 +147,14 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
         <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
           <div className="p-3 border-b border-gray-200 dark:border-gray-700">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-              Filter Tasks
+              {t.filters.filterTasks}
             </h3>
           </div>
 
           <div className="p-2">
             <div className="mb-3">
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 px-2">
-                Status
+                {t.filters.status}
               </label>
               <div className="space-y-1">
                 {statusOptions.map((option) => (
@@ -168,7 +176,7 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
 
             <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mb-3">
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 px-2">
-                Category
+                {t.common.category}
               </label>
               <div className="space-y-1 max-h-40 overflow-y-auto">
                 <button
@@ -180,7 +188,7 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
                   }`}
                 >
                   <Tag className="w-4 h-4" />
-                  All
+                  {t.common.all}
                 </button>
                 {categories.map((category) => (
                   <button
@@ -204,7 +212,7 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
 
             <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 px-2">
-                Order By
+                {t.filters.orderBy}
               </label>
               <div className="space-y-1">
                 {sortOptions.map((option) => (
@@ -236,7 +244,7 @@ export function FilterWidget({ filters, onFilterChange }: FilterWidgetProps) {
               onClick={handleReset}
               className="w-full text-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 py-1"
             >
-              Reset Filters
+              {t.filters.resetFilters}
             </button>
           </div>
         </div>

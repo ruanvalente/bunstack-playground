@@ -1,9 +1,11 @@
 import { HomeIcon } from 'lucide-react';
 
+import { useLanguage } from '@shared/hooks/use-language';
 import { useSidebar } from '@shared/hooks/use-sidebar';
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
   const { isOpen, toggle } = useSidebar();
+  const { t } = useLanguage();
 
   return (
     <>
@@ -13,7 +15,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
             <span className="text-white">
               <HomeIcon fontSize={18} />
             </span>
-            My System
+            {t.sidebar.mySystem}
           </h2>
         ) : (
           <div className="w-full text-center text-white text-3xl">
@@ -26,12 +28,12 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
       <div className="p-4 border-t border-gray-700 flex items-center gap-2">
         <p className="text-xs text-gray-400 flex-1">
-          {isOpen ? 'Frontend Boilerplate v1.0.0' : '•'}
+          {isOpen ? t.sidebar.version : '•'}
         </p>
 
         <button
           onClick={toggle}
-          title={isOpen ? 'Fechar menu' : 'Abrir menu'}
+          title={isOpen ? t.sidebar.closeMenu : t.sidebar.openMenu}
           className="p-2 hover:bg-gray-700 rounded-lg"
         >
           <svg
