@@ -2,10 +2,13 @@ import { useState } from 'react';
 
 import { useUserSettings } from '@features/settings/hooks/use-user-settings';
 
+import { useLanguage } from '@shared/hooks/use-language';
+
 import type { ThemeMode } from '../types/user-settings.types';
 
 export function AppearanceSection() {
   const { theme: currentTheme, setTheme } = useUserSettings();
+  const { t } = useLanguage();
   const [selectedTheme, setSelectedTheme] = useState<ThemeMode>(currentTheme);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,7 +19,7 @@ export function AppearanceSection() {
     <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <header className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-3">
-          🎨 Aparência
+          🎨 {t.appearance.title}
         </h2>
       </header>
 
@@ -33,7 +36,7 @@ export function AppearanceSection() {
                          focus:ring-blue-500/30"
             />
             <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-              Tema Claro
+              {t.appearance.light}
             </span>
           </label>
 
@@ -48,7 +51,7 @@ export function AppearanceSection() {
                          focus:ring-blue-500/30"
             />
             <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-              Tema Escuro
+              {t.appearance.dark}
             </span>
           </label>
 
@@ -63,7 +66,7 @@ export function AppearanceSection() {
                          focus:ring-blue-500/30"
             />
             <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-              Tema do Sistema
+              {t.appearance.system}
             </span>
           </label>
         </div>
@@ -76,7 +79,7 @@ export function AppearanceSection() {
                      focus:ring-2 focus:ring-blue-500/40 focus:outline-none
                      transition-all duration-200 shadow-sm hover:shadow hover:cursor-pointer"
           >
-            Aplicar Tema
+            {t.appearance.applyTheme}
           </button>
         </div>
       </form>

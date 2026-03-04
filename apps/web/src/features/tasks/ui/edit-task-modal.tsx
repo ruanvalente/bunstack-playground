@@ -9,6 +9,8 @@ import {
   editTaskTitleSchema,
 } from '@bunstack-playground/shared/http';
 
+import { useLanguage } from '@shared/hooks/use-language';
+
 import { CategorySelect } from '../../categories/ui/category-select';
 import { useUpdateTaskTitle } from '../hooks/use-update-task-title';
 import { FileAttachmentsWidget } from '../widgets/file-attachments.widget';
@@ -20,6 +22,7 @@ type EditTaskModalProps = {
 };
 
 export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
+  const { t } = useLanguage();
   const mutation = useUpdateTaskTitle();
   const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
 
@@ -65,14 +68,14 @@ export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-opacity-95 flex justify-center items-center z-10">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">Edit Task</h2>
+        <h2 className="text-2xl font-bold mb-4">{t.tasks.editTask}</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label
               htmlFor="title"
               className="block text-sm font-medium text-gray-700"
             >
-              Task title
+              {t.tasks.taskTitle}
             </label>
             <input
               type="text"
@@ -93,7 +96,7 @@ export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Attachments
+              {t.tasks.attachments}
             </label>
             <FileAttachmentsWidget taskId={task.id} />
           </div>
@@ -104,14 +107,14 @@ export function EditTaskModal({ isOpen, task, onClose }: EditTaskModalProps) {
               onClick={onClose}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
             >
-              Cancel
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? 'Saving...' : 'Save'}
+              {mutation.isPending ? t.tasks.saving : t.tasks.save}
             </button>
           </div>
         </form>

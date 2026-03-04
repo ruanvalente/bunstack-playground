@@ -2,7 +2,10 @@ import { useAuthStore } from '@features/auth/store/auth.store';
 import { useUserSettings } from '@features/settings/hooks/use-user-settings';
 import type { FormEvent } from 'react';
 
+import { useLanguage } from '@shared/hooks/use-language';
+
 export function ProfileSection() {
+  const { t } = useLanguage();
   const { profile, updateProfile } = useUserSettings();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
@@ -19,7 +22,7 @@ export function ProfileSection() {
     <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <header className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-3">
-          👤 Perfil
+          👤 {t.profile.profile}
         </h2>
       </header>
 
@@ -27,7 +30,7 @@ export function ProfileSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Nome Completo
+              {t.profile.fullName}
             </label>
             <input
               name="name"
@@ -44,7 +47,7 @@ export function ProfileSection() {
 
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Email
+              {t.profile.email}
             </label>
             <input
               name="email"
@@ -69,7 +72,7 @@ export function ProfileSection() {
                      focus:ring-2 focus:ring-blue-500/40 focus:outline-none
                      transition-all duration-200 shadow-sm hover:shadow hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isAuthenticated ? 'Gerenciado pelo Auth' : 'Salvar Alterações'}
+            {isAuthenticated ? t.profile.managedByAuth : t.profile.saveChanges}
           </button>
         </div>
       </form>
