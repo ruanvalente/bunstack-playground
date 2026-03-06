@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { API_VERSION } from '@shared/config/supabase';
 import { axiosInstance } from '@shared/http/axios-client';
+import { toast } from '@shared/ui/toaster';
 
 type User = {
   id: string;
@@ -126,6 +127,10 @@ export function useCreateUser() {
     mutationFn: createUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('User created successfully');
+    },
+    onError: () => {
+      toast.error('Failed to create user');
     },
   });
 }
@@ -139,6 +144,10 @@ export function useUpdateUser() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       queryClient.invalidateQueries({ queryKey: ['user', data.id] });
+      toast.success('User updated successfully');
+    },
+    onError: () => {
+      toast.error('Failed to update user');
     },
   });
 }
@@ -150,6 +159,10 @@ export function useDeleteUser() {
     mutationFn: deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('User deleted successfully');
+    },
+    onError: () => {
+      toast.error('Failed to delete user');
     },
   });
 }

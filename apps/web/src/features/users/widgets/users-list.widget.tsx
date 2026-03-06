@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
+import { toast } from '@shared/ui/toaster';
 import { useLanguage } from '@/web/shared/hooks/use-language';
 import { DataTableComponent } from '@/web/shared/ui/datatable';
 import { Pagination } from '@/web/shared/ui/pagination/pagination';
@@ -18,23 +19,25 @@ export function UsersListWidget() {
     setPage(newPage);
   };
 
-  const handleDeleteUser = async (userId: string) => {
-    if (
-      window.confirm(
-        t.users.deleteConfirm || 'Are you sure you want to delete this user?'
-      )
-    ) {
-      try {
-        await deleteUserMutation.mutateAsync(userId);
-      } catch (err) {
-        console.error('Failed to delete user:', err);
-      }
-    }
-  };
+  const handleDeleteUser = useCallback(
+    (userId: string) => {
+      toast.warning(t.users.deleteConfirm, {
+        action: {
+          label: t.users.delete,
+          onClick: () => deleteUserMutation.mutate(userId),
+        },
+        cancel: {
+          label: t.common.cancel,
+          onClick: () => {},
+        },
+      });
+    },
+    [deleteUserMutation, t]
+  );
 
-  const handleEditUser = (userId: string) => {
+  const handleEditUser = useCallback((userId: string) => {
     console.log('Editing user:', userId);
-  };
+  }, []);
 
   if (isLoading) {
     return (
@@ -45,11 +48,8 @@ export function UsersListWidget() {
   }
 
   if (error) {
-    return (
-      <div className="p-4 text-red-600 bg-red-50 rounded-lg">
-        {t.users.errorLoading || 'Error loading users'}
-      </div>
-    );
+    toast.error(t.users.errorLoading);
+    return null;
   }
 
   const users = data?.data || [];
@@ -60,21 +60,11 @@ export function UsersListWidget() {
       <DataTableComponent.Root>
         <DataTableComponent.Table>
           <DataTableComponent.Header>
-            <DataTableComponent.Head>
-              {t.users.name || 'Name'}
-            </DataTableComponent.Head>
-            <DataTableComponent.Head>
-              {t.common.email || 'Email'}
-            </DataTableComponent.Head>
-            <DataTableComponent.Head>
-              {t.users.role || 'Role'}
-            </DataTableComponent.Head>
-            <DataTableComponent.Head>
-              {t.users.status || 'Status'}
-            </DataTableComponent.Head>
-            <DataTableComponent.Head>
-              {t.common.actions || 'Actions'}
-            </DataTableComponent.Head>
+            <DataTableComponent.Head>{t.users.name}</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.common.email}</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.users.role}</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.users.status}</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.users.actions}</DataTableComponent.Head>
           </DataTableComponent.Header>
 
           <DataTableComponent.Body>

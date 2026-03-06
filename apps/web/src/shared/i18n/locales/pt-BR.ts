@@ -127,5 +127,12 @@ export const ptBR = {
     role: 'Função',
     status: 'Status',
     actions: 'Ações',
+    delete: 'Excluir',
+    userDeleted: 'Usuário excluído com sucesso',
+    userCreate: 'Usuário criado com sucesso',
+    userUpdate: 'Usuário atualizado com sucesso',
+    failedToDelete: 'Erro ao excluir usuário',
+    failedToCreate: 'Erro ao criar usuário',
+    failedToUpdate: 'Erro ao atualizar usuário',
   },
 };

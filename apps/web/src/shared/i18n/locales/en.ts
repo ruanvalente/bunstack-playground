@@ -127,5 +127,12 @@ export const en = {
     role: 'Role',
     status: 'Status',
     actions: 'Actions',
+    delete: 'Delete',
+    userDeleted: 'User deleted successfully',
+    userCreate: 'User created successfully',
+    userUpdate: 'User updated successfully',
+    failedToDelete: 'Failed to delete user',
+    failedToCreate: 'Failed to create user',
+    failedToUpdate: 'Failed to update user',
   },
 };
