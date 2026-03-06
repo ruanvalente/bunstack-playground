@@ -19,6 +19,8 @@ export const ptBR = {
     status: 'Status',
     title: 'Título',
     completed: 'Concluída',
+    email: 'Email',
+    actions: 'Ações',
   },
   auth: {
     login: 'Entrar',
@@ -117,7 +119,13 @@ export const ptBR = {
     saveChanges: 'Salvar Alterações',
   },
   users: {
-    title: 'Usuários',
-    subtitle: 'Gerencie os usuários da sua aplicação',
+    title: 'Gestão de Acessos',
+    subtitle: 'Gerencie usuários e suas permissões na aplicação',
+    deleteConfirm: 'Tem certeza que deseja excluir este usuário?',
+    errorLoading: 'Erro ao carregar usuários',
+    name: 'Nome',
+    role: 'Função',
+    status: 'Status',
+    actions: 'Ações',
   },
 };

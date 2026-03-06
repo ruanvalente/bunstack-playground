@@ -19,6 +19,8 @@ export const en = {
     status: 'Status',
     title: 'Title',
     completed: 'Completed',
+    email: 'Email',
+    actions: 'Actions',
   },
   auth: {
     login: 'Login',
@@ -117,7 +119,13 @@ export const en = {
     saveChanges: 'Save Changes',
   },
   users: {
-    title: 'Users',
-    subtitle: 'Manage your users in your application',
+    title: 'Access Management',
+    subtitle: 'Manage users and their permissions in your application',
+    deleteConfirm: 'Are you sure you want to delete this user?',
+    errorLoading: 'Error loading users',
+    name: 'Name',
+    role: 'Role',
+    status: 'Status',
+    actions: 'Actions',
   },
 };
