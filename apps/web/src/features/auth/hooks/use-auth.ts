@@ -21,10 +21,12 @@ export function useAuth() {
     session,
     isAuthenticated,
     isLoading,
+    userRole,
     setUserId,
     setUser,
     setSession,
     setLoading,
+    setUserRole,
     logout,
   } = useAuthStore();
 
@@ -128,6 +130,7 @@ export function useAuth() {
     if (!session?.access_token) {
       setUserId(null);
       setUser(null);
+      setUserRole(null);
       setLoading(false);
       return;
     }
@@ -152,9 +155,11 @@ export function useAuth() {
                 avatar_url: userMetadata.avatar_url as string,
                 email: userMetadata.email as string,
                 preferred_username: userMetadata.preferred_username as string,
+                role: (data.role as 'ADMIN' | 'USER') || 'USER',
               }
             : null
         );
+        setUserRole((data.role as 'ADMIN' | 'USER') || 'USER');
       } else {
         logout();
       }
@@ -164,7 +169,7 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [session, setUserId, setUser, setLoading, logout]);
+  }, [session, setUserId, setUser, setUserRole, setLoading, logout]);
 
   const loginWithGithub = useCallback(async () => {
     try {
@@ -192,6 +197,7 @@ export function useAuth() {
     session,
     isAuthenticated,
     isLoading,
+    userRole,
     login,
     register,
     logout: logoutUser,
