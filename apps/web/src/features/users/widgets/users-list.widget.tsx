@@ -6,11 +6,25 @@ import { DataTableComponent } from '@/web/shared/ui/datatable';
 import { Pagination } from '@/web/shared/ui/pagination/pagination';
 
 import { useDeleteUser, useUsers } from '../hooks/use-users';
+import { CreateUserModal, EditUserModal } from '../ui';
+
+type User = {
+  id: string;
+  email: string;
+  name: string;
+  role: 'ADMIN' | 'USER';
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt?: string;
+};
 
 export function UsersListWidget() {
   const { t } = useLanguage();
   const [page, setPage] = useState(1);
   const pageSize = 5;
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const { data, isLoading, error } = useUsers({ page, pageSize });
   const deleteUserMutation = useDeleteUser();
@@ -20,23 +34,26 @@ export function UsersListWidget() {
   };
 
   const handleDeleteUser = useCallback(
-    (userId: string) => {
-      toast.warning(t.users.deleteConfirm, {
-        action: {
-          label: t.users.delete,
-          onClick: () => deleteUserMutation.mutate(userId),
-        },
-        cancel: {
-          label: t.common.cancel,
-          onClick: () => {},
-        },
-      });
+    (user: User) => {
+      toast.warning(
+        t.users.deleteConfirmWithName.replace('{name}', user.name),
+        {
+          action: {
+            label: t.users.delete,
+            onClick: () => deleteUserMutation.mutate(user.id),
+          },
+          cancel: {
+            label: t.common.cancel,
+            onClick: () => {},
+          },
+        }
+      );
     },
     [deleteUserMutation, t]
   );
 
-  const handleEditUser = useCallback((userId: string) => {
-    console.log('Editing user:', userId);
+  const handleEditUser = useCallback((user: User) => {
+    setEditingUser(user);
   }, []);
 
   if (isLoading) {
@@ -57,6 +74,15 @@ export function UsersListWidget() {
 
   return (
     <div className="flex flex-col">
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          {t.users.addUser}
+        </button>
+      </div>
+
       <DataTableComponent.Root>
         <DataTableComponent.Table>
           <DataTableComponent.Header>
@@ -96,8 +122,8 @@ export function UsersListWidget() {
                 </DataTableComponent.Cell>
                 <DataTableComponent.Cell>
                   <DataTableComponent.Actions
-                    onEdit={() => handleEditUser(user.id)}
-                    onDelete={() => handleDeleteUser(user.id)}
+                    onEdit={() => handleEditUser(user)}
+                    onDelete={() => handleDeleteUser(user)}
                   />
                 </DataTableComponent.Cell>
               </DataTableComponent.Row>
@@ -116,6 +142,17 @@ export function UsersListWidget() {
           />
         </div>
       )}
+
+      <CreateUserModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
+
+      <EditUserModal
+        isOpen={!!editingUser}
+        user={editingUser}
+        onClose={() => setEditingUser(null)}
+      />
     </div>
   );
 }
