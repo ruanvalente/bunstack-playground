@@ -22,9 +22,23 @@ export const userSchemaWithDate = userSchema.transform((data) => ({
     : undefined,
 }));
 
+const passwordValidation = z
+  .string()
+  .min(8, 'Password must be at least 8 characters')
+  .max(10, 'Password must be at most 10 characters')
+  .refine((password) => /[a-zA-Z]/.test(password), {
+    message: 'Password must contain at least one letter',
+  })
+  .refine((password) => /[0-9]/.test(password), {
+    message: 'Password must contain at least one number',
+  })
+  .refine((password) => /[!@#$%^&*(),.?":{}|<>]/.test(password), {
+    message: 'Password must contain at least one special character',
+  });
+
 export const createUserSchema = z.object({
   email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: passwordValidation,
   name: z
     .string()
     .min(1, 'Name is required')

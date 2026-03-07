@@ -282,20 +282,25 @@ export const userController = new Elysia({
         set.status = HttpStatus.CREATED;
         return user;
       } catch (error) {
+        console.error('Error creating user:', error);
         if (error instanceof AppError) {
           set.status = error.statusCode;
           return { message: error.message };
         }
+        const errorMessage =
+          error instanceof Error ? error.message : 'Unknown error';
         set.status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return { message: 'Internal server error' };
+        return { message: errorMessage };
       }
     },
     {
       body: t.Object({
         email: t.String({ format: 'email', description: 'User email address' }),
         password: t.String({
-          minLength: 6,
-          description: 'User password (min 6 characters)',
+          minLength: 8,
+          maxLength: 10,
+          description:
+            'User password (8-10 characters, must contain letters, numbers and special characters)',
         }),
         name: t.String({
           minLength: 1,
@@ -323,14 +328,20 @@ export const userController = new Elysia({
                 required: ['email', 'password', 'name'],
                 properties: {
                   email: { type: 'string', format: 'email' },
-                  password: { type: 'string', minLength: 6 },
+                  password: {
+                    type: 'string',
+                    minLength: 8,
+                    maxLength: 10,
+                    pattern:
+                      '^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z0-9!@#$%^&*(),.?":{}|<>]{8,10}$',
+                  },
                   name: { type: 'string', minLength: 1, maxLength: 100 },
                   role: { type: 'string', enum: ['ADMIN', 'USER'] },
                 },
               },
               example: {
                 email: 'newuser@example.com',
-                password: 'password123',
+                password: 'Pass@123',
                 name: 'New User',
                 role: 'USER',
               },
