@@ -6,7 +6,10 @@ import type {
 } from '@bunstack-playground/shared/http';
 
 import type { IUserRepository } from '@/api/domain/repositories';
-import { supabaseAdmin } from '@/api/infrastructure/supabase/supabase.client';
+import {
+  supabaseAdmin,
+  supabaseAuthAdmin,
+} from '@/api/infrastructure/supabase/supabase.client';
 
 const TABLE_NAME = 'users';
 
@@ -98,7 +101,30 @@ export class UserSupabaseRepository implements IUserRepository {
 
   async create(input: CreateUserDTO): Promise<User> {
     const now = new Date().toISOString();
-    const userId = crypto.randomUUID();
+
+    const existingUser = await this.findByEmail(input.email);
+    if (existingUser) {
+      throw new Error('User with this email already exists');
+    }
+
+    const { data: authData, error: authError } =
+      await supabaseAuthAdmin.auth.admin.createUser({
+        email: input.email,
+        password: input.password,
+        email_confirm: true,
+      });
+
+    if (authError) {
+      console.error('Error creating user in auth:', authError);
+      throw new Error('Failed to create user in authentication');
+    }
+
+    const userId = authData.user.id;
+
+    const existingById = await this.findById(userId);
+    if (existingById) {
+      return existingById;
+    }
 
     const { data, error } = await supabaseAdmin
       .from(TABLE_NAME)
@@ -115,7 +141,8 @@ export class UserSupabaseRepository implements IUserRepository {
       .single();
 
     if (error) {
-      console.error('Error creating user:', error);
+      console.error('Error creating user in database:', error);
+      await supabaseAuthAdmin.auth.admin.deleteUser(userId);
       throw new Error('Failed to create user');
     }
 
@@ -162,6 +189,8 @@ export class UserSupabaseRepository implements IUserRepository {
       console.error('Error deleting user:', error);
       throw new Error('Failed to delete user');
     }
+
+    await supabaseAuthAdmin.auth.admin.deleteUser(id);
 
     return true;
   }

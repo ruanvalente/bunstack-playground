@@ -11,3 +11,7 @@ export const supabaseAdmin = createClient(
   process.env.SUPABASE_URL!,
   supabaseServiceKey
 );
+export const supabaseAuthAdmin = createClient(
+  process.env.SUPABASE_URL!,
+  supabaseServiceKey
+);
