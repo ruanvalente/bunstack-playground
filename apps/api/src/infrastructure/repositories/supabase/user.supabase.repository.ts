@@ -109,6 +109,10 @@ export class UserSupabaseRepository implements IUserRepository {
         email: input.email,
         password: input.password,
         email_confirm: true,
+        user_metadata: {
+          name: input.name,
+          full_name: input.name,
+        },
       });
 
     if (authError) {
