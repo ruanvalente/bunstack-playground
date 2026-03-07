@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { API_VERSION } from '@shared/config/supabase';
 import { axiosInstance } from '@shared/http/axios-client';
 import { toast } from '@shared/ui/toaster';
+import { useLanguage } from '@/web/shared/hooks/use-language';
 
 type User = {
   id: string;
@@ -122,21 +123,23 @@ export function useUser(id: string) {
 
 export function useCreateUser() {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
 
   return useMutation({
     mutationFn: createUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast.success('User created successfully');
+      toast.success(t.users.userCreated);
     },
     onError: () => {
-      toast.error('Failed to create user');
+      toast.error(t.users.failedToCreate);
     },
   });
 }
 
 export function useUpdateUser() {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
 
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateUserInput }) =>
@@ -144,25 +147,26 @@ export function useUpdateUser() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       queryClient.invalidateQueries({ queryKey: ['user', data.id] });
-      toast.success('User updated successfully');
+      toast.success(t.users.userUpdated);
     },
     onError: () => {
-      toast.error('Failed to update user');
+      toast.error(t.users.failedToUpdate);
     },
   });
 }
 
 export function useDeleteUser() {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
 
   return useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast.success('User deleted successfully');
+      toast.success(t.users.userDeleted);
     },
     onError: () => {
-      toast.error('Failed to delete user');
+      toast.error(t.users.failedToDelete);
     },
   });
 }
