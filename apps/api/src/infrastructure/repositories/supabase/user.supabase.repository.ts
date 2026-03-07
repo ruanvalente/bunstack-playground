@@ -6,10 +6,7 @@ import type {
 } from '@bunstack-playground/shared/http';
 
 import type { IUserRepository } from '@/api/domain/repositories';
-import {
-  supabaseAdmin,
-  supabaseAuthAdmin,
-} from '@/api/infrastructure/supabase/supabase.client';
+import { supabaseAdmin } from '@/api/infrastructure/supabase/supabase.client';
 
 const TABLE_NAME = 'users';
 
@@ -108,7 +105,7 @@ export class UserSupabaseRepository implements IUserRepository {
     }
 
     const { data: authData, error: authError } =
-      await supabaseAuthAdmin.auth.admin.createUser({
+      await supabaseAdmin.auth.admin.createUser({
         email: input.email,
         password: input.password,
         email_confirm: true,
@@ -142,7 +139,7 @@ export class UserSupabaseRepository implements IUserRepository {
 
     if (error) {
       console.error('Error creating user in database:', error);
-      await supabaseAuthAdmin.auth.admin.deleteUser(userId);
+      await supabaseAdmin.auth.admin.deleteUser(userId);
       throw new Error('Failed to create user');
     }
 
@@ -190,7 +187,7 @@ export class UserSupabaseRepository implements IUserRepository {
       throw new Error('Failed to delete user');
     }
 
-    await supabaseAuthAdmin.auth.admin.deleteUser(id);
+    await supabaseAdmin.auth.admin.deleteUser(id);
 
     return true;
   }
