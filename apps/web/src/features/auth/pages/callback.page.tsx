@@ -34,32 +34,28 @@ export function CallbackPage() {
           }
 
           if (data.session) {
-            const userMetadata = data.session.user?.user_metadata;
+            const userMetadata =
+              (data.session.user?.user_metadata as Record<string, unknown>) ||
+              {};
+            const sessionUserEmail = data.session.user?.email || '';
             setSession({
               access_token: data.session.access_token,
               refresh_token: data.session.refresh_token || undefined,
               expires_at: data.session.expires_at ?? Date.now() + 3600000,
             });
-            const sessionUserEmail = data.session.user?.email || '';
             setUserId(data.session.user?.id || null);
-            setUser(
-              userMetadata
-                ? {
-                    name:
-                      (userMetadata.name as string) ||
-                      (userMetadata.full_name as string) ||
-                      sessionUserEmail,
-                    full_name:
-                      (userMetadata.full_name as string) ||
-                      (userMetadata.name as string) ||
-                      sessionUserEmail,
-                    avatar_url: (userMetadata.avatar_url as string) || '',
-                    email: sessionUserEmail,
-                    preferred_username:
-                      (userMetadata.preferred_username as string) || '',
-                  }
-                : null
-            );
+            setUser({
+              name: ((userMetadata.name as string) ||
+                userMetadata.full_name ||
+                sessionUserEmail) as string,
+              full_name: ((userMetadata.full_name as string) ||
+                userMetadata.name ||
+                sessionUserEmail) as string,
+              avatar_url: ((userMetadata.avatar_url as string) || '') as string,
+              email: sessionUserEmail,
+              preferred_username:
+                ((userMetadata.preferred_username as string) || '') as string,
+            });
             navigate('/dashboard');
             return;
           }
@@ -77,7 +73,8 @@ export function CallbackPage() {
         }
 
         if (session) {
-          const userMetadata = session.user?.user_metadata || {};
+          const userMetadata =
+            (session.user?.user_metadata as Record<string, unknown>) || {};
           const sessionUserEmail = session.user?.email || '';
           setSession({
             access_token: session.access_token,
@@ -85,24 +82,18 @@ export function CallbackPage() {
             expires_at: session.expires_at ?? Date.now() + 3600000,
           });
           setUserId(session.user?.id || null);
-          setUser(
-            userMetadata
-              ? {
-                  name:
-                    (userMetadata.name as string) ||
-                    (userMetadata.full_name as string) ||
-                    sessionUserEmail,
-                  full_name:
-                    (userMetadata.full_name as string) ||
-                    (userMetadata.name as string) ||
-                    sessionUserEmail,
-                  avatar_url: (userMetadata.avatar_url as string) || '',
-                  email: sessionUserEmail,
-                  preferred_username:
-                    (userMetadata.preferred_username as string) || '',
-                }
-              : null
-          );
+          setUser({
+            name: ((userMetadata.name as string) ||
+              userMetadata.full_name ||
+              sessionUserEmail) as string,
+            full_name: ((userMetadata.full_name as string) ||
+              userMetadata.name ||
+              sessionUserEmail) as string,
+            avatar_url: ((userMetadata.avatar_url as string) || '') as string,
+            email: sessionUserEmail,
+            preferred_username: ((userMetadata.preferred_username as string) ||
+              '') as string,
+          });
           navigate('/dashboard');
           return;
         }

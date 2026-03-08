@@ -79,7 +79,10 @@ export const authController = new Elysia({ prefix: `api/${API_VERSION}/auth` })
       }
 
       return {
-        user: data.user,
+        user: {
+          ...data.user,
+          user_metadata: data.user.user_metadata,
+        },
         session: {
           user: data.user,
           access_token: data.session.access_token,

@@ -49,24 +49,22 @@ export function useAuth() {
         }
 
         if (data.user && data.session) {
-          const userMetadata = data.user.user_metadata || {};
+          const userMetadata =
+            (data.user.user_metadata as Record<string, unknown>) || {};
           const userEmail = data.user.email || '';
           setUserId(data.user.id);
-          setUser(
-            userMetadata
-              ? {
-                  name: (userMetadata.name as string) || userEmail,
-                  full_name:
-                    (userMetadata.full_name as string) ||
-                    (userMetadata.name as string) ||
-                    userEmail,
-                  avatar_url: (userMetadata.avatar_url as string) || '',
-                  email: userEmail,
-                  preferred_username:
-                    (userMetadata.preferred_username as string) || '',
-                }
-              : null
-          );
+          setUser({
+            name: ((userMetadata.name as string) ||
+              userMetadata.full_name ||
+              userEmail) as string,
+            full_name: ((userMetadata.full_name as string) ||
+              userMetadata.name ||
+              userEmail) as string,
+            avatar_url: ((userMetadata.avatar_url as string) || '') as string,
+            email: userEmail,
+            preferred_username: ((userMetadata.preferred_username as string) ||
+              '') as string,
+          });
           setSession(data.session);
         }
 
@@ -150,25 +148,23 @@ export function useAuth() {
       const data = await response.json();
 
       if (response.ok && data.user) {
-        const userMetadata = data.user.user_metadata || {};
+        const userMetadata =
+          (data.user.user_metadata as Record<string, unknown>) || {};
         const userEmail = data.user.email || '';
         setUserId(data.user.id);
-        setUser(
-          userMetadata
-            ? {
-                name: (userMetadata.name as string) || userEmail,
-                full_name:
-                  (userMetadata.full_name as string) ||
-                  (userMetadata.name as string) ||
-                  userEmail,
-                avatar_url: (userMetadata.avatar_url as string) || '',
-                email: userEmail,
-                preferred_username:
-                  (userMetadata.preferred_username as string) || '',
-                role: (data.role as 'ADMIN' | 'USER') || 'USER',
-              }
-            : null
-        );
+        setUser({
+          name: ((userMetadata.name as string) ||
+            userMetadata.full_name ||
+            userEmail) as string,
+          full_name: ((userMetadata.full_name as string) ||
+            userMetadata.name ||
+            userEmail) as string,
+          avatar_url: ((userMetadata.avatar_url as string) || '') as string,
+          email: userEmail,
+          preferred_username: ((userMetadata.preferred_username as string) ||
+            '') as string,
+          role: (data.role as 'ADMIN' | 'USER') || 'USER',
+        });
         setUserRole((data.role as 'ADMIN' | 'USER') || 'USER');
       } else {
         logout();
