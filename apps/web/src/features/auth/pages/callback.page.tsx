@@ -40,16 +40,23 @@ export function CallbackPage() {
               refresh_token: data.session.refresh_token || undefined,
               expires_at: data.session.expires_at ?? Date.now() + 3600000,
             });
+            const sessionUserEmail = data.session.user?.email || '';
             setUserId(data.session.user?.id || null);
             setUser(
               userMetadata
                 ? {
-                    name: userMetadata.name as string,
-                    full_name: userMetadata.full_name as string,
-                    avatar_url: userMetadata.avatar_url as string,
-                    email: userMetadata.email as string,
+                    name:
+                      (userMetadata.name as string) ||
+                      (userMetadata.full_name as string) ||
+                      sessionUserEmail,
+                    full_name:
+                      (userMetadata.full_name as string) ||
+                      (userMetadata.name as string) ||
+                      sessionUserEmail,
+                    avatar_url: (userMetadata.avatar_url as string) || '',
+                    email: sessionUserEmail,
                     preferred_username:
-                      userMetadata.preferred_username as string,
+                      (userMetadata.preferred_username as string) || '',
                   }
                 : null
             );
@@ -70,7 +77,8 @@ export function CallbackPage() {
         }
 
         if (session) {
-          const userMetadata = session.user?.user_metadata;
+          const userMetadata = session.user?.user_metadata || {};
+          const sessionUserEmail = session.user?.email || '';
           setSession({
             access_token: session.access_token,
             refresh_token: session.refresh_token || undefined,
@@ -80,11 +88,18 @@ export function CallbackPage() {
           setUser(
             userMetadata
               ? {
-                  name: userMetadata.name as string,
-                  full_name: userMetadata.full_name as string,
-                  avatar_url: userMetadata.avatar_url as string,
-                  email: userMetadata.email as string,
-                  preferred_username: userMetadata.preferred_username as string,
+                  name:
+                    (userMetadata.name as string) ||
+                    (userMetadata.full_name as string) ||
+                    sessionUserEmail,
+                  full_name:
+                    (userMetadata.full_name as string) ||
+                    (userMetadata.name as string) ||
+                    sessionUserEmail,
+                  avatar_url: (userMetadata.avatar_url as string) || '',
+                  email: sessionUserEmail,
+                  preferred_username:
+                    (userMetadata.preferred_username as string) || '',
                 }
               : null
           );
