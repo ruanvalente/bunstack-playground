@@ -11,6 +11,7 @@ import {
 
 import { config } from '@/api/config';
 import { supabaseAuth } from '@/api/infrastructure/supabase/supabase.auth.client';
+import { supabaseAdmin } from '@/api/infrastructure/supabase/supabase.client';
 
 const GITHUB_REDIRECT_URL = `${config.frontendUrl}/auth/callback`;
 
@@ -78,7 +79,10 @@ export const authController = new Elysia({ prefix: `api/${API_VERSION}/auth` })
       }
 
       return {
-        user: data.user,
+        user: {
+          ...data.user,
+          user_metadata: data.user.user_metadata,
+        },
         session: {
           user: data.user,
           access_token: data.session.access_token,
@@ -145,17 +149,35 @@ export const authController = new Elysia({ prefix: `api/${API_VERSION}/auth` })
         return { message: error.message };
       }
 
-      return { user: user.user };
+      const userId = user.user.id;
+
+      const { data: userData } = await supabaseAdmin
+        .from('users')
+        .select('role, name, email')
+        .eq('id', userId)
+        .single();
+
+      return {
+        user: user.user,
+        role: userData?.role || 'USER',
+        name: userData?.name || user.user.user_metadata?.name,
+        email: userData?.email || user.user.email,
+      };
     },
     {
       response: {
-        200: t.Object({ user: t.Any() }),
+        200: t.Object({
+          user: t.Any(),
+          role: t.String(),
+          name: t.String(),
+          email: t.String(),
+        }),
         401: t.Object({ message: t.String() }),
       },
       detail: {
         tags: ['Auth'],
         summary: 'Get current user',
-        description: 'Get the current authenticated user',
+        description: 'Get the current authenticated user with role',
       },
     }
   )

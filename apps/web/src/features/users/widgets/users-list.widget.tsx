@@ -1,43 +1,129 @@
-import { usePaginate } from '@/web/shared/hooks/use-paginate';
+import { useCallback, useState } from 'react';
+
+import { toast } from '@shared/ui/toaster';
+import { useLanguage } from '@/web/shared/hooks/use-language';
 import { DataTableComponent } from '@/web/shared/ui/datatable';
 import { Pagination } from '@/web/shared/ui/pagination/pagination';
-import { usersMock } from '@/web/shared/utils/mocks/user.mock';
 
-const PER_PAGE = 5;
+import { useDeleteUser, useUsers } from '../hooks/use-users';
+import { CreateUserModal, EditUserModal } from '../ui';
+
+type User = {
+  id: string;
+  email: string;
+  name: string;
+  role: 'ADMIN' | 'USER';
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt?: string;
+};
 
 export function UsersListWidget() {
-  const { result: users, onPageChange } = usePaginate({
-    items: usersMock,
-    perPage: PER_PAGE,
-  });
+  const { t } = useLanguage();
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
 
-  const editUser = (userId: string) => {
-    console.log('Editando o user de ID: ', userId);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+
+  const { data, isLoading, error } = useUsers({ page, pageSize });
+  const deleteUserMutation = useDeleteUser();
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
 
-  const deleteUser = (userId: string) => {
-    console.log('Excluindo o user de ID: ', userId);
-  };
+  const handleDeleteUser = useCallback(
+    (user: User) => {
+      toast.warning(
+        t.users.deleteConfirmWithName.replace('{name}', user.name),
+        {
+          action: {
+            label: t.users.delete,
+            onClick: () => deleteUserMutation.mutate(user.id),
+          },
+          cancel: {
+            label: t.common.cancel,
+            onClick: () => {},
+          },
+        }
+      );
+    },
+    [deleteUserMutation, t]
+  );
+
+  const handleEditUser = useCallback((user: User) => {
+    setEditingUser(user);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    toast.error(t.users.errorLoading);
+    return null;
+  }
+
+  const users = data?.data || [];
+  const pagination = data?.pagination;
 
   return (
     <div className="flex flex-col">
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          {t.users.addUser}
+        </button>
+      </div>
+
       <DataTableComponent.Root>
         <DataTableComponent.Table>
           <DataTableComponent.Header>
-            <DataTableComponent.Head>Nome</DataTableComponent.Head>
-            <DataTableComponent.Head>Email</DataTableComponent.Head>
-            <DataTableComponent.Head>Ações</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.users.name}</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.common.email}</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.users.role}</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.users.status}</DataTableComponent.Head>
+            <DataTableComponent.Head>{t.users.actions}</DataTableComponent.Head>
           </DataTableComponent.Header>
 
           <DataTableComponent.Body>
-            {users.data.map((user) => (
+            {users.map((user) => (
               <DataTableComponent.Row key={user.id}>
                 <DataTableComponent.Cell>{user.name}</DataTableComponent.Cell>
                 <DataTableComponent.Cell>{user.email}</DataTableComponent.Cell>
                 <DataTableComponent.Cell>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      user.role === 'ADMIN'
+                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                        : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                    }`}
+                  >
+                    {user.role}
+                  </span>
+                </DataTableComponent.Cell>
+                <DataTableComponent.Cell>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      user.status === 'active'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                        : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
+                    }`}
+                  >
+                    {user.status}
+                  </span>
+                </DataTableComponent.Cell>
+                <DataTableComponent.Cell>
                   <DataTableComponent.Actions
-                    onEdit={() => editUser(user.id)}
-                    onDelete={() => deleteUser(user.id)}
+                    onEdit={() => handleEditUser(user)}
+                    onDelete={() => handleDeleteUser(user)}
                   />
                 </DataTableComponent.Cell>
               </DataTableComponent.Row>
@@ -46,14 +132,27 @@ export function UsersListWidget() {
         </DataTableComponent.Table>
       </DataTableComponent.Root>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <Pagination
-          currentPage={users.pagination.page}
-          totalPages={users.pagination.totalPages}
-          onPageChange={onPageChange}
-          position="center"
-        />
-      </div>
+      {pagination && pagination.totalPages > 1 && (
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            position="center"
+          />
+        </div>
+      )}
+
+      <CreateUserModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
+
+      <EditUserModal
+        isOpen={!!editingUser}
+        user={editingUser}
+        onClose={() => setEditingUser(null)}
+      />
     </div>
   );
 }

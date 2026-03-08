@@ -1,11 +1,13 @@
+import { useAuthStore } from '@features/auth/store/auth.store';
 import { CheckSquare, LayoutDashboard, Settings, Users } from 'lucide-react';
 
 import { useLanguage } from '@shared/hooks/use-language';
 
 export function useNavItems() {
   const { t } = useLanguage();
+  const userRole = useAuthStore((state) => state.userRole);
 
-  return [
+  const navItems = [
     {
       label: t.common.dashboard,
       icon: LayoutDashboard,
@@ -21,10 +23,15 @@ export function useNavItems() {
       icon: Settings,
       route: '/dashboard/settings',
     },
-    {
-      label: t.common.users,
+  ];
+
+  if (userRole === 'ADMIN') {
+    navItems.push({
+      label: t.users.title,
       icon: Users,
       route: '/dashboard/users',
-    },
-  ];
+    });
+  }
+
+  return navItems;
 }

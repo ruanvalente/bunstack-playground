@@ -17,6 +17,7 @@ type UserMetadata = {
   avatar_url?: string;
   email?: string;
   preferred_username?: string;
+  role?: 'ADMIN' | 'USER';
 };
 
 type AuthState = {
@@ -25,10 +26,12 @@ type AuthState = {
   session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  userRole: 'ADMIN' | 'USER' | null;
   setUserId: (userId: string | null) => void;
   setUser: (user: UserMetadata | null) => void;
   setSession: (session: Session | null) => void;
   setLoading: (loading: boolean) => void;
+  setUserRole: (role: 'ADMIN' | 'USER' | null) => void;
   logout: () => Promise<void>;
 };
 
@@ -68,10 +71,12 @@ export const useAuthStore = create<AuthState>()(
       session: null,
       isAuthenticated: false,
       isLoading: true,
+      userRole: null,
       setUserId: (userId) => set({ userId, isAuthenticated: !!userId }),
       setUser: (user) => set({ user }),
       setSession: (session) => set({ session }),
       setLoading: (isLoading) => set({ isLoading }),
+      setUserRole: (userRole) => set({ userRole }),
       logout: async () => {
         const { session } = get();
         try {
@@ -91,6 +96,7 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             session: null,
             isAuthenticated: false,
+            userRole: null,
           });
         }
       },
@@ -102,6 +108,7 @@ export const useAuthStore = create<AuthState>()(
         userId: state.userId,
         session: state.session,
         isAuthenticated: state.isAuthenticated,
+        userRole: state.userRole,
       }),
     }
   )
