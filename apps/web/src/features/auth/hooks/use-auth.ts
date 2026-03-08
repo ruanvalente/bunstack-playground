@@ -21,10 +21,12 @@ export function useAuth() {
     session,
     isAuthenticated,
     isLoading,
+    userRole,
     setUserId,
     setUser,
     setSession,
     setLoading,
+    setUserRole,
     logout,
   } = useAuthStore();
 
@@ -47,19 +49,22 @@ export function useAuth() {
         }
 
         if (data.user && data.session) {
-          const userMetadata = data.user.user_metadata;
+          const userMetadata =
+            (data.user.user_metadata as Record<string, unknown>) || {};
+          const userEmail = data.user.email || '';
+          const userName =
+            (userMetadata.name as string) ||
+            (userMetadata.full_name as string) ||
+            userEmail;
           setUserId(data.user.id);
-          setUser(
-            userMetadata
-              ? {
-                  name: userMetadata.name as string,
-                  full_name: userMetadata.full_name as string,
-                  avatar_url: userMetadata.avatar_url as string,
-                  email: userMetadata.email as string,
-                  preferred_username: userMetadata.preferred_username as string,
-                }
-              : null
-          );
+          setUser({
+            name: userName,
+            full_name: userName,
+            avatar_url: ((userMetadata.avatar_url as string) || '') as string,
+            email: userEmail,
+            preferred_username: ((userMetadata.preferred_username as string) ||
+              '') as string,
+          });
           setSession(data.session);
         }
 
@@ -128,6 +133,7 @@ export function useAuth() {
     if (!session?.access_token) {
       setUserId(null);
       setUser(null);
+      setUserRole(null);
       setLoading(false);
       return;
     }
@@ -142,19 +148,25 @@ export function useAuth() {
       const data = await response.json();
 
       if (response.ok && data.user) {
-        const userMetadata = data.user.user_metadata;
+        const userMetadata =
+          (data.user.user_metadata as Record<string, unknown>) || {};
+        const userEmail = data.email || data.user.email || '';
+        const userName =
+          data.name ||
+          (userMetadata.name as string) ||
+          (userMetadata.full_name as string) ||
+          userEmail;
         setUserId(data.user.id);
-        setUser(
-          userMetadata
-            ? {
-                name: userMetadata.name as string,
-                full_name: userMetadata.full_name as string,
-                avatar_url: userMetadata.avatar_url as string,
-                email: userMetadata.email as string,
-                preferred_username: userMetadata.preferred_username as string,
-              }
-            : null
-        );
+        setUser({
+          name: userName,
+          full_name: userName,
+          avatar_url: ((userMetadata.avatar_url as string) || '') as string,
+          email: userEmail,
+          preferred_username: ((userMetadata.preferred_username as string) ||
+            '') as string,
+          role: (data.role as 'ADMIN' | 'USER') || 'USER',
+        });
+        setUserRole((data.role as 'ADMIN' | 'USER') || 'USER');
       } else {
         logout();
       }
@@ -164,7 +176,7 @@ export function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [session, setUserId, setUser, setLoading, logout]);
+  }, [session, setUserId, setUser, setUserRole, setLoading, logout]);
 
   const loginWithGithub = useCallback(async () => {
     try {
@@ -192,6 +204,7 @@ export function useAuth() {
     session,
     isAuthenticated,
     isLoading,
+    userRole,
     login,
     register,
     logout: logoutUser,

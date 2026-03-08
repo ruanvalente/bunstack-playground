@@ -12,6 +12,7 @@ import { tasksRoutes } from '@features/tasks/routes';
 import { QueryClient } from '@tanstack/react-query';
 
 import MainLayout from '@shared/layouts/main.layout';
+import { AdminRoute } from '@/web/features/auth/ui/admin-route.component';
 import { ProtectedRoute } from '@/web/features/auth/ui/protected-route.component';
 import { usersRoutes } from '@/web/features/users/routes';
 
@@ -39,7 +40,10 @@ const router = (queryClient: QueryClient) =>
         ...dashboardRoutes(queryClient),
         ...tasksRoutes(queryClient),
         ...settingsRoutes,
-        ...usersRoutes,
+        ...usersRoutes.map((route) => ({
+          ...route,
+          element: <AdminRoute>{route.element}</AdminRoute>,
+        })),
       ],
     },
   ]);

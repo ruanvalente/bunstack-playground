@@ -464,14 +464,14 @@ Frontend (React + React Query)
 - [x] **Documentação de API** - OpenAPI/Swagger em `/swagger-ui`
 - [x] **Filtros avançados nas tarefas** - statusFilter, sortBy, sortOrder
 - [x] **Dashboard com métricas** - Total tarefas, concluídas, pendentes, progresso
+- [x] **Upload de arquivos** - Anexar arquivos às tarefas
+- [x] **Sistema de categorias/tags** - Organizar tarefas por categorias
 
 ### ⏳ Pendentes / Futuro
 
 - [ ] **Websockets** - Atualizações em tempo real
 - [ ] **Testes automatizados** - Unit, integration e e2e
-- [x] **Sistema de categorias/tags** - Organizar tarefas por categorias
 - [ ] **Notifications** - Notificações em tempo real
-- [ ] **Upload de arquivos** - Anexar arquivos às tarefas
 - [ ] **Task comments** - Comentários em tarefas
 - [ ] **Team collaboration** - Múltiplos usuários por tarefa
 
