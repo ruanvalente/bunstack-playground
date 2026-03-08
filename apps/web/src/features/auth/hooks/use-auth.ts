@@ -52,14 +52,14 @@ export function useAuth() {
           const userMetadata =
             (data.user.user_metadata as Record<string, unknown>) || {};
           const userEmail = data.user.email || '';
+          const userName =
+            (userMetadata.name as string) ||
+            (userMetadata.full_name as string) ||
+            userEmail;
           setUserId(data.user.id);
           setUser({
-            name: ((userMetadata.name as string) ||
-              userMetadata.full_name ||
-              userEmail) as string,
-            full_name: ((userMetadata.full_name as string) ||
-              userMetadata.name ||
-              userEmail) as string,
+            name: userName,
+            full_name: userName,
             avatar_url: ((userMetadata.avatar_url as string) || '') as string,
             email: userEmail,
             preferred_username: ((userMetadata.preferred_username as string) ||
@@ -150,15 +150,16 @@ export function useAuth() {
       if (response.ok && data.user) {
         const userMetadata =
           (data.user.user_metadata as Record<string, unknown>) || {};
-        const userEmail = data.user.email || '';
+        const userEmail = data.email || data.user.email || '';
+        const userName =
+          data.name ||
+          (userMetadata.name as string) ||
+          (userMetadata.full_name as string) ||
+          userEmail;
         setUserId(data.user.id);
         setUser({
-          name: ((userMetadata.name as string) ||
-            userMetadata.full_name ||
-            userEmail) as string,
-          full_name: ((userMetadata.full_name as string) ||
-            userMetadata.name ||
-            userEmail) as string,
+          name: userName,
+          full_name: userName,
           avatar_url: ((userMetadata.avatar_url as string) || '') as string,
           email: userEmail,
           preferred_username: ((userMetadata.preferred_username as string) ||
