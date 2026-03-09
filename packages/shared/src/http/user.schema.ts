@@ -59,6 +59,12 @@ export const updateUserByAdminSchema = z.object({
   status: userStatusSchema.optional(),
 });
 
+export const editUserFormSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  role: z.enum(['ADMIN', 'USER']),
+  status: z.enum(['active', 'inactive']),
+});
+
 export const deleteUserSchema = z.object({
   id: z.string().uuid(),
 });
@@ -74,6 +80,7 @@ export type UserWithDate = z.infer<typeof userSchemaWithDate>;
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
 export type UpdateUserDTO = z.infer<typeof updateUserSchema>;
 export type UpdateUserByAdminDTO = z.infer<typeof updateUserByAdminSchema>;
+export type EditUserFormData = z.infer<typeof editUserFormSchema>;
 export type DeleteUserDTO = z.infer<typeof deleteUserSchema>;
 export type GetUserDTO = z.infer<typeof getUserSchema>;
 
