@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { editUserFormSchema } from '@bunstack-playground/shared/http';
+
 import { useLanguage } from '@shared/hooks/use-language';
 
 import { useUpdateUser } from '../hooks/use-users';
@@ -23,12 +25,6 @@ type EditUserModalProps = {
   user: User | null;
   onClose: () => void;
 };
-
-const editUserFormSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100),
-  role: z.enum(['ADMIN', 'USER']),
-  status: z.enum(['active', 'inactive']),
-});
 
 type EditUserFormData = z.infer<typeof editUserFormSchema>;
 
