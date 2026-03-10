@@ -3,3 +3,13 @@ alias = {
   "@" = "./apps/api/src",
   "@/api" = "./apps/api/src"
 }
+
+[test]
+root = "./apps/api/src"
+timeout = 10000
+coverage = true
+coverageReporter = ["text", "lcov"]
+coverageDir = "./apps/api/coverage"
+coverageThreshold = { lines = 0.9, functions = 0.9, statements = 0.9 }
+coverageSkipTestFiles = true
+coveragePathIgnorePatterns = ["**/node_modules/**", "**/infrastructure/**"]
