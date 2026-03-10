@@ -92,10 +92,8 @@ describe('CreateUserUseCase', () => {
       role: 'USER',
     };
 
-    await expect(createUserUseCase.execute(input)).rejects.toThrow(
-      ConflictError
-    );
-    await expect(createUserUseCase.execute(input)).rejects.toThrow(
+    expect(createUserUseCase.execute(input)).rejects.toThrow(ConflictError);
+    expect(createUserUseCase.execute(input)).rejects.toThrow(
       'User with this email already exists'
     );
     expect(mockCreate).not.toHaveBeenCalled();
