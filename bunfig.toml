@@ -7,8 +7,7 @@ alias = {
 [test]
 root = "./apps/api/src"
 timeout = 10000
-coverage = true
-coverageReporter = ["text", "lcov"]
+coverage = false
 coverageDir = "./apps/api/coverage"
 coverageThreshold = { lines = 0.9, functions = 0.9, statements = 0.9 }
 coverageSkipTestFiles = true
