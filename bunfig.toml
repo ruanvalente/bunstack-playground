@@ -11,4 +11,3 @@ coverage = false
 coverageDir = "./apps/api/coverage"
 coverageThreshold = { lines = 0.9, functions = 0.9, statements = 0.9 }
 coverageSkipTestFiles = true
-coveragePathIgnorePatterns = ["**/node_modules/**", "**/infrastructure/**"]
