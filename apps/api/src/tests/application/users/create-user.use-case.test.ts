@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from 'bun:test';
 
-import type { CreateUserDTO } from '@bunstack-playground/shared/http';
+import type { CreateUserDTO, User } from '@bunstack-playground/shared/http';
 
 import { CreateUserUseCase } from '@/api/application/users/create-user.use-case';
 import { ConflictError } from '@/api/domain/erros';
@@ -20,14 +20,11 @@ describe('CreateUserUseCase', () => {
   });
 
   test('should create user successfully when email does not exist', async () => {
-    userRepositoryMock.findByEmail.mockResolvedValue(null);
-    userRepositoryMock.create.mockResolvedValue(
-      createMockUser({
-        id: 'new-user-id',
-        email: 'test@example.com',
-        name: 'Test User',
-      })
-    );
+    const newUser: User = createMockUser({
+      id: 'new-user-id',
+      email: 'test@example.com',
+      name: 'Test User',
+    });
 
     const input: CreateUserDTO = {
       email: 'test@example.com',
@@ -35,24 +32,24 @@ describe('CreateUserUseCase', () => {
       name: 'Test User',
       role: 'USER',
     };
+
+    userRepositoryMock.findByEmail.mockResolvedValue(null);
+    userRepositoryMock.create.mockResolvedValue(newUser);
 
     const result = await createUserUseCase.execute(input);
 
     expect(result.email).toBe('test@example.com');
     expect(result.name).toBe('Test User');
-    expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(
-      'test@example.com'
-    );
+    expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(input.email);
     expect(userRepositoryMock.create).toHaveBeenCalledWith(input);
   });
 
   test('should throw ConflictError when email already exists', async () => {
-    const existingUser = createMockUser({
+    const existingUser: User = createMockUser({
       id: 'existing-user-id',
       email: 'test@example.com',
       name: 'Existing User',
     });
-    userRepositoryMock.findByEmail.mockResolvedValue(existingUser);
 
     const input: CreateUserDTO = {
       email: 'test@example.com',
@@ -61,8 +58,12 @@ describe('CreateUserUseCase', () => {
       role: 'USER',
     };
 
-    expect(createUserUseCase.execute(input)).rejects.toThrow(ConflictError);
-    expect(createUserUseCase.execute(input)).rejects.toThrow(
+    userRepositoryMock.findByEmail.mockResolvedValue(existingUser);
+
+    await expect(createUserUseCase.execute(input)).rejects.toThrow(
+      ConflictError
+    );
+    await expect(createUserUseCase.execute(input)).rejects.toThrow(
       'User with this email already exists'
     );
     expect(userRepositoryMock.create).not.toHaveBeenCalled();

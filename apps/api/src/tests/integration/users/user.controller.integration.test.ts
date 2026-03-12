@@ -18,7 +18,7 @@ import {
   createMockPaginatedUsersResponse,
   createMockUser,
   UserRepositoryMock,
-} from '../../mocks/users/user.repository.mock';
+} from '../../mocks';
 
 describe('User Controller - List Users Flow', () => {
   test('should list users with pagination parameters', async () => {
@@ -74,6 +74,19 @@ describe('User Controller - List Users Flow', () => {
       sortOrder: 'ASC',
     });
   });
+
+  test('should list users with default pagination', async () => {
+    const users = [createMockUser({ id: 'user-1' })];
+
+    const mockRepo = new UserRepositoryMock();
+    mockRepo.findAll.mockResolvedValue(createMockPaginatedUsersResponse(users));
+
+    const listUsersUseCase = new ListUsersUseCase(mockRepo);
+
+    await listUsersUseCase.execute({ page: 1, pageSize: 10 });
+
+    expect(mockRepo.findAll).toHaveBeenCalled();
+  });
 });
 
 describe('User Controller - Get User Flow', () => {
@@ -107,6 +120,9 @@ describe('User Controller - Get User Flow', () => {
 
     await expect(getUserUseCase.execute('non-existent-id')).rejects.toThrow(
       NotFoundError
+    );
+    await expect(getUserUseCase.execute('non-existent-id')).rejects.toThrow(
+      'User not found'
     );
   });
 });
@@ -162,6 +178,10 @@ describe('User Controller - Create User Flow', () => {
     await expect(createUserUseCase.execute(input)).rejects.toThrow(
       ConflictError
     );
+    await expect(createUserUseCase.execute(input)).rejects.toThrow(
+      'User with this email already exists'
+    );
+    expect(mockRepo.create).not.toHaveBeenCalled();
   });
 });
 
@@ -198,6 +218,13 @@ describe('User Controller - Update User Flow', () => {
 
     expect(result.name).toBe('New Name');
     expect(result.role).toBe('ADMIN');
+    expect(mockRepo.findById).toHaveBeenCalledWith(
+      '123e4567-e89b-12d3-a456-426614174000'
+    );
+    expect(mockRepo.update).toHaveBeenCalledWith(
+      '123e4567-e89b-12d3-a456-426614174000',
+      input
+    );
   });
 
   test('should throw NotFoundError when user not found', async () => {
@@ -213,6 +240,9 @@ describe('User Controller - Update User Flow', () => {
     await expect(
       updateUserUseCase.execute('non-existent-id', input)
     ).rejects.toThrow(NotFoundError);
+    await expect(
+      updateUserUseCase.execute('non-existent-id', input)
+    ).rejects.toThrow('User not found');
   });
 });
 
@@ -248,6 +278,9 @@ describe('User Controller - Delete User Flow', () => {
 
     await expect(deleteUserUseCase.execute('non-existent-id')).rejects.toThrow(
       NotFoundError
+    );
+    await expect(deleteUserUseCase.execute('non-existent-id')).rejects.toThrow(
+      'User not found'
     );
   });
 });
