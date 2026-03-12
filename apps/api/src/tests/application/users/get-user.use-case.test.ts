@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, test } from 'bun:test';
 
+import type { User } from '@bunstack-playground/shared/http';
+
 import { GetUserUseCase } from '@/api/application/users/get-user.use-case';
 import { NotFoundError } from '@/api/domain/erros';
 
@@ -7,6 +9,8 @@ import {
   createMockUser,
   UserRepositoryMock,
 } from '../../mocks/users/user.repository.mock';
+
+type GetUserInput = string;
 
 describe('GetUserUseCase', () => {
   let userRepositoryMock: UserRepositoryMock;
@@ -18,30 +22,28 @@ describe('GetUserUseCase', () => {
   });
 
   test('should return user when user exists', async () => {
-    const existingUser = createMockUser({
-      id: '123e4567-e89b-12d3-a456-426614174000',
+    const userId: GetUserInput = '123e4567-e89b-12d3-a456-426614174000';
+    const existingUser: User = createMockUser({
+      id: userId,
     });
+
     userRepositoryMock.findById.mockResolvedValue(existingUser);
 
-    const result = await getUserUseCase.execute(
-      '123e4567-e89b-12d3-a456-426614174000'
-    );
+    const result = await getUserUseCase.execute(userId);
 
-    expect(result.id).toBe('123e4567-e89b-12d3-a456-426614174000');
-    expect(userRepositoryMock.findById).toHaveBeenCalledWith(
-      '123e4567-e89b-12d3-a456-426614174000'
-    );
+    expect(result.id).toBe(userId);
+    expect(userRepositoryMock.findById).toHaveBeenCalledWith(userId);
   });
 
   test('should throw NotFoundError when user does not exist', async () => {
+    const userId: GetUserInput = 'non-existent-id';
+
     userRepositoryMock.findById.mockResolvedValue(null);
 
-    expect(getUserUseCase.execute('non-existent-id')).rejects.toThrow(
-      NotFoundError
-    );
-    expect(getUserUseCase.execute('non-existent-id')).rejects.toThrow(
+    await expect(getUserUseCase.execute(userId)).rejects.toThrow(NotFoundError);
+    await expect(getUserUseCase.execute(userId)).rejects.toThrow(
       'User not found'
     );
-    expect(userRepositoryMock.findById).toHaveBeenCalledWith('non-existent-id');
+    expect(userRepositoryMock.findById).toHaveBeenCalledWith(userId);
   });
 });
