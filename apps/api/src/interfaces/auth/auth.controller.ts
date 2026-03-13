@@ -40,12 +40,17 @@ export const authController = new Elysia({ prefix: `api/${API_VERSION}/auth` })
       }
 
       set.status = 201;
-      return {
+      const response: Record<string, unknown> = {
         user: data.user,
-        session: data.session,
         message:
           'Registration successful. Please check your email for confirmation.',
       };
+
+      if (data.session) {
+        response.session = data.session;
+      }
+
+      return response;
     },
     {
       body: registerRequestSchema,
