@@ -198,7 +198,7 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
                       disabled={
                         !newCategoryName.trim() || createCategory.isPending
                       }
-                      className="flex-1 px-2 py-1 text-xs text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
+                      className="flex-1 px-2 py-1 text-xs text-white bg-primary rounded hover:bg-primary/90 disabled:opacity-50 dark:bg-primary-dark dark:hover:bg-primary-dark/80"
                     >
                       {createCategory.isPending ? 'Creating...' : 'Create'}
                     </button>

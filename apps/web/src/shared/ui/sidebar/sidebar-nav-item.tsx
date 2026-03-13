@@ -24,7 +24,7 @@ export function SidebarItem({ label, icon: Icon, route }: SidebarItemProps) {
         className={`flex items-center justify-center p-3 rounded-lg transition
           ${
             isActive
-              ? 'bg-blue-600 text-white'
+              ? 'bg-primary text-white'
               : 'text-gray-300 hover:bg-gray-700'
           }
         `}
@@ -39,9 +39,7 @@ export function SidebarItem({ label, icon: Icon, route }: SidebarItemProps) {
       to={route}
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition
         ${
-          isActive
-            ? 'bg-blue-600 text-white'
-            : 'text-gray-300 hover:bg-gray-700'
+          isActive ? 'bg-primary text-white' : 'text-gray-300 hover:bg-gray-700'
         }
       `}
     >
