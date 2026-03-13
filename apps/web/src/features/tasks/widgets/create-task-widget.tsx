@@ -12,7 +12,7 @@ export function CreateTaskWidget() {
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 hover:cursor-pointer"
+        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 hover:cursor-pointer dark:bg-primary-dark dark:hover:bg-primary-dark/80"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

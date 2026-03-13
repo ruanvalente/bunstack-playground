@@ -184,7 +184,7 @@ export function EditUserModal({ isOpen, user, onClose }: EditUserModalProps) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed dark:bg-primary-dark dark:hover:bg-primary-dark/80 dark:disabled:bg-gray-500"
               disabled={mutation.isPending}
             >
               {mutation.isPending ? t.users.saving : t.users.save}
