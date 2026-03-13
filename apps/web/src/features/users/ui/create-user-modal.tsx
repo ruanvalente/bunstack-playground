@@ -95,7 +95,7 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
     reset,
   } = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserFormSchema),
@@ -345,8 +345,7 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              disabled={mutation.isPending || !isValid}
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed dark:bg-primary-dark dark:hover:bg-primary-dark/80 dark:disabled:bg-gray-500"
             >
               {mutation.isPending ? t.users.creating : t.users.createUser}
             </button>
