@@ -67,10 +67,11 @@ export function ProfileSection() {
           <button
             type="submit"
             disabled={isAuthenticated}
-            className="w-full md:w-fit px-6 py-2.5 bg-blue-600 hover:bg-blue-700
+            className="w-full md:w-fit px-6 py-2.5 bg-primary hover:bg-primary/90
                      text-white font-medium rounded-lg
-                     focus:ring-2 focus:ring-blue-500/40 focus:outline-none
-                     transition-all duration-200 shadow-sm hover:shadow hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                     focus:ring-2 focus:ring-primary/40 focus:outline-none
+                     transition-all duration-200 shadow-sm hover:shadow hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed
+                     dark:bg-primary-dark dark:hover:bg-primary-dark/80 dark:disabled:opacity-50"
           >
             {isAuthenticated ? t.profile.managedByAuth : t.profile.saveChanges}
           </button>
