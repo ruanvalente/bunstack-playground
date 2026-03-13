@@ -41,20 +41,16 @@ export function AuthPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Coluna Esquerda - Hero */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-primary overflow-hidden">
-        {/* Imagem de fundo */}
         <div className="absolute inset-0">
           <img
             src={currentHero.url}
             alt="Hero"
             className="w-full h-full object-cover"
           />
-          {/* Overlay */}
           <div className="absolute inset-0 bg-primary/80" />
         </div>
 
-        {/* Conteúdo */}
         <div className="relative z-10 flex flex-col justify-center px-12 text-white">
           <AnimatePresence mode="wait">
             <motion.div
@@ -70,7 +66,6 @@ export function AuthPage() {
           </AnimatePresence>
         </div>
 
-        {/* Indicador de slides */}
         <div className="absolute bottom-8 left-12 flex gap-2">
           {heroImages.map((_, index) => (
             <button
@@ -86,9 +81,7 @@ export function AuthPage() {
         </div>
       </div>
 
-      {/* Coluna Direita - Formulário */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center bg-soft px-6 py-12">
-        {/* Toggle Login/Register no topo */}
         <div className="w-full max-w-md mb-8">
           <div className="flex gap-2">
             <button
@@ -114,7 +107,6 @@ export function AuthPage() {
           </div>
         </div>
 
-        {/* Formulário */}
         <div className="w-full max-w-md">
           <AnimatePresence mode="wait">
             <motion.div

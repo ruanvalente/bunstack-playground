@@ -149,7 +149,7 @@ export function RegisterForm() {
             htmlFor="name"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            {t.auth.nameOptional}
+            {t.auth.yourName}
           </label>
           <input
             id="name"
