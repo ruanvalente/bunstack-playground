@@ -1,15 +1,16 @@
 import type { TaskAttachmentDTO } from '@bunstack-playground/shared/http';
+
 import { uploadFile as uploadFileToStorage } from '@/api/infrastructure/storage/supabase.storage.client';
 import { supabaseAdmin } from '@/api/infrastructure/supabase';
 
-export interface UploadFileInput {
+export type UploadFileInput = {
   userId: string;
   taskId: string;
   fileName: string;
   fileBuffer: Buffer;
   mimeType: string;
   fileSize: number;
-}
+};
 
 export async function uploadFile(
   input: UploadFileInput
