@@ -1,10 +1,10 @@
 import { deleteFile as deleteFileFromStorage } from '@/api/infrastructure/storage/supabase.storage.client';
 import { supabaseAdmin } from '@/api/infrastructure/supabase';
 
-export interface DeleteFileInput {
+export type DeleteFileInput = {
   id: string;
   userId: string;
-}
+};
 
 export async function deleteFile(input: DeleteFileInput): Promise<boolean> {
   const { id, userId } = input;

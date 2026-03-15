@@ -1,17 +1,9 @@
+import type { TaskAttachmentDTO } from '@bunstack-playground/shared/http';
+
 import { API_URL } from '@shared/config/supabase';
 import { axiosInstance } from '@shared/http/axios-client';
 
-export type TaskAttachment = {
-  id: string;
-  taskId: string;
-  userId: string;
-  fileName: string;
-  filePath: string;
-  fileSize: number;
-  mimeType: string;
-  createdAt: string;
-  publicUrl: string;
-};
+export type TaskAttachment = TaskAttachmentDTO;
 
 export async function listTaskFiles(taskId: string): Promise<TaskAttachment[]> {
   const response = await axiosInstance.get<TaskAttachment[]>(

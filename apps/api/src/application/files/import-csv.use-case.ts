@@ -1,23 +1,25 @@
-import { Readable } from 'stream';
 import csvParser from 'csv-parser';
+import { Readable } from 'stream';
+
 import type { CsvImportPreviewDTO } from '@bunstack-playground/shared/http';
+
 import { supabase } from '@/api/infrastructure/supabase';
 
 const BATCH_SIZE = 500;
 const DEFAULT_CATEGORY_NAME = 'Geral';
 const DEFAULT_CATEGORY_COLOR = '#6B7280';
 
-interface ParsedRow {
+type ParsedRow = {
   title: string;
   completed: boolean;
   categoryName: string | undefined;
-}
+};
 
-interface ValidationError {
+type ValidationError = {
   row: number;
   message: string;
   data?: Record<string, string>;
-}
+};
 
 export async function parseCsvPreview(
   buffer: Buffer,

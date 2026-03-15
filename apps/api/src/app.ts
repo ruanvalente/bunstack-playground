@@ -2,8 +2,6 @@ import { cors } from '@elysiajs/cors';
 import { staticPlugin } from '@elysiajs/static';
 import { Elysia, file } from 'elysia';
 
-import { healthSchema } from '@bunstack-playground/shared/http';
-
 import { authController } from './interfaces/auth/auth.controller';
 import { categoryController } from './interfaces/categories/category.controller';
 import { dashboardController } from './interfaces/dashboard/dashboard.controller';
@@ -11,6 +9,7 @@ import {
   csvController,
   fileController,
 } from './interfaces/files/file.controller';
+import { healthController } from './interfaces/health/health.controller';
 import { taskController } from './interfaces/tasks/task.controller';
 import { userController } from './interfaces/users/user.controller';
 
@@ -45,7 +44,7 @@ app
   .use(fileController)
   .use(csvController)
   .use(userController)
-  .get('/health', () => healthSchema);
+  .use(healthController);
 
 if (serveStatic) {
   app.get('/', () => file('apps/web/dist/index.html'));

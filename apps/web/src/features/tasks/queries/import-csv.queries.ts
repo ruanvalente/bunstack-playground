@@ -1,22 +1,9 @@
-import { axiosInstance } from '@shared/http/axios-client';
-import { API_URL } from '@shared/config/supabase';
+import type { CsvImportPreviewDTO } from '@bunstack-playground/shared/http';
 
-export type CsvImportPreview = {
-  totalRows: number;
-  validRows: number;
-  toCreate: number;
-  toUpdate: number;
-  errors: Array<{
-    row: number;
-    message: string;
-    data?: Record<string, string>;
-  }>;
-  sampleData: Array<{
-    title: string;
-    completed: boolean;
-    categoryName?: string;
-  }>;
-};
+import { API_URL } from '@shared/config/supabase';
+import { axiosInstance } from '@shared/http/axios-client';
+
+export type CsvImportPreview = CsvImportPreviewDTO;
 
 export async function previewCsvImport(file: File): Promise<CsvImportPreview> {
   const formData = new FormData();
