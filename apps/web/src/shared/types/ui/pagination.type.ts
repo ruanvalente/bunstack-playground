@@ -1,3 +1,5 @@
+import type { PaginationInfo } from '@bunstack-playground/shared/http';
+
 export type PaginationPosition = 'left' | 'center' | 'right';
 
 export type PaginationProps = {
@@ -9,10 +11,5 @@ export type PaginationProps = {
 
 export type PaginatedResult<T> = {
   data: T[];
-  pagination: {
-    page: number;
-    perPage: number;
-    total: number;
-    totalPages: number;
-  };
+  pagination: PaginationInfo;
 };
