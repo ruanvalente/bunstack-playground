@@ -86,7 +86,7 @@ export function AuthPage() {
           <div className="flex gap-2">
             <button
               onClick={() => setMode('login')}
-              className={`flex-1 py-2 px-4 rounded-lg hover:cursor-pointer text-sm font-medium transition-all ${
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
                 mode === 'login'
                   ? 'bg-primary text-white'
                   : 'bg-transparent text-muted hover:text-primary'
@@ -96,7 +96,7 @@ export function AuthPage() {
             </button>
             <button
               onClick={() => setMode('register')}
-              className={`flex-1 py-2 px-4 rounded-lg hover:cursor-pointer text-sm font-medium transition-all ${
+              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
                 mode === 'register'
                   ? 'bg-primary text-white'
                   : 'bg-transparent text-muted hover:text-primary'
