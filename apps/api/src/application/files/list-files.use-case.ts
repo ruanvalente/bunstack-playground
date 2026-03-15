@@ -1,15 +1,16 @@
 import type { TaskAttachmentDTO } from '@bunstack-playground/shared/http';
+
 import { getFileUrl } from '@/api/infrastructure/storage/supabase.storage.client';
 import { supabaseAdmin } from '@/api/infrastructure/supabase';
 
-export interface ListFilesInput {
+export type ListFilesInput = {
   taskId: string;
   userId: string;
-}
+};
 
-export interface ListFilesOutput extends TaskAttachmentDTO {
+export type ListFilesOutput = TaskAttachmentDTO & {
   publicUrl: string;
-}
+};
 
 export async function listFiles(
   input: ListFilesInput
