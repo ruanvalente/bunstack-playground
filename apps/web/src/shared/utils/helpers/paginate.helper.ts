@@ -1,3 +1,5 @@
+import type { PaginationInfo } from '@bunstack-playground/shared/http';
+
 import type { PaginatedResult } from '../../types/ui/pagination.type';
 
 export function paginateHelper<T>(
@@ -13,13 +15,17 @@ export function paginateHelper<T>(
   const start = (safePage - 1) * perPage;
   const end = start + perPage;
 
+  const paginationInfo: PaginationInfo = {
+    page: safePage,
+    pageSize: perPage,
+    total,
+    totalPages,
+    hasNextPage: safePage < totalPages,
+    hasPrevPage: safePage > 1,
+  };
+
   return {
     data: items.slice(start, end),
-    pagination: {
-      page: safePage,
-      perPage,
-      total,
-      totalPages,
-    },
+    pagination: paginationInfo,
   };
 }
