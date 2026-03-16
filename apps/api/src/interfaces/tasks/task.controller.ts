@@ -135,6 +135,15 @@ export const taskController = new Elysia({
           set.status = error.statusCode;
           return { message: error.message };
         }
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        if (
+          errorMessage.includes('duplicate key') ||
+          errorMessage.includes('unique_user_title')
+        ) {
+          set.status = HttpStatus.BAD_REQUEST;
+          return { message: 'A task with this title already exists' };
+        }
         set.status = HttpStatus.INTERNAL_SERVER_ERROR;
         return { message: 'Internal server error' };
       }

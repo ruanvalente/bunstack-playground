@@ -36,8 +36,8 @@ export class TaskSupabaseRepository implements ITaskRepository {
       throw new Error(`Failed to fetch tasks: ${rpcError.message}`);
     }
 
-    const tasks = (rpcData?.data || []).map(mapRowToTask);
-    const total = rpcData?.total || 0;
+    const tasks = (rpcData || []).map(mapRowToTask);
+    const total = rpcData?.[0]?.total || 0;
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     return {
@@ -72,7 +72,12 @@ export class TaskSupabaseRepository implements ITaskRepository {
       return null;
     }
 
-    return mapRowToTask(data);
+    const taskData = Array.isArray(data) ? data[0] : data;
+    if (!taskData) {
+      return null;
+    }
+
+    return mapRowToTask(taskData);
   }
 
   async create(
@@ -114,7 +119,12 @@ export class TaskSupabaseRepository implements ITaskRepository {
       return null;
     }
 
-    return mapRowToTask(data);
+    const taskData = Array.isArray(data) ? data[0] : data;
+    if (!taskData) {
+      return null;
+    }
+
+    return mapRowToTask(taskData);
   }
 
   async complete(
@@ -136,7 +146,12 @@ export class TaskSupabaseRepository implements ITaskRepository {
       return null;
     }
 
-    return mapRowToTask(data);
+    const taskData = Array.isArray(data) ? data[0] : data;
+    if (!taskData) {
+      return null;
+    }
+
+    return mapRowToTask(taskData);
   }
 
   async delete(id: string, userId: string): Promise<boolean> {
@@ -149,18 +164,29 @@ export class TaskSupabaseRepository implements ITaskRepository {
       throw new Error(`Failed to delete task: ${error.message}`);
     }
 
-    return data === true;
+    return Boolean(data);
   }
 }
 
 function mapRowToTask(row: any): TaskDTOWithDate {
+  const parseDate = (dateValue: any): string => {
+    if (!dateValue) return new Date().toISOString();
+    if (dateValue instanceof Date) return dateValue.toISOString();
+    const dateStr = String(dateValue);
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return new Date().toISOString();
+    return date.toISOString();
+  };
+
+  const data = Array.isArray(row) ? row[0] : row;
+
   return {
-    id: row.id,
-    userId: row.user_id,
-    title: row.title,
-    completed: Boolean(row.completed),
-    categoryId: row.category_id || undefined,
-    createdAt: new Date(row.created_at).toISOString(),
-    updatedAt: new Date(row.updated_at).toISOString(),
+    id: data.task_id || data.id,
+    userId: data.task_user_id || data.user_id,
+    title: data.task_title || data.title,
+    completed: Boolean(data.task_completed ?? data.completed),
+    categoryId: data.task_category_id ?? data.category_id ?? undefined,
+    createdAt: parseDate(data.task_created_at ?? data.created_at),
+    updatedAt: parseDate(data.task_updated_at ?? data.updated_at),
   };
 }
