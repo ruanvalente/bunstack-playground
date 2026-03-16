@@ -56,7 +56,7 @@ export function CallbackPage() {
               preferred_username:
                 ((userMetadata.preferred_username as string) || '') as string,
             });
-            navigate('/dashboard');
+            navigate('/app/dashboard');
             return;
           }
         }
@@ -94,7 +94,7 @@ export function CallbackPage() {
             preferred_username: ((userMetadata.preferred_username as string) ||
               '') as string,
           });
-          navigate('/dashboard');
+          navigate('/app/dashboard');
           return;
         }
 
