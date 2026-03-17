@@ -12,9 +12,18 @@ const DEFAULT_CATEGORIES = [
   { name: 'Lazer', color: '#EC4899' },
 ];
 
+const getSupabaseClient = () => {
+  if (!supabase) {
+    throw new Error(
+      'Supabase client is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.'
+    );
+  }
+  return supabase;
+};
+
 export class CategorySupabaseRepository implements ICategoryRepository {
   async ensureTableExists(): Promise<void> {
-    const { error: checkError } = await supabase
+    const { error: checkError } = await getSupabaseClient()
       .from('categories')
       .select('id, user_id, name, color, created_at')
       .limit(1);
@@ -37,7 +46,7 @@ export class CategorySupabaseRepository implements ICategoryRepository {
       return [];
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from('categories')
       .select('id, user_id, name, color, created_at')
       .eq('user_id', userId)
@@ -57,7 +66,7 @@ export class CategorySupabaseRepository implements ICategoryRepository {
       return null;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from('categories')
       .select('id, user_id, name, color, created_at')
       .eq('id', id)
@@ -75,7 +84,7 @@ export class CategorySupabaseRepository implements ICategoryRepository {
   }
 
   async create(name: string, color: string, userId: string): Promise<Category> {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from('categories')
       .insert([{ name, color, user_id: userId }])
       .select()
@@ -89,7 +98,7 @@ export class CategorySupabaseRepository implements ICategoryRepository {
   }
 
   async delete(id: string, userId: string): Promise<boolean> {
-    const { error } = await supabase
+    const { error } = await getSupabaseClient()
       .from('categories')
       .delete()
       .eq('id', id)
@@ -109,7 +118,7 @@ export class CategorySupabaseRepository implements ICategoryRepository {
       return;
     }
 
-    const { data: existing, error: checkError } = await supabase
+    const { data: existing, error: checkError } = await getSupabaseClient()
       .from('categories')
       .select('id')
       .eq('user_id', userId)
@@ -126,7 +135,7 @@ export class CategorySupabaseRepository implements ICategoryRepository {
         user_id: userId,
       }));
 
-      const { error } = await supabase
+      const { error } = await getSupabaseClient()
         .from('categories')
         .insert(categoriesToInsert);
 
