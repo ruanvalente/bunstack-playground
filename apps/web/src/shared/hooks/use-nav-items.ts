@@ -11,17 +11,17 @@ export function useNavItems() {
     {
       label: t.common.dashboard,
       icon: LayoutDashboard,
-      route: '/dashboard',
+      route: '/app/dashboard',
     },
     {
       label: t.common.tasks,
       icon: CheckSquare,
-      route: '/dashboard/tasks',
+      route: '/app/dashboard/tasks',
     },
     {
       label: t.common.configurations,
       icon: Settings,
-      route: '/dashboard/settings',
+      route: '/app/dashboard/settings',
     },
   ];
 
@@ -29,7 +29,7 @@ export function useNavItems() {
     navItems.push({
       label: t.users.title,
       icon: Users,
-      route: '/dashboard/users',
+      route: '/app/dashboard/users',
     });
   }
 

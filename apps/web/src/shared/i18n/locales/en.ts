@@ -119,6 +119,8 @@ export const en = {
       projectDescription:
         'My System is a modern, free task management tool designed to help individuals and teams organize their work efficiently. Built with cutting-edge technologies, it offers an intuitive interface, real-time collaboration, and powerful features to boost productivity.',
       developerTitle: 'About the Developer',
+      developerDescription:
+        'Ruan Valente - Passionate frontend developer with 5+ years of experience creating modern, scalable, and high-performance web interfaces. Focused on delivering clean, accessible code and exceptional digital experiences.',
     },
     footer: {
       rights: 'All rights reserved.',
