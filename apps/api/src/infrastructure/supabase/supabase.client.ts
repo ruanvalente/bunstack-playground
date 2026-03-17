@@ -1,17 +1,31 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL;
+import { getEnvVar } from '@/api/shared/utils/env';
+
+const supabaseUrl = getEnvVar('SUPABASE_URL');
 const supabaseKey =
-  process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
-  process.env.SUPABASE_ANON_KEY ||
-  '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || supabaseKey;
+  getEnvVar('SUPABASE_PUBLISHABLE_DEFAULT_KEY') ||
+  getEnvVar('SUPABASE_ANON_KEY');
+const supabaseServiceKey =
+  getEnvVar('SUPABASE_SERVICE_ROLE_KEY') || supabaseKey;
 
-const createSupabaseClient = (url: string | undefined, key: string) => {
-  if (!url) {
-    return null;
+const supabaseOptions = {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+  },
+  global: {
+    headers: {
+      'x-client-info': 'bunstack-playground-api',
+    },
+  },
+};
+
+const createSupabaseClient = (url: string, key: string): SupabaseClient => {
+  if (!url || !key) {
+    throw new Error('SUPABASE_URL and SUPABASE_KEY are required');
   }
-  return createClient(url, key);
+  return createClient(url, key, supabaseOptions);
 };
 
 export const supabase = createSupabaseClient(supabaseUrl, supabaseKey);
