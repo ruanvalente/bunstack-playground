@@ -6,6 +6,15 @@ import type {
 import type { IDashboardRepository } from '@/api/domain/repositories';
 import { supabase } from '@/api/infrastructure/supabase';
 
+const getSupabaseClient = () => {
+  if (!supabase) {
+    throw new Error(
+      'Supabase client is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY environment variables.'
+    );
+  }
+  return supabase;
+};
+
 type PeriodStats = {
   total: number;
   completed: number;
@@ -42,10 +51,13 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     days: number,
     userId: string
   ): Promise<PeriodStats> {
-    const { data, error } = await supabase.rpc('get_dashboard_tasks', {
-      p_user_id: userId,
-      p_days: days,
-    });
+    const { data, error } = await getSupabaseClient().rpc(
+      'get_dashboard_tasks',
+      {
+        p_user_id: userId,
+        p_days: days,
+      }
+    );
 
     if (error) {
       throw new Error(`Failed to fetch tasks: ${error.message}`);
@@ -66,10 +78,13 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     days: number,
     userId: string
   ): Promise<PeriodStats> {
-    const { data, error } = await supabase.rpc('get_dashboard_tasks', {
-      p_user_id: userId,
-      p_days: days * 2,
-    });
+    const { data, error } = await getSupabaseClient().rpc(
+      'get_dashboard_tasks',
+      {
+        p_user_id: userId,
+        p_days: days * 2,
+      }
+    );
 
     if (error) {
       throw new Error(`Failed to fetch tasks: ${error.message}`);
@@ -90,10 +105,13 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     days: number,
     userId: string
   ): Promise<ChartDataPoint[]> {
-    const { data, error } = await supabase.rpc('get_dashboard_tasks', {
-      p_user_id: userId,
-      p_days: days,
-    });
+    const { data, error } = await getSupabaseClient().rpc(
+      'get_dashboard_tasks',
+      {
+        p_user_id: userId,
+        p_days: days,
+      }
+    );
 
     if (error) {
       throw new Error('Failed to fetch tasks by day');
@@ -119,10 +137,13 @@ export class DashboardSupabaseRepository implements IDashboardRepository {
     days: number,
     userId: string
   ): Promise<ChartDataPoint[]> {
-    const { data, error } = await supabase.rpc('get_dashboard_tasks', {
-      p_user_id: userId,
-      p_days: days,
-    });
+    const { data, error } = await getSupabaseClient().rpc(
+      'get_dashboard_tasks',
+      {
+        p_user_id: userId,
+        p_days: days,
+      }
+    );
 
     if (error) {
       throw new Error('Failed to fetch completed tasks by day');

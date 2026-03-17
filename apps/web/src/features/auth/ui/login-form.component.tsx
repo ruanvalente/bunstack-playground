@@ -119,7 +119,7 @@ export function LoginForm() {
         sessionStorage.removeItem(STORAGE_KEY);
       }
       toast.success('Login successful');
-      navigate('/dashboard');
+      navigate('/app/dashboard');
     }
   };
 
