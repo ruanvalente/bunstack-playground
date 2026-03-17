@@ -1,4 +1,130 @@
 export const ptBR = {
+  landing: {
+    nav: {
+      home: 'Início',
+      features: 'Funcionalidades',
+      howItWorks: 'Como funciona',
+      pricing: 'Planos',
+      about: 'Sobre nós',
+      login: 'Entrar Agora!',
+    },
+    hero: {
+      title: 'Gerencie Suas Tarefas',
+      titleHighlight: 'Sem Complicação',
+      subtitle:
+        'Um gerenciador de tarefas moderno para organizar seu trabalho, colaborar com sua equipe e aumentar a produtividade.',
+      cta: 'Começar Agora',
+    },
+    features: {
+      title: 'Tudo o que você precisa para Gerenciar Tarefas',
+      subtitle:
+        'Uma ferramenta poderosa de gerenciamento de tarefas projetada para ajudar você a organizar, acompanhar e concluir seus projetos com eficiência.',
+      boards: {
+        title: 'Organize com Quadros',
+        description:
+          'Crie múltiplos quadros para diferentes projetos. Organize tarefas em listas e cartões para uma gestão visual clara.',
+      },
+      tags: {
+        title: 'Tags e Rótulos',
+        description:
+          'Categorize tarefas com tags e rótulos personalizados. Filtre e pesquise rapidamente para encontrar o que precisa.',
+      },
+      dueDates: {
+        title: 'Prazos e Lembretes',
+        description:
+          'Defina prazos e seja notificado antes das tarefas vencerem. Nunca perca um prazo importante novamente.',
+      },
+      collaboration: {
+        title: 'Colabore Juntos',
+        description:
+          'Convidar membros da equipe para quadros. Atribua tarefas, comente e trabaje juntos em tempo real.',
+      },
+      progress: {
+        title: 'Acompanhe o Progresso',
+        description:
+          'Marque tarefas como concluídas e visualize o progresso com gráficos. Saiba exatamente onde seu projeto está.',
+      },
+      notifications: {
+        title: 'Notificações Inteligentes',
+        description:
+          'Fique atualizado com notificações em tempo real para atualizações de tarefas, menções e prazos.',
+      },
+    },
+    howItWorks: {
+      title: 'Como Funciona',
+      subtitle: 'Comece em minutos com nosso fluxo de trabalho simples',
+      step1: {
+        title: 'Crie Seu Quadro',
+        description:
+          'Comece criando um novo quadro para seu projeto. Dê um nome e adicione uma descrição.',
+      },
+      step2: {
+        title: 'Adicione Tarefas',
+        description:
+          'Crie tarefas e organize-as em listas. Adicione detalhes, prazos e atribua membros da equipe.',
+      },
+      step3: {
+        title: 'Acompanhe e Conclua',
+        description:
+          'Mova tarefas pelo seu fluxo de trabalho. Marque-as como concluídas e celebre seu progresso.',
+      },
+    },
+    pricing: {
+      title: 'Preços Simples',
+      subtitle: 'Escolha o plano que funciona para você',
+      free: {
+        title: 'Grátis',
+        price: 'R$0',
+        period: 'para sempre',
+        features: [
+          'Até 5 quadros',
+          'Tarefas ilimitadas',
+          'Tags básicas',
+          'Suporte por email',
+        ],
+      },
+      pro: {
+        title: 'Pro',
+        price: 'R$49',
+        period: 'por mês',
+        features: [
+          'Quadros ilimitados',
+          'Tags avançadas',
+          'Suporte prioritário',
+          'Exportar dados',
+        ],
+        popular: 'Mais Popular',
+      },
+      enterprise: {
+        title: 'Enterprise',
+        price: 'Personalizado',
+        period: 'fale conosco',
+        features: [
+          'Integrações personalizadas',
+          'Suporte dedicado',
+          'Garantia SLA',
+          'Opção on-premise',
+        ],
+      },
+    },
+    cta: {
+      title: 'Pronto para Começar?',
+      subtitle:
+        'Junte-se a milhares de equipes gerenciando suas tarefas com eficiência.',
+      button: 'Comece Grátis Hoje',
+    },
+    about: {
+      title: 'Sobre Nós',
+      subtitle: 'Saiba mais sobre nosso projeto e o desenvolvedor',
+      projectTitle: 'Sobre o My System',
+      projectDescription:
+        'My System é uma ferramenta moderna e gratuita de gerenciamento de tarefas, projetada para ajudar indivíduos e equipes a organizar seu trabalho de forma eficiente. Construído com tecnologias de ponta, oferece uma interface intuitiva, colaboração em tempo real e recursos poderosos para aumentar a produtividade.',
+      developerTitle: 'Sobre o Desenvolvedor',
+    },
+    footer: {
+      rights: 'Todos os direitos reservados.',
+    },
+  },
   common: {
     dashboard: 'Dashboard',
     tasks: 'Tarefas',
@@ -178,5 +304,11 @@ export const ptBR = {
     saving: 'Salvando...',
     save: 'Salvar',
     addUser: 'Adicionar Usuário',
+  },
+  notFound: {
+    title: 'Página não encontrada',
+    description:
+      'Desculpe, a página que você está procurando não existe ou foi movida.',
+    goHome: 'Voltar para Home',
   },
 };

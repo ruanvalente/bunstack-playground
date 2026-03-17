@@ -1,4 +1,129 @@
 export const en = {
+  landing: {
+    nav: {
+      home: 'Home',
+      features: 'Features',
+      howItWorks: 'How it works',
+      pricing: 'Pricing',
+      about: 'About us',
+      login: 'Login Now!',
+    },
+    hero: {
+      title: 'Manage Your Tasks',
+      titleHighlight: 'Effortlessly',
+      subtitle:
+        'A modern task manager to organize your work, collaborate with your team, and boost productivity.',
+      cta: 'Get Started',
+    },
+    features: {
+      title: 'Everything You Need to Manage Tasks',
+      subtitle:
+        'A powerful task management tool designed to help you organize, track, and complete your projects efficiently.',
+      boards: {
+        title: 'Organize with Boards',
+        description:
+          'Create multiple boards for different projects. Organize tasks into lists and cards for clear visual management.',
+      },
+      tags: {
+        title: 'Tags & Labels',
+        description:
+          'Categorize tasks with custom tags and labels. Filter and search quickly to find what you need.',
+      },
+      dueDates: {
+        title: 'Due Dates & Reminders',
+        description:
+          'Set deadlines and get notified before tasks are due. Never miss an important deadline again.',
+      },
+      collaboration: {
+        title: 'Collaborate Together',
+        description:
+          'Invite team members to boards. Assign tasks, comment, and work together in real-time.',
+      },
+      progress: {
+        title: 'Track Progress',
+        description:
+          'Mark tasks complete and visualize progress with charts. Know exactly where your project stands.',
+      },
+      notifications: {
+        title: 'Smart Notifications',
+        description:
+          'Stay updated with real-time notifications for task updates, mentions, and due dates.',
+      },
+    },
+    howItWorks: {
+      title: 'How It Works',
+      subtitle: 'Get started in minutes with our simple workflow',
+      step1: {
+        title: 'Create Your Board',
+        description:
+          'Start by creating a new board for your project. Name it and add a description.',
+      },
+      step2: {
+        title: 'Add Tasks',
+        description:
+          'Create tasks and organize them into lists. Add details, due dates, and assign team members.',
+      },
+      step3: {
+        title: 'Track & Complete',
+        description:
+          'Move tasks through your workflow. Mark them complete and celebrate your progress.',
+      },
+    },
+    pricing: {
+      title: 'Simple Pricing',
+      subtitle: 'Choose the plan that works for you',
+      free: {
+        title: 'Free',
+        price: '$0',
+        period: 'forever',
+        features: [
+          'Up to 5 boards',
+          'Unlimited tasks',
+          'Basic tags',
+          'Email support',
+        ],
+      },
+      pro: {
+        title: 'Pro',
+        price: '$12',
+        period: 'per month',
+        features: [
+          'Unlimited boards',
+          'Advanced tags',
+          'Priority support',
+          'Export data',
+        ],
+        popular: 'Most Popular',
+      },
+      enterprise: {
+        title: 'Enterprise',
+        price: 'Custom',
+        period: 'contact us',
+        features: [
+          'Custom integrations',
+          'Dedicated support',
+          'SLA guarantee',
+          'On-premise option',
+        ],
+      },
+    },
+    cta: {
+      title: 'Ready to Get Started?',
+      subtitle: 'Join thousands of teams managing their tasks efficiently.',
+      button: 'Start Free Today',
+    },
+    about: {
+      title: 'About Us',
+      subtitle: 'Learn more about our project and the developer',
+      projectTitle: 'About My System',
+      projectDescription:
+        'My System is a modern, free task management tool designed to help individuals and teams organize their work efficiently. Built with cutting-edge technologies, it offers an intuitive interface, real-time collaboration, and powerful features to boost productivity.',
+      developerTitle: 'About the Developer',
+    },
+    footer: {
+      rights: 'All rights reserved.',
+    },
+  },
   common: {
     dashboard: 'Dashboard',
     tasks: 'Tasks',
@@ -177,5 +302,11 @@ export const en = {
     saving: 'Saving...',
     save: 'Save',
     addUser: 'Add User',
+  },
+  notFound: {
+    title: 'Page not found',
+    description:
+      'Sorry, the page you are looking for does not exist or has been moved.',
+    goHome: 'Go to Home',
   },
 };
