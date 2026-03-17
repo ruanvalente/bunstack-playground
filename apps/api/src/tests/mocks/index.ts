@@ -9,3 +9,8 @@ export {
   createMockPaginatedTasksResponse,
   createMockTask,
 } from './tasks/task.repository.mock';
+
+export {
+  CategoryRepositoryMock,
+  createMockCategory,
+} from './categories/category.repository.mock';
