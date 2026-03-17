@@ -120,6 +120,8 @@ export const ptBR = {
       projectDescription:
         'My System é uma ferramenta moderna e gratuita de gerenciamento de tarefas, projetada para ajudar indivíduos e equipes a organizar seu trabalho de forma eficiente. Construído com tecnologias de ponta, oferece uma interface intuitiva, colaboração em tempo real e recursos poderosos para aumentar a produtividade.',
       developerTitle: 'Sobre o Desenvolvedor',
+      developerDescription:
+        'Ruan Valente - Desenvolvedor frontend apaixonado com mais de 5 anos de experiência criando interfaces web modernas, escaláveis e de alta performance. Focado em entregar código limpo, acessível e experiências digitais excepcionais.',
     },
     footer: {
       rights: 'Todos os direitos reservados.',
