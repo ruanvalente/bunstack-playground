@@ -4,21 +4,21 @@ export const NAV_ITEMS = [
   {
     label: 'Dashboard',
     icon: LayoutDashboard,
-    route: '/dashboard',
+    route: '/app/dashboard',
   },
   {
     label: 'Tasks',
     icon: CheckSquare,
-    route: '/dashboard/tasks',
+    route: '/app/dashboard/tasks',
   },
   {
     label: 'Configurations',
     icon: Settings,
-    route: '/dashboard/settings',
+    route: '/app/dashboard/settings',
   },
   {
     label: 'Users',
     icon: Users,
-    route: '/dashboard/users',
+    route: '/app/dashboard/users',
   },
 ];
