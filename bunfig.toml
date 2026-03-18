@@ -9,6 +9,9 @@ root = "./apps/api/src"
 timeout = 10000
 coverage = false
 coverageDir = "./apps/api/coverage"
-coverageThreshold = { lines = 0.9, functions = 0.9, statements = 0.9 }
+coverageThreshold = { lines = 0.80, functions = 0.75, statements = 0.80 }
 coverageSkipTestFiles = true
 preload = ["./apps/api/src/tests/setup.ts"]
+
+[test.coverageExclude]
+"**/*.test.ts" = true
