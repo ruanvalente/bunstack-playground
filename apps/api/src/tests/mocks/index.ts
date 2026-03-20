@@ -16,6 +16,13 @@ export {
 } from './categories/category.repository.mock';
 
 export {
+  StorageClientMock,
+  createMockAttachment,
+  createMockAttachments,
+  createMockCsvPreview,
+  createMockCsvImportResult,
+} from './files/file.repository.mock';
+
   DashboardRepositoryMock,
   createDashboardDataWithIncrease,
   createEmptyDashboardData,
