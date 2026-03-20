@@ -14,3 +14,22 @@ export {
   CategoryRepositoryMock,
   createMockCategory,
 } from './categories/category.repository.mock';
+
+export {
+  StorageClientMock,
+  createMockAttachment,
+  createMockAttachments,
+  createMockCsvPreview,
+  createMockCsvImportResult,
+} from './files/file.repository.mock';
+
+export {
+  DashboardRepositoryMock,
+  createDashboardDataWithIncrease,
+  createEmptyDashboardData,
+  createMockChartDataPoint,
+  createMockCharts,
+  createMockDashboardData,
+  createMockKPIs,
+  createMockTotals,
+} from './dashboard/dashboard.repository.mock';
