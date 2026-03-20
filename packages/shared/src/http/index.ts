@@ -1,4 +1,5 @@
 export * from './api-response.schema';
+export type { PaginationInfo } from './api-response.schema';
 export * from './task.schema';
 export * from './dashboard.schema';
 export * from './auth.schema';

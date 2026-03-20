@@ -33,3 +33,19 @@ export {
   createMockKPIs,
   createMockTotals,
 } from './dashboard/dashboard.repository.mock';
+
+export {
+  createMockAuthSuccess,
+  createMockAuthError,
+  createMockOAuthSuccess,
+  createMockOAuthError,
+  createMockUserResponse,
+  createMockUserError,
+  createMockSignOutSuccess,
+  createMockSignOutError,
+  createMockSupabaseAuth,
+  createMockSupabaseAdmin,
+  createMockSupabaseAdminWithError,
+  type MockUser,
+  type MockSession,
+} from './auth/auth.repository.mock';
