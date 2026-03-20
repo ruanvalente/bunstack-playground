@@ -22,3 +22,13 @@ export {
   createMockCsvPreview,
   createMockCsvImportResult,
 } from './files/file.repository.mock';
+
+  DashboardRepositoryMock,
+  createDashboardDataWithIncrease,
+  createEmptyDashboardData,
+  createMockChartDataPoint,
+  createMockCharts,
+  createMockDashboardData,
+  createMockKPIs,
+  createMockTotals,
+} from './dashboard/dashboard.repository.mock';
