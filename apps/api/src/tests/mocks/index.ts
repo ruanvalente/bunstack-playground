@@ -23,6 +23,7 @@ export {
   createMockCsvImportResult,
 } from './files/file.repository.mock';
 
+export {
   DashboardRepositoryMock,
   createDashboardDataWithIncrease,
   createEmptyDashboardData,
