@@ -142,7 +142,6 @@ export type EditTaskTitleDTO = z.infer<typeof editTaskTitleSchema>;
 export type CompleteTaskDTO = z.infer<typeof completeTaskSchema>;
 export type DeleteTaskDTO = z.infer<typeof deleteTaskSchema>;
 export type PaginationQueryDTO = z.infer<typeof paginationQuerySchema>;
-export type PaginationInfo = z.infer<typeof paginationSchema>;
 export type PaginatedTasksResponseDTO = z.infer<
   typeof paginatedTasksResponseSchema
 >;
