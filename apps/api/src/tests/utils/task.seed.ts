@@ -16,12 +16,16 @@ export function setupTasksTable(): void {
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
       completed INTEGER NOT NULL DEFAULT 0,
+      category_id TEXT,
       created_at TEXT NOT NULL,
       user_id TEXT NOT NULL DEFAULT '',
       updated_at TEXT
     );
   `);
   db.run('CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id)');
+  db.run(
+    'CREATE INDEX IF NOT EXISTS idx_tasks_category_id ON tasks(category_id)'
+  );
 }
 
 export function clearTasksTable(): void {
