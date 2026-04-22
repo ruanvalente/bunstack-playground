@@ -37,7 +37,6 @@ export const config = {
    * Features that should run in development only
    */
   shouldRunSeeds(): boolean {
-    if (process.env.RAILWAY_STATIC_URL) return false;
     const isSupabaseConfigured = Boolean(
       process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY
     );
@@ -46,7 +45,6 @@ export const config = {
   },
 
   shouldRunMigrations(): boolean {
-    if (process.env.RAILWAY_STATIC_URL) return false;
     const isSupabaseConfigured = Boolean(
       process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY
     );

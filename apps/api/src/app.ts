@@ -14,12 +14,14 @@ import { taskController } from './interfaces/tasks/task.controller';
 import { userController } from './interfaces/users/user.controller';
 
 const isProduction = process.env.NODE_ENV === 'production';
-const isRailway = process.env.RAILWAY_STATIC_URL !== undefined;
-const serveStatic = isProduction || isRailway;
+
+const corsOrigin = isProduction
+  ? process.env.CORS_ORIGIN || 'https://bunstack-playground.onrender.com'
+  : true;
 
 const app = new Elysia({ name: 'bunstack-api' });
 
-if (serveStatic) {
+if (isProduction) {
   app.use(
     staticPlugin({
       assets: 'apps/web/dist',
@@ -31,9 +33,7 @@ if (serveStatic) {
 app
   .use(
     cors({
-      origin: isProduction
-        ? 'https://bunstack-production.up.railway.app'
-        : true,
+      origin: corsOrigin,
       credentials: true,
     })
   )
@@ -46,7 +46,7 @@ app
   .use(userController)
   .use(healthController);
 
-if (serveStatic) {
+if (isProduction) {
   app.get('/', () => file('apps/web/dist/index.html'));
   app.get('/*', () => file('apps/web/dist/index.html'));
 } else {
