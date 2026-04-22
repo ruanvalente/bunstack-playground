@@ -23,6 +23,7 @@ RUN bun install && \
     bun run build:web
 
 ENV NODE_ENV=production
+ENV SERVE_STATIC=true
 
 EXPOSE ${PORT:-4000}
 

@@ -21,7 +21,9 @@ const corsOrigin = isProduction
 
 const app = new Elysia({ name: 'bunstack-api' });
 
-if (isProduction) {
+const shouldServeStatic = isProduction && process.env.SERVE_STATIC === 'true';
+
+if (shouldServeStatic) {
   app.use(
     staticPlugin({
       assets: 'apps/web/dist',
@@ -46,7 +48,7 @@ app
   .use(userController)
   .use(healthController);
 
-if (isProduction) {
+if (shouldServeStatic) {
   app.get('/', () => file('apps/web/dist/index.html'));
   app.get('/*', () => file('apps/web/dist/index.html'));
 } else {
